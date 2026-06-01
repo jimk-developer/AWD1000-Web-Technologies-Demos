@@ -1,0 +1,332 @@
+/* ==========================================================================
+   Chapter 5 Demo Stylesheet  —  Mobile-First Responsive Design
+   --------------------------------------------------------------------------
+   READ ME TOP TO BOTTOM. The structure mirrors the mobile-first strategy:
+     PART A: Reset + variables
+     PART B: BASE styles  -> these describe the PHONE layout (no media query)
+     PART C: MEDIA QUERIES -> these ENHANCE the layout on larger screens
+   ========================================================================== */
+
+
+/* ==========================================================================
+   PART A — RESET & VARIABLES
+   ========================================================================== */
+
+/* A tiny reset so the box model is predictable across browsers.
+   border-box means padding/border are INCLUDED in an element's width,
+   which makes percentage widths behave the way students expect. */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* CSS custom properties (variables). Define a color/value once, reuse it
+   everywhere. Change it here and it updates site-wide. */
+:root {
+    --primary: #475569;
+    --primary-dark: #334155;
+    --accent: #06b6d4;
+    --bg: #f1f5f9;
+    --card-bg: #ffffff;
+    --text: #1e293b;
+
+    /* Link-state colors used by the pseudo-classes further down */
+    --link: #2563eb;
+    --link-visited: #7c3aed;
+    --link-hover: #06b6d4;
+    --link-active: #be123c;
+}
+
+
+/* ==========================================================================
+   PART B — BASE STYLES  (these ARE the mobile layout)
+   --------------------------------------------------------------------------
+   No media query wraps these rules, so they apply at EVERY width — and since
+   we wrote them for the smallest screen, the phone is fully covered first.
+   ========================================================================== */
+
+body {
+    /* CUSTOM FONT in use: 'Poppins' comes from the Google Fonts <link>.
+       After it we list FALLBACKS so the page still reads well if the custom
+       font fails to download. */
+    font-family: 'Poppins', -apple-system, "Segoe UI", Arial, sans-serif;
+
+    line-height: 1.6;
+    color: var(--text);
+    background-color: var(--bg);
+}
+
+/* RESPONSIVE IMAGES — the whole technique in two lines.
+   max-width: 100% -> the image is never wider than its container,
+                      so it can't cause horizontal scrolling.
+   height: auto    -> keep the original aspect ratio (no stretching). */
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 0.75rem; /* border-radius = rounded corners */
+}
+
+/* ---- Typography: sized in rem (a RELATIVE unit) ----
+   1rem = the root font size (16px by default). Using rem instead of px
+   means everything scales together if the base size ever changes. */
+h1 { font-size: 2rem;   margin-bottom: 0.5rem; }
+h2 { font-size: 1.5rem; margin-bottom: 0.75rem; color: var(--primary-dark); }
+h3 { font-size: 1.15rem; margin-bottom: 0.5rem; }
+p  { margin-bottom: 1rem; }
+
+code {
+    font-family: "Consolas", "Courier New", monospace;
+    background: #e2e8f0;
+    padding: 0.1rem 0.35rem;
+    border-radius: 0.25rem;
+    font-size: 0.9em;
+}
+
+
+/* ---- STICKY HEADER ----
+   position: sticky + top: 0 makes the header scroll normally until it
+   reaches the top edge, then it "sticks" there and stays visible.
+   z-index keeps it layered above the page content as it sticks. */
+header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background-color: var(--primary-dark);
+    color: #ffffff;
+    padding: 1rem;            /* rem-based spacing */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.brand {
+    font-weight: 700;
+    font-size: 1.25rem;
+    margin-bottom: 0.75rem;
+    text-align: center;
+}
+
+
+/* ---- MOBILE NAVIGATION (base = stacked vertical menu) ----
+   On a phone we want big, easy tap targets stacked in one column. */
+nav ul {
+    list-style: none;          /* remove bullet points */
+}
+
+nav li {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+nav a {
+    display: block;            /* makes the WHOLE row tappable, not just text */
+    padding: 0.85rem 1rem;     /* generous padding -> large tap target */
+    color: #ffffff;
+    text-decoration: none;
+    text-align: center;
+}
+
+nav a:hover {
+    background-color: var(--primary);
+}
+
+
+/* ---- FLUID CONTAINER ----
+   width: 100% fills small screens; max-width caps it on big screens so lines
+   of text don't get uncomfortably long; margin: 0 auto centers it. */
+.container {
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 1.5rem 1rem;
+}
+
+section {
+    margin-bottom: 2.5rem;
+}
+
+.hero {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    color: #ffffff;
+    padding: 2rem 1.5rem;
+    border-radius: 1rem;
+    margin-bottom: 2.5rem;
+}
+
+.hero h2,
+.hero p { color: #ffffff; }
+
+
+/* ---- FLUID CARD GRID (base = ONE column on phones) ----
+   CSS Grid with a single column. The media queries below add more columns. */
+.card-grid {
+    display: grid;
+    grid-template-columns: 1fr;   /* 1 column on mobile */
+    gap: 1rem;                    /* relative spacing between cards */
+}
+
+.card {
+    background-color: var(--card-bg);
+    padding: 1.25rem;
+    border-radius: 0.75rem;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+}
+
+
+/* ---- A rounded "pill" using border-radius ----
+   A very large radius (999px) on a short element makes both ends fully round. */
+.pill {
+    display: inline-block;
+    background-color: var(--accent);
+    color: #ffffff;
+    font-weight: 600;
+    padding: 0.5rem 1.25rem;
+    border-radius: 999px;
+}
+
+
+/* ==========================================================================
+   PSEUDO-CLASSES — styling by STATE and POSITION
+   --------------------------------------------------------------------------
+   LINK STATES must be written in L-V-H-A order or later rules can silently
+   override earlier ones:
+       :link  ->  :visited  ->  :hover  ->  :active
+   ========================================================================== */
+
+.state-links a {
+    font-weight: 600;
+    margin-right: 1rem;
+}
+
+.state-links a:link    { color: var(--link); }          /* never visited */
+.state-links a:visited { color: var(--link-visited); }  /* clicked before */
+.state-links a:hover   { color: var(--link-hover); }    /* mouse is over it */
+.state-links a:active  { color: var(--link-active); }   /* being clicked now */
+
+/* :focus shows where keyboard users are. Press Tab to move between links
+   and watch this outline appear — important for accessibility. */
+.state-links a:focus {
+    outline: 3px solid var(--accent);
+    outline-offset: 2px;
+}
+
+
+/* ---- STRUCTURAL pseudo-classes: style by POSITION, no extra classes ---- */
+.zebra {
+    list-style: none;
+    margin-top: 1rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.5rem;
+    overflow: hidden;
+}
+
+.zebra li {
+    padding: 0.75rem 1rem;
+}
+
+/* :first-child = the first <li> inside its parent */
+.zebra li:first-child {
+    background-color: var(--primary);
+    color: #ffffff;
+    font-weight: 600;
+}
+
+/* :nth-child(even) = the 2nd, 4th, 6th... item -> classic zebra striping */
+.zebra li:nth-child(even) {
+    background-color: #e2e8f0;
+}
+
+/* :last-child = the final <li> inside its parent */
+.zebra li:last-child {
+    border-top: 2px dashed var(--primary);
+    font-weight: 600;
+}
+
+
+/* ---- Telephone link styling ---- */
+.tel-link {
+    display: inline-block;
+    background-color: var(--accent);
+    color: #ffffff;
+    text-decoration: none;
+    font-weight: 600;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+}
+
+.tel-link:hover {
+    background-color: #0891b2;
+}
+
+
+/* ---- Footer ---- */
+footer {
+    background-color: var(--primary-dark);
+    color: #ffffff;
+    text-align: center;
+    padding: 1.5rem 1rem;
+}
+
+
+/* ==========================================================================
+   PART C — MEDIA QUERIES  (mobile-first ENHANCEMENTS)
+   --------------------------------------------------------------------------
+   We use min-width so each block ADDS styling once the screen is at least
+   that wide. Everything above already works on a phone; these just make
+   better use of bigger screens.
+   ========================================================================== */
+
+/* ---------- BREAKPOINT 1: TABLETS (768px and wider) ---------- */
+@media (min-width: 768px) {
+
+    /* Navigation becomes a horizontal row instead of a stack.
+       Same HTML — only the CSS changes. */
+    .brand {
+        text-align: left;
+        display: inline-block;
+        margin-bottom: 0;
+        margin-right: 2rem;
+    }
+
+    nav {
+        display: inline-block;
+    }
+
+    nav li {
+        display: inline-block;   /* sit side by side */
+        border-bottom: none;     /* remove the stacked divider lines */
+    }
+
+    nav a {
+        padding: 0.5rem 1rem;
+    }
+
+    header {
+        text-align: left;
+    }
+
+    /* Card grid grows from 1 column to 2 columns. */
+    .card-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    /* A little more breathing room now that there's space. */
+    .container {
+        padding: 2rem 1.5rem;
+    }
+}
+
+
+/* ---------- BREAKPOINT 2: DESKTOPS (1024px and wider) ---------- */
+@media (min-width: 1024px) {
+
+    /* Card grid grows again from 2 columns to 3. */
+    .card-grid {
+        grid-template-columns: 1fr 1fr 1fr;
+    }
+
+    /* Slightly larger hero heading when there's plenty of room. */
+    .hero h1 {
+        font-size: 2.5rem;
+    }
+}

@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<!--
+  ============================================================================
+  Chapter 5 Demo: Responsive Design - Designing for Mobile Devices
+  ============================================================================
+  This single page demonstrates EVERY concept from the chapter:
+    1. The meta viewport element
+    2. Mobile-first strategy (base styles = mobile, media queries = larger)
+    3. Relative units (rem, %, vw) instead of fixed pixels
+    4. Fluid layouts (percentage / flexible widths)
+    5. Media queries with min-width breakpoints
+    6. Responsive images (max-width: 100%; height: auto)
+    7. Sticky header (position: sticky)
+    8. Custom fonts (linked from Google Fonts)
+    9. Pseudo-classes (link / visited / hover / active / focus, :first-child, :nth-child)
+   10. Mobile-friendly navigation (stacked on phone, horizontal on desktop)
+   11. Tel links and border-radius
+
+  HOW TO DEMO IN VS CODE:
+    - Open with Live Server, then press F12 and toggle the device toolbar
+      to shrink the viewport. Watch the layout reflow at the breakpoints.
+  ============================================================================
+-->
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <!--
+      THE META VIEWPORT ELEMENT  (concept #1)
+      This is the single most important line for mobile. Without it, phones
+      pretend to be ~980px wide and shrink the whole page to fit, making text
+      tiny. "width=device-width" tells the browser to use the REAL device
+      width. "initial-scale=1.0" sets the starting zoom to 100%.
+      RULE: put this in EVERY HTML file before doing anything else.
+    -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Chapter 5 Demo &mdash; Responsive Mobile Design</title>
+
+    <!--
+      CUSTOM FONTS via GOOGLE FONTS  (concept #8)
+      One <link> in the head pulls in a hosted typeface. We then reference
+      'Poppins' by name in our CSS. (Notice we still provide fallback fonts
+      in the CSS in case this link fails to load.)
+    -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Our external stylesheet. Keeping CSS in its own file is best practice. -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+    <!--
+      STICKY HEADER  (concept #7)
+      In the CSS this <header> has position: sticky; top: 0; so it pins to
+      the top of the viewport once you scroll past it. The nav inside it is
+      our responsive navigation.
+    -->
+    <header>
+        <div class="brand">Ranken Responsive</div>
+
+        <!--
+          MOBILE-FRIENDLY NAVIGATION  (concept #10)
+          The SAME HTML serves both layouts. On a phone the list items stack
+          vertically with big tap targets. A media query in the CSS switches
+          them to a horizontal row on wider screens. No JavaScript needed.
+        -->
+        <nav>
+            <ul>
+                <!-- :first-child pseudo-class targets this "Home" item specifically -->
+                <li><a href="#top">Home</a></li>
+                <li><a href="#units">Units</a></li>
+                <li><a href="#layout">Layout</a></li>
+                <li><a href="#images">Images</a></li>
+                <li><a href="#states">Link States</a></li>
+                <!-- :last-child pseudo-class targets this "Contact" item -->
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!--
+      FLUID CONTAINER  (concept #4)
+      In the CSS, .container is width: 100% with a max-width cap and auto
+      side margins, so it fills small screens but stays centered and readable
+      on large ones.
+    -->
+    <main class="container" id="top">
+
+        <!-- ============== HERO ============== -->
+        <section class="hero">
+            <h1>Designing for Mobile Devices</h1>
+            <p>
+                Resize your browser window (or open the device toolbar in
+                DevTools) and watch this page rearrange itself. One set of
+                HTML and CSS, every screen size.
+            </p>
+        </section>
+
+        <!-- ============== MOBILE-FIRST EXPLANATION ============== -->
+        <section>
+            <h2>Mobile-First Strategy</h2>
+            <p>
+                This page is built mobile-first (concept #2). The base CSS
+                describes the phone layout. Larger screens are handled later
+                with <code>@media (min-width: ...)</code> blocks that
+                <em>add</em> styling. We never write desktop styles and then
+                fight to shrink them down.
+            </p>
+        </section>
+
+        <!-- ============== FLUID CARD GRID ============== -->
+        <!--
+          FLUID / RESPONSIVE GRID  (concepts #3, #4, #5)
+          On mobile .card-grid is a single column. The media queries promote
+          it to 2 columns on tablets and 3 columns on desktops. Gaps and
+          padding use rem (a relative unit), not fixed pixels.
+        -->
+        <section id="layout">
+            <h2>Fluid Layout &amp; Media Queries</h2>
+            <p>
+                The cards below are one column on a phone, two on a tablet,
+                and three on a desktop. Same markup &mdash; the breakpoints do
+                the work.
+            </p>
+
+            <div class="card-grid">
+                <article class="card">
+                    <h3>320&ndash;480px</h3>
+                    <p>Phones. This is our base layout: a single column, no
+                        horizontal scrolling.</p>
+                </article>
+                <article class="card">
+                    <h3>768px+</h3>
+                    <p>Tablets. The first <code>min-width</code> breakpoint
+                        gives us two columns.</p>
+                </article>
+                <article class="card">
+                    <h3>1024px+</h3>
+                    <p>Laptops and desktops. A second breakpoint expands us to
+                        three columns.</p>
+                </article>
+            </div>
+        </section>
+
+        <!-- ============== RELATIVE UNITS ============== -->
+        <section id="units">
+            <h2>Relative Units</h2>
+            <p>
+                Everything sized on this page leans on relative units
+                (concept #3): <code>rem</code> for type and spacing,
+                <code>%</code> for widths, and a touch of <code>vw</code>.
+                The pill below uses <code>border-radius: 999px</code> to look
+                fully rounded (concept #11).
+            </p>
+            <p><span class="pill">Rounded pill via border-radius</span></p>
+        </section>
+
+        <!-- ============== RESPONSIVE IMAGE ============== -->
+        <!--
+          RESPONSIVE IMAGE  (concept #6)
+          In the CSS, the global "img" rule sets max-width: 100%; height: auto;
+          That means the image never overflows its container and always keeps
+          its aspect ratio. We deliberately did NOT put width/height attributes
+          on the tag, so CSS is fully in charge of sizing.
+          (Using a placeholder service so the demo works without local files.)
+        -->
+        <section id="images">
+            <h2>Responsive Images</h2>
+            <p>This image shrinks to fit its column and never causes sideways
+                scrolling:</p>
+            <img src="https://picsum.photos/1200/500"
+                alt="A randomly served responsive sample photo">
+        </section>
+
+        <!-- ============== PSEUDO-CLASS LINK STATES ============== -->
+        <!--
+          PSEUDO-CLASSES  (concept #9)
+          The links below are styled by STATE, not by name:
+            :link    -> never visited      :hover  -> mouse is over it
+            :visited -> clicked before      :active -> being clicked
+            :focus   -> reached via keyboard (try pressing Tab)
+          REMEMBER THE ORDER: L-V-H-A (Link, Visited, Hover, Active).
+          Tab through these with the keyboard to see the :focus outline.
+        -->
+        <section id="states">
+            <h2>Pseudo-Classes &amp; Link States (LVHA)</h2>
+            <p>Hover over, click, and Tab through these links to see each
+                state. Watch the colors change:</p>
+            <p class="state-links">
+                <a href="#states">First link</a>
+                <a href="https://example.com">Second link</a>
+                <a href="#states">Third link</a>
+            </p>
+
+            <!--
+              STRUCTURAL PSEUDO-CLASSES  (concept #9 continued)
+              In the CSS, :first-child, :last-child, and :nth-child(even)
+              style these rows differently based purely on their POSITION,
+              with no extra classes.
+            -->
+            <ul class="zebra">
+                <li>Row one &mdash; styled by <code>:first-child</code></li>
+                <li>Row two &mdash; styled by <code>:nth-child(even)</code></li>
+                <li>Row three</li>
+                <li>Row four &mdash; styled by <code>:nth-child(even)</code>
+                </li>
+                <li>Row five &mdash; styled by <code>:last-child</code></li>
+            </ul>
+        </section>
+
+        <!-- ============== TEL LINK / CONTACT ============== -->
+        <!--
+          TELEPHONE LINK  (concept #11)
+          The "tel:" scheme makes a tappable phone number. On a real phone,
+          tapping it starts a call. Great for mobile contact pages and footers.
+        -->
+        <section id="contact">
+            <h2>Mobile-Friendly Touches</h2>
+            <p>On a phone, tap this number to start a call:</p>
+            <p><a class="tel-link" href="tel:+15555551234">Call (555)
+                    555-1234</a></p>
+        </section>
+
+    </main>
+
+    <!-- ============== FOOTER ============== -->
+    <footer>
+        <p>Chapter 5 Demo &mdash; Responsive Design for Mobile Devices</p>
+    </footer>
+
+</body>
+
+</html>

@@ -1,0 +1,346 @@
+/* ============================================================================
+   styles.css  —  Chapter 6 Demo: Tablet & Desktop Responsive Design
+   ============================================================================
+   READING ORDER MATTERS. This file is organized "mobile first":
+     1. BASE STYLES   apply to ALL screen sizes (phones get these and nothing
+                      more, because they never match the media queries below).
+     2. TABLET RULES  inside  @media (min-width: 768px)
+     3. DESKTOP RULES inside  @media (min-width: 1024px)
+     4. PRINT RULES   inside  @media print
+
+   Because we use min-width, larger screens INHERIT the base styles and then
+   LAYER additional rules on top. We never have to "undo" anything.
+   ============================================================================ */
+
+
+/* ============================================================================
+   1. BASE STYLES  —  MOBILE FIRST (no media query = applies everywhere)
+   ============================================================================ */
+
+/* The universal selector + box-sizing makes width math predictable:
+   padding and borders are included inside an element's set width. */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    line-height: 1.6;
+    color: #252525;
+    background-color: #f3f3f3;
+}
+
+/* ---- Header ---- */
+header {
+    background-color: #1e1e1e;
+    color: #ffffff;
+    text-align: center;
+    padding: 20px 15px;
+}
+
+header h1 {
+    font-size: 1.6rem;
+    margin-bottom: 4px;
+}
+
+.tagline {
+    font-size: 0.9rem;
+    color: #b4b4b4;
+}
+
+/* ---- Navigation (MOBILE: vertical, stacked links) ----
+   Each <li> is a block, so the links stack one on top of another.
+   This is the natural phone-friendly menu. The tablet query will
+   change these to inline-block to make a horizontal row. */
+nav ul {
+    list-style: none;          /* remove bullet points */
+    margin-top: 12px;
+}
+
+nav li {
+    display: block;            /* stack vertically on mobile */
+    border-bottom: 1px solid #444;
+}
+
+nav a {
+    display: block;            /* whole row is a large, finger-friendly tap target */
+    padding: 12px;
+    color: #ffffff;
+    text-decoration: none;
+}
+
+nav a:hover {
+    background-color: #be123c; /* gentle feedback for mouse users */
+}
+
+/* ---- Viewport indicator banner (hide/show per viewport demo) ----
+   By default (mobile) we ONLY show the mobile message. The tablet and
+   desktop messages are hidden until their media query reveals them. */
+.viewport-banner {
+    background-color: #06b6d4;
+    color: #ffffff;
+    text-align: center;
+    font-weight: bold;
+    padding: 12px;
+}
+
+.show-tablet,
+.show-desktop {
+    display: none;             /* hidden on mobile by default */
+}
+
+/* ---- Container ----
+   On mobile this is just full width. On desktop we will cap it with
+   max-width and center it so lines of text don't get too long. */
+#container {
+    padding: 15px;
+}
+
+/* ---- Hero section: LINEAR GRADIENT background ----
+   A linear gradient transitions color along a straight line.
+   "135deg" sends it diagonally from top-left to bottom-right. */
+.hero {
+    background: linear-gradient(135deg, #be123c 0%, #9f1239 100%);
+    color: #ffffff;
+    text-align: center;
+    padding: 40px 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.hero h2 {
+    font-size: 1.5rem;
+    margin-bottom: 8px;
+}
+
+main h3 {
+    color: #9f1239;
+    margin: 20px 0 12px 0;
+    border-bottom: 2px solid #be123c;
+    padding-bottom: 6px;
+}
+
+/* ---- Card grid (MOBILE: single column) ----
+   We use CSS Grid. One column on mobile. The tablet and desktop queries
+   change grid-template-columns to add more columns. */
+.card-grid {
+    display: grid;
+    grid-template-columns: 1fr;   /* 1 column on mobile */
+    gap: 15px;
+}
+
+.card {
+    background-color: #ffffff;
+    border-radius: 10px;
+    padding: 18px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.card h4 {
+    color: #be123c;
+    margin-bottom: 6px;
+}
+
+/* ---- Badge: RADIAL GRADIENT ----
+   A radial gradient flows outward from a center point. "circle" forces a
+   circle (instead of the default ellipse) and we offset the bright spot
+   toward the top-left to fake a light source. */
+.badge {
+    width: 110px;
+    height: 110px;
+    border-radius: 50%;        /* makes the square element a circle */
+    background: radial-gradient(circle at 35% 35%, #fbbf24, #be123c);
+    color: #ffffff;
+    font-weight: bold;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 12px 0;
+}
+
+.badge-caption {
+    font-size: 0.95rem;
+    color: #555;
+    margin-bottom: 10px;
+}
+
+/* ============================================================================
+   LINK PSEUDO-CLASSES  —  LVHA ORDER (Link, Visited, Hover, Active)
+   ============================================================================
+   These MUST be declared in this exact order. The cascade means a later rule
+   beats an earlier one, so out-of-order pseudo-classes silently break.
+   Mnemonic: "Lord Vader Hates Anakin" = Link, Visited, Hover, Active.
+   ============================================================================ */
+.link-demo a:link {
+    color: #be123c;            /* (L) an unvisited link */
+}
+
+.link-demo a:visited {
+    color: #9f1239;            /* (V) a link already visited */
+}
+
+.link-demo a:hover {
+    color: #06b6d4;            /* (H) mouse pointer is over the link */
+    text-decoration: underline;
+}
+
+.link-demo a:active {
+    color: #d83b01;            /* (A) the link is being pressed right now */
+}
+
+/* ---- Sidebar: hidden on mobile, revealed on desktop ----
+   No room for this on a phone, so we hide it by default. */
+.sidebar {
+    display: none;
+}
+
+/* ---- Footer ---- */
+footer {
+    background-color: #1e1e1e;
+    color: #b4b4b4;
+    text-align: center;
+    padding: 18px;
+    font-size: 0.85rem;
+    margin-top: 20px;
+}
+
+
+/* ============================================================================
+   2. TABLET STYLES  —  @media (min-width: 768px)
+   ============================================================================
+   768px is the conventional tablet breakpoint (a tablet held in portrait).
+   "only screen" targets screens (not print) and hides this query from very
+   old browsers. Everything in here applies at 768px AND WIDER.
+   ============================================================================ */
+@media all and (min-width: 768px) {
+
+    /* Navigation becomes a HORIZONTAL row.
+       inline-block lays the links side by side instead of stacking them. */
+    nav li {
+        display: inline-block;     /* horizontal row */
+        border-bottom: none;       /* drop the divider lines */
+    }
+
+    nav a {
+        padding: 12px 18px;
+    }
+
+    /* Swap the viewport banner message: hide mobile, show tablet. */
+    .show-mobile {
+        display: none;
+    }
+
+    .show-tablet {
+        display: inline;
+    }
+
+    /* Card grid goes to TWO columns now that there's room. */
+    .card-grid {
+        grid-template-columns: 1fr 1fr;   /* 2 equal columns */
+    }
+
+    .hero h2 {
+        font-size: 1.9rem;
+    }
+}
+
+
+/* ============================================================================
+   3. DESKTOP STYLES  —  @media (min-width: 1024px)
+   ============================================================================
+   1024px is the conventional desktop breakpoint. Here we cap the content
+   width, center it, add a third column, and reveal the sidebar.
+   ============================================================================ */
+@media all and (min-width: 1024px) {
+
+    /* Cap the content width and center it. Without max-width, paragraphs
+       on a wide monitor stretch to 200+ characters per line and become
+       hard to read. 50–75 characters per line is the sweet spot. */
+    #container {
+        max-width: 1100px;
+        margin: 0 auto;            /* 0 top/bottom, auto left/right = centered */
+        padding: 25px;
+
+        /* Put the main content and the sidebar side by side. */
+        display: grid;
+        grid-template-columns: 3fr 1fr;   /* wide content + narrow sidebar */
+        gap: 25px;
+    }
+
+    /* The hero and card area should span BOTH grid columns,
+       sitting above the main/sidebar row. */
+    .hero {
+        grid-column: 1 / -1;       /* span from first to last column line */
+    }
+
+    /* Card grid expands to THREE columns. */
+    .card-grid {
+        grid-template-columns: 1fr 1fr 1fr;   /* 3 equal columns */
+    }
+
+    /* Swap the viewport banner message: show desktop only. */
+    .show-tablet {
+        display: none;
+    }
+
+    .show-desktop {
+        display: inline;
+    }
+
+    /* Reveal the sidebar that was hidden on smaller screens. */
+    .sidebar {
+        display: block;
+        background-color: #ffe4e6;
+        border-left: 4px solid #be123c;
+        border-radius: 8px;
+        padding: 18px;
+    }
+
+    .sidebar h4 {
+        color: #9f1239;
+        margin-bottom: 8px;
+    }
+}
+
+
+/* ============================================================================
+   4. PRINT STYLES  —  @media print
+   ============================================================================
+   Applies only when the page is printed (try Ctrl+P / File > Print Preview).
+   The goals: hide screen-only chrome, use black text on white to save ink,
+   and reveal each link's destination since you can't click on paper.
+   ============================================================================ */
+@media print {
+
+    /* Hide things nobody needs on paper. */
+    header nav,
+    .viewport-banner,
+    footer,
+    .badge,
+    .sidebar {
+        display: none;
+    }
+
+    /* Maximum contrast for paper, and physical point sizes for type. */
+    body {
+        color: #000000;
+        background: #ffffff;
+        font-size: 12pt;
+    }
+
+    /* Remove the gradient so we don't waste ink on a colored block. */
+    .hero {
+        background: none;
+        color: #000000;
+    }
+
+    /* Show each link's URL right after it, since print can't be clicked.
+       attr(href) pulls the address out of the link's href attribute. */
+    .link-demo a::after {
+        content: " (" attr(href) ")";
+        font-size: 10pt;
+    }
+}

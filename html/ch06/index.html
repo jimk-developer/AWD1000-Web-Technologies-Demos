@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<!--
+  ============================================================================
+  Chapter 6 Demo: Responsive Design for Tablet and Desktop
+  ============================================================================
+  This page demonstrates EVERY concept from the chapter in one working example:
+    1. Mobile-first base styles (no media query needed)
+    2. A TABLET media query   (min-width: 768px)  -> horizontal nav, 2 columns
+    3. A DESKTOP media query   (min-width: 1024px) -> capped width, 3 columns
+    4. Hiding / showing content per viewport (.mobile-only / .desktop-only)
+    5. The four link pseudo-classes in LVHA order
+    6. Linear and radial gradients
+    7. A print stylesheet (@media print)
+
+  HOW TO DEMO THIS:
+    - Open in a browser, then open DevTools (F12).
+    - Toggle device mode (Ctrl+Shift+M) and drag the width from narrow to wide.
+    - Watch the navigation flip from vertical -> horizontal, and the cards go
+      from 1 column -> 2 columns -> 3 columns at the breakpoints.
+    - Use File > Print Preview (Ctrl+P) to see the print stylesheet in action.
+
+  All styling lives in styles.css. There is NO JavaScript in this demo.
+  ============================================================================
+-->
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <!-- The viewport meta tag is REQUIRED for responsive design.
+         Without it, mobile browsers pretend to be ~980px wide and zoom out. -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 6 Demo — Tablet &amp; Desktop Responsive Design</title>
+    <!-- Link to our external stylesheet where all the responsive magic happens. -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+    <!-- ====================================================================
+         HEADER + NAVIGATION
+         The <nav> list is the centerpiece of the tablet demo:
+           - Mobile (base styles): each link is a stacked block (vertical menu).
+           - Tablet and up: the links become inline-block (a horizontal row).
+         ==================================================================== -->
+    <header>
+        <h1>Ranken Coffee Co.</h1>
+        <p class="tagline">A responsive layout that adapts to every screen</p>
+
+        <nav>
+            <ul>
+                <li><a href="#home">Home</a></li>
+                <li><a href="#menu">Menu</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#hours">Hours</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- ====================================================================
+         VIEWPORT INDICATOR (hide/show per viewport demo)
+         Only ONE of these three messages is visible at a time. The browser
+         shows whichever one matches the current viewport width, proving that
+         display:none / display:block inside media queries works.
+         ==================================================================== -->
+    <div class="viewport-banner">
+        <span class="show-mobile">📱 You are seeing the MOBILE layout (under 768px)</span>
+        <span class="show-tablet">📱 You are seeing the TABLET layout (768px–1023px)</span>
+        <span class="show-desktop">🖥️ You are seeing the DESKTOP layout (1024px and up)</span>
+    </div>
+
+    <!-- The #container is the element we cap with max-width on desktop so that
+         text lines don't stretch uncomfortably wide on large monitors. -->
+    <div id="container">
+
+        <!-- ================================================================
+             HERO SECTION — demonstrates a LINEAR GRADIENT background.
+             ================================================================ -->
+        <section class="hero">
+            <h2>Freshly Brewed, Beautifully Responsive</h2>
+            <p>This hero background is a CSS linear gradient — no image file needed.</p>
+        </section>
+
+        <!-- ================================================================
+             CARD GRID — the layout that reflows at each breakpoint.
+             Mobile: 1 column. Tablet: 2 columns. Desktop: 3 columns.
+             ================================================================ -->
+        <main>
+            <h3>Our Featured Roasts</h3>
+
+            <div class="card-grid">
+                <article class="card">
+                    <h4>House Blend</h4>
+                    <p>A smooth, everyday cup. Balanced and approachable for any morning.</p>
+                </article>
+                <article class="card">
+                    <h4>Dark Roast</h4>
+                    <p>Bold and smoky with a full body. The choice for serious coffee drinkers.</p>
+                </article>
+                <article class="card">
+                    <h4>Light Roast</h4>
+                    <p>Bright and fruity with a clean finish. Perfect for a sunny afternoon.</p>
+                </article>
+                <article class="card">
+                    <h4>Decaf</h4>
+                    <p>All the flavor, none of the buzz. Great for an evening cup.</p>
+                </article>
+                <article class="card">
+                    <h4>Cold Brew</h4>
+                    <p>Steeped for twelve hours. Naturally sweet and never bitter.</p>
+                </article>
+                <article class="card">
+                    <h4>Espresso</h4>
+                    <p>A concentrated shot with a rich crema. The heart of every latte.</p>
+                </article>
+            </div>
+
+            <!-- ============================================================
+                 RADIAL GRADIENT demo — a decorative "badge".
+                 ============================================================ -->
+            <h3>Today's Special</h3>
+            <div class="badge">
+                <span>50%<br>OFF</span>
+            </div>
+            <p class="badge-caption">
+                The circular badge above uses a <strong>radial gradient</strong>,
+                which flows outward from a center point.
+            </p>
+
+            <!-- ============================================================
+                 LINK PSEUDO-CLASS demo (LVHA order in the CSS).
+                 Hover and click these to see :hover and :active fire.
+                 ============================================================ -->
+            <h3>Link States (LVHA Demo)</h3>
+            <p>
+                Hover and click these links to watch the pseudo-classes change them.
+                See the CSS for the required
+                <strong>L</strong>ink, <strong>V</strong>isited,
+                <strong>H</strong>over, <strong>A</strong>ctive order:
+            </p>
+            <p class="link-demo">
+                <a href="https://example.com">Visit our supplier</a> &nbsp;|&nbsp;
+                <a href="#menu">Jump to the menu</a> &nbsp;|&nbsp;
+                <a href="#contact">Contact us</a>
+            </p>
+        </main>
+
+        <!-- ================================================================
+             SIDEBAR — hidden on mobile, appears as a column on desktop.
+             This shows how desktop's extra width lets us add content that
+             simply doesn't fit on a phone.
+             ================================================================ -->
+        <aside class="sidebar desktop-only">
+            <h4>Why a Sidebar?</h4>
+            <p>
+                There's no room for this panel on a phone, so it is hidden with
+                <code>display: none</code> in the base styles. The desktop media
+                query reveals it once the screen is wide enough.
+            </p>
+        </aside>
+
+    </div><!-- /#container -->
+
+    <!-- ====================================================================
+         FOOTER — hidden in the print stylesheet (see @media print in CSS).
+         ==================================================================== -->
+    <footer>
+        <p>&copy; 2026 Ranken Coffee Co. — Built as a Chapter 6 responsive demo.</p>
+    </footer>
+
+</body>
+
+</html>

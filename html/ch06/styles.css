@@ -215,7 +215,7 @@ footer {
    "only screen" targets screens (not print) and hides this query from very
    old browsers. Everything in here applies at 768px AND WIDER.
    ============================================================================ */
-@media all and (min-width: 768px) {
+@media only screen and (min-width: 768px) {
 
     /* Navigation becomes a HORIZONTAL row.
        inline-block lays the links side by side instead of stacking them. */
@@ -254,7 +254,7 @@ footer {
    1024px is the conventional desktop breakpoint. Here we cap the content
    width, center it, add a third column, and reveal the sidebar.
    ============================================================================ */
-@media all and (min-width: 1024px) {
+@media only screen and (min-width: 1024px) {
 
     /* Cap the content width and center it. Without max-width, paragraphs
        on a wide monitor stretch to 200+ characters per line and become

@@ -1,0 +1,269 @@
+/* ===========================================================================
+   styles.css  -  Chapter 8 Demo (Tables and Forms)
+   ---------------------------------------------------------------------------
+   This stylesheet is written MOBILE-FIRST, exactly like the textbook:
+     1. The base rules (top of the file) target small/phone screens.
+     2. @media (min-width: ...) blocks ADD styles for larger viewports.
+   Read top-to-bottom and notice how the table and form get more spacious
+   as the screen gets wider.
+   =========================================================================== */
+
+
+/* ---------------------------------------------------------------------------
+   GLOBAL / RESET
+   The universal selector (*) zeroes out default margins/padding and makes
+   box-sizing predictable so padding doesn't blow out element widths.
+   --------------------------------------------------------------------------- */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  line-height: 1.5;
+  color: #252525;
+  background-color: #f3f3f3;
+}
+
+
+/* ---------------------------------------------------------------------------
+   HEADER and FOOTER
+   --------------------------------------------------------------------------- */
+header,
+footer {
+  background-color: #1e3a5f;   /* deep "fitness club" navy */
+  color: #ffffff;
+  text-align: center;
+  padding: 1em;
+}
+
+header p {
+  color: #cfe2ff;
+}
+
+footer {
+  margin-top: 2em;
+  font-size: 0.85em;
+}
+
+
+/* ---------------------------------------------------------------------------
+   MAIN CONTENT LAYOUT
+   On mobile the content fills the screen with a little breathing room.
+   --------------------------------------------------------------------------- */
+main {
+  padding: 1em;
+}
+
+section {
+  margin-bottom: 2em;
+}
+
+h2 {
+  color: #1e3a5f;
+  margin-bottom: 0.5em;
+  border-bottom: 0.15em solid #f5a623;  /* accent underline */
+  padding-bottom: 0.25em;
+}
+
+
+/* ===========================================================================
+   PART 1 STYLES:  THE TABLE
+   ===========================================================================
+   Key table properties from the chapter (Table 8-2):
+     border-collapse -> merges the double borders into single lines
+     border          -> the visible grid lines
+     padding         -> space INSIDE each cell
+     text-align      -> horizontal alignment of cell content
+     background-color-> shading (used here to highlight the header row)
+   --------------------------------------------------------------------------- */
+
+table {
+  /* "collapse" gives clean single borders instead of doubled-up lines. */
+  border-collapse: collapse;
+
+  /* Make the table fill the available width on mobile. */
+  width: 100%;
+}
+
+/* The caption is the table's title, centered above it by default. */
+caption {
+  font-size: 1.1em;
+  font-weight: bold;
+  color: #1e3a5f;
+  padding: 0.5em;
+}
+
+/* This rule applies to BOTH header cells and data cells. */
+th,
+td {
+  border: 0.1em solid #000000;   /* thin solid black border on every cell */
+  padding: 0.75em;               /* space inside each cell */
+  text-align: left;
+}
+
+/* This rule targets ONLY the header cells, giving them a dark
+   background with white text so they stand out from the data rows. */
+th {
+  background-color: #1e3a5f;
+  color: #ffffff;
+}
+
+/* "Zebra striping": shade every even data row for readability.
+   nth-child(even) selects the 2nd, 4th, 6th... rows. */
+tr:nth-child(even) {
+  background-color: #e8eef5;
+}
+
+
+/* ===========================================================================
+   PART 2 STYLES:  THE FORM
+   ===========================================================================
+   On mobile each control stacks on its own line and stretches full width,
+   which is the easiest pattern to tap on a phone.
+   --------------------------------------------------------------------------- */
+
+/* fieldset draws a labeled box around a group of related controls. */
+fieldset {
+  border: 0.1em solid #1e3a5f;
+  border-radius: 0.4em;
+  padding: 1em;
+  margin-bottom: 1.25em;
+  background-color: #ffffff;
+}
+
+/* legend is the fieldset's caption/title. */
+legend {
+  font-weight: bold;
+  color: #1e3a5f;
+  padding: 0 0.5em;
+}
+
+/* Each control sits in a <p> for vertical spacing. */
+form p {
+  margin-bottom: 0.75em;
+}
+
+/* On mobile, text-style labels go on their own line above the box. */
+label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 0.25em;
+}
+
+/* Make the main text-entry controls full width and comfortably tall. */
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+input[type="date"],
+select,
+textarea {
+  width: 100%;
+  padding: 0.5em;
+  font-size: 1em;
+  border: 0.1em solid #999999;
+  border-radius: 0.25em;
+}
+
+/* Checkboxes and radio buttons are tiny; their labels should sit BESIDE
+   them on the same line, so we override the block label rule above. */
+input[type="checkbox"] + label,
+input[type="radio"] + label {
+  display: inline;
+  font-weight: normal;
+  margin-left: 0.4em;
+}
+
+/* The submit and reset buttons. */
+input[type="submit"],
+input[type="reset"] {
+  font-size: 1em;
+  padding: 0.6em 1.2em;
+  border: none;
+  border-radius: 0.25em;
+  cursor: pointer;
+  margin-right: 0.5em;
+}
+
+input[type="submit"] {
+  background-color: #1e3a5f;
+  color: #ffffff;
+}
+
+input[type="reset"] {
+  background-color: #cccccc;
+  color: #252525;
+}
+
+
+/* ===========================================================================
+   RESPONSIVE STYLES  -  TABLET VIEWPORT (>= 768px)
+   ===========================================================================
+   The chapter has students add NEW rules for larger screens rather than
+   rewriting the mobile rules. Here we center the table and add more room.
+   --------------------------------------------------------------------------- */
+@media (min-width: 768px) {
+
+  /* Center the page content and cap its width so lines aren't too long. */
+  main {
+    max-width: 60em;
+    margin: 0 auto;
+    padding: 2em;
+  }
+
+  /* On a tablet the table no longer needs to be full width;
+     center it with auto left/right margins. */
+  table {
+    width: auto;
+    margin: 0 auto;
+  }
+
+  /* A bit more padding inside cells now that we have the room. */
+  th,
+  td {
+    padding: 1em 1.5em;
+  }
+}
+
+
+/* ===========================================================================
+   RESPONSIVE STYLES  -  DESKTOP VIEWPORT (>= 1024px)
+   ===========================================================================
+   On a wide desktop we put the text labels BESIDE their controls instead of
+   above them, which is a classic desktop form layout.
+   --------------------------------------------------------------------------- */
+@media (min-width: 1024px) {
+
+  /* Put label and control side-by-side using a simple flex row. */
+  form p {
+    display: flex;
+    align-items: center;
+  }
+
+  /* Give text labels a fixed width so the controls line up neatly. */
+  form p label {
+    display: inline-block;
+    width: 14em;
+    margin-bottom: 0;
+  }
+
+  /* Keep checkbox/radio groups stacked (don't let the flex rule above
+     stretch the tiny boxes across the row). */
+  input[type="checkbox"],
+  input[type="radio"] {
+    width: auto;
+    flex: 0 0 auto;
+  }
+
+  input[type="checkbox"] + label,
+  input[type="radio"] + label {
+    width: auto;
+  }
+
+  /* The button row should not be split by the label width. */
+  .form-buttons {
+    justify-content: flex-start;
+  }
+}

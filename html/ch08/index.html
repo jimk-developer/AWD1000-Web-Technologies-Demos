@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<!--
+  ============================================================================
+  Chapter 8 Demo: Creating Tables and Forms
+  Theme: Forward Fitness Club (matches the textbook project)
+  ----------------------------------------------------------------------------
+  This single page demonstrates EVERY concept from Chapter 8:
+    PART 1 - A data TABLE (rows, columns, header cells, data cells, caption)
+    PART 2 - A FORM with many input controls (text, email, tel, date,
+             checkboxes, radio buttons, a select menu, a textarea, and
+             submit/reset buttons)
+  All styling lives in styles.css. There is NO JavaScript in this demo.
+  ============================================================================
+-->
+<html lang="en">
+<head>
+  <!-- charset always comes first so the browser decodes text correctly -->
+  <meta charset="UTF-8">
+
+  <!-- The viewport meta tag is REQUIRED for responsive (mobile-first) design.
+       It tells the browser to match the device's width instead of zooming
+       out to a fake desktop width. -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Chapter 8 - Tables and Forms Demo</title>
+
+  <!-- Link to our external stylesheet -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+  <!-- ====================== PAGE HEADER ====================== -->
+  <header>
+    <h1>Forward Fitness Club</h1>
+    <p>Chapter 8 Demo &mdash; Tables &amp; Forms</p>
+  </header>
+
+  <main>
+
+    <!--
+      ========================================================================
+      PART 1: THE TABLE  (the "Classes" page from the textbook)
+      ========================================================================
+      Table vocabulary to point out to students:
+        <table>   -> the whole grid
+        <caption> -> the title; MUST come right after <table>; centered above
+        <tr>      -> table ROW   (a horizontal line of cells)
+        <th>      -> header cell (bold + centered by default)
+        <td>      -> data cell   (regular content)
+
+      The number of cells in each <tr> determines the number of COLUMNS.
+    -->
+    <section>
+      <h2>Group Fitness Class Schedule</h2>
+
+      <table>
+        <!-- The caption is the table's title. Only ONE caption is allowed,
+             and it is center-aligned above the table by default. -->
+        <caption>Weekly Group Fitness Classes</caption>
+
+        <!-- First row = the column HEADERS. We use <th> here, not <td>. -->
+        <tr>
+          <th>Class</th>
+          <th>Days</th>
+          <th>Time</th>
+          <th>Instructor</th>
+          <th>Room</th>
+        </tr>
+
+        <!-- Each following <tr> is one DATA row built from <td> cells. -->
+        <tr>
+          <td>Cardio Blast</td>
+          <td>Mon / Wed / Fri</td>
+          <td>6:00 AM</td>
+          <td>Maria Lopez</td>
+          <td>Studio A</td>
+        </tr>
+        <tr>
+          <td>Yoga Flow</td>
+          <td>Tue / Thu</td>
+          <td>9:00 AM</td>
+          <td>James Carter</td>
+          <td>Studio B</td>
+        </tr>
+        <tr>
+          <td>Strength Training</td>
+          <td>Mon / Wed</td>
+          <td>5:30 PM</td>
+          <td>Aisha Khan</td>
+          <td>Weight Room</td>
+        </tr>
+        <tr>
+          <td>Spin Cycle</td>
+          <td>Tue / Thu / Sat</td>
+          <td>7:00 PM</td>
+          <td>David Chen</td>
+          <td>Studio A</td>
+        </tr>
+      </table>
+    </section>
+
+    <!--
+      ========================================================================
+      PART 2: THE FORM  (the "Contact Us" page from the textbook)
+      ========================================================================
+      Form vocabulary to point out:
+        <form>     -> the container for all controls
+          action   -> where the data is sent for processing
+          method   -> HOW it is sent: "post" (separate data file, more secure)
+                      vs "get" (appends data to the URL)
+        <fieldset> -> groups related controls with a box
+        <legend>   -> the title/caption for a fieldset
+        <label>    -> identifies a control. The "for" attribute matches the
+                      input's "id" so clicking the label focuses the control.
+        <input>    -> a self-closing control; its "type" decides its behavior
+        name       -> the key used when the data is submitted (name=value pair)
+        id         -> a UNIQUE identifier used to connect a label to a control
+    -->
+    <section>
+      <h2>Contact Us</h2>
+
+      <!-- Because this is a demo with no server, action="#" just reloads the
+           page. In a real site this would point to a processing script. -->
+      <form action="#" method="post">
+
+        <!-- ---- Fieldset 1: basic contact info (text-style controls) ---- -->
+        <fieldset>
+          <legend>Your Information</legend>
+
+          <!-- TEXT control: a single-line box for general text.
+               Each control gets a matching label (for == id). -->
+          <p>
+            <label for="firstName">First Name:</label>
+            <input type="text" id="firstName" name="firstName"
+                   size="25" placeholder="Jane" required>
+          </p>
+
+          <p>
+            <label for="lastName">Last Name:</label>
+            <input type="text" id="lastName" name="lastName"
+                   size="25" placeholder="Doe" required>
+          </p>
+
+          <!-- EMAIL control: the browser checks for a valid email format. -->
+          <p>
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email"
+                   placeholder="jane@example.com" required>
+          </p>
+
+          <!-- TEL control: optimized for phone numbers (mobile keypad). -->
+          <p>
+            <label for="phone">Phone:</label>
+            <input type="tel" id="phone" name="phone"
+                   placeholder="555-123-4567">
+          </p>
+
+          <!-- DATE control: the browser supplies a calendar picker. -->
+          <p>
+            <label for="visitDate">Preferred Tour Date:</label>
+            <input type="date" id="visitDate" name="visitDate">
+          </p>
+        </fieldset>
+
+        <!-- ---- Fieldset 2: checkboxes (choose ANY number) ---- -->
+        <fieldset>
+          <legend>Interests (check all that apply)</legend>
+
+          <!-- CHECKBOX controls let a visitor pick MANY options.
+               Note the label comes AFTER the box for checkboxes/radios. -->
+          <p>
+            <input type="checkbox" id="cardio" name="interests" value="cardio">
+            <label for="cardio">Cardio</label>
+          </p>
+          <p>
+            <input type="checkbox" id="strength" name="interests" value="strength">
+            <label for="strength">Strength</label>
+          </p>
+          <p>
+            <input type="checkbox" id="yoga" name="interests" value="yoga">
+            <label for="yoga">Yoga</label>
+          </p>
+        </fieldset>
+
+        <!-- ---- Fieldset 3: radio buttons (choose ONLY ONE) ---- -->
+        <fieldset>
+          <legend>Membership Type</legend>
+
+          <!-- RADIO controls limit the visitor to ONE choice.
+               They share the SAME name ("plan") so they form one group;
+               each needs a UNIQUE id. "checked" sets the default. -->
+          <p>
+            <input type="radio" id="basic" name="plan" value="basic" checked>
+            <label for="basic">Basic</label>
+          </p>
+          <p>
+            <input type="radio" id="premium" name="plan" value="premium">
+            <label for="premium">Premium</label>
+          </p>
+          <p>
+            <input type="radio" id="family" name="plan" value="family">
+            <label for="family">Family</label>
+          </p>
+        </fieldset>
+
+        <!-- ---- Fieldset 4: select menu + textarea ---- -->
+        <fieldset>
+          <legend>Tell Us More</legend>
+
+          <!-- SELECT control: a drop-down option menu.
+               Each choice is an <option>; its "value" is what gets submitted. -->
+          <p>
+            <label for="hearAbout">How did you hear about us?</label>
+            <select id="hearAbout" name="hearAbout">
+              <option value="">-- Choose one --</option>
+              <option value="friend">Friend or Family</option>
+              <option value="search">Web Search</option>
+              <option value="social">Social Media</option>
+              <option value="other">Other</option>
+            </select>
+          </p>
+
+          <!-- TEXTAREA control: a MULTI-line text box.
+               "rows" and "cols" set its starting size. Unlike <input>,
+               textarea has a closing tag. -->
+          <p>
+            <label for="comments">Comments:</label>
+            <textarea id="comments" name="comments" rows="4" cols="40"
+                      placeholder="Questions or goals..."></textarea>
+          </p>
+        </fieldset>
+
+        <!-- ---- Submit and Reset buttons ----
+             SUBMIT sends the form data to the action URL.
+             RESET clears all controls back to their default values. -->
+        <p class="form-buttons">
+          <input type="submit" value="Send Message">
+          <input type="reset" value="Clear Form">
+        </p>
+
+      </form>
+    </section>
+
+  </main>
+
+  <!-- ====================== PAGE FOOTER ====================== -->
+  <footer>
+    <p>&copy; 2026 Forward Fitness Club &mdash; Chapter 8 Demo</p>
+  </footer>
+
+</body>
+</html>

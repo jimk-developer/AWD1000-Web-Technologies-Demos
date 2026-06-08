@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<!--
+  ============================================================================
+  Chapter 7 Demo: Improving Web Design with New Page Layouts
+  ============================================================================
+  This single page demonstrates EVERY major concept from Chapter 7:
+
+    HTML5 semantic elements ... <article> <section> <aside> <figure>
+                                <figcaption> <details> <summary> <time>
+    CSS Grid layout .......... laying content out in rows & columns
+    Multi-column text ........ column-count, column-gap, column-rule
+    opacity .................. element transparency
+    text-shadow .............. drop shadow on text
+    box-sizing ............... include padding/border in element width
+    universal selector (*) ... apply a rule to ALL elements
+    nth-of-type() ............ select specific elements by position
+    favicon .................. small icon shown on the browser tab
+
+  Theme: a "Trail Mix Cafe" nutrition page, similar to the textbook's
+  food/nutrition examples. Open this in a browser and use DevTools (F12)
+  to inspect the elements as we discuss them.
+  ============================================================================
+-->
+<html lang="en">
+<head>
+    <!-- Always declare the character set first -->
+    <meta charset="UTF-8">
+
+    <!-- Mobile-first: tells the browser to match the device's screen width -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!--
+      FAVICON (LO 07.12)
+      The "rel" attribute describes the RELATIONSHIP of the linked file.
+      For an icon, rel="icon". We use an inline SVG data URI here so the
+      demo works without any extra image files. In real projects you would
+      point href to a real file, e.g. href="images/favicon-32.png".
+    -->
+    <!-- <link rel="icon" type="image/svg+xml"
+          href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><text y='14' font-size='14'>🥗</text></svg>"> -->
+
+          <link rel="icon" type="image/png" href="assets/favicon.png">
+
+    <title>Trail Mix Cafe &ndash; Chapter 7 Layout Demo</title>
+
+    <!-- Link to our external stylesheet -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+    <!--
+      HEADER + NAV
+      The header is a semantic element for introductory content.
+      We style the <h1> with text-shadow (see styles.css).
+    -->
+    <header>
+        <h1>Trail Mix Cafe</h1>
+        <p>Real food. Real fuel. Chapter 7 layout demo.</p>
+    </header>
+
+    <!--
+      MAIN holds the primary content of the page.
+      Inside it we use a CSS GRID (LO 07.03) to place the article and the
+      aside sidebar side by side on wide screens. See ".layout" in styles.css.
+    -->
+    <main class="layout">
+
+        <!--
+          ARTICLE (LO 07.01 / 07.10)
+          An <article> is a complete, self-contained, independently
+          reusable piece of content - like a blog post or news story.
+          Articles can contain section and aside elements.
+        -->
+        <article>
+            <h2>Granola Energy Bites</h2>
+
+            <!--
+              TIME element: marks up a machine-readable date/time.
+              The datetime attribute holds the standard format; the text
+              between the tags is what humans read.
+            -->
+            <p class="byline">
+                Posted <time datetime="2024-09-01">September 1, 2024</time>
+                by Coach Riley
+            </p>
+
+            <!--
+              FIGURE + FIGCAPTION (LO 07.02 / 07.07)
+              <figure> groups self-contained content (images, diagrams,
+              charts). <figcaption> gives it a caption. A figure is NOT the
+              same as an <img>; a figure can contain one or more images.
+              We use an inline SVG as a placeholder "photo".
+            -->
+            <figure>
+                <svg viewBox="0 0 400 220" role="img"
+                     aria-label="Illustration of granola bites">
+                    <rect width="400" height="220" fill="#e8d9b5"></rect>
+                    <circle cx="120" cy="120" r="42" fill="#a0682e"></circle>
+                    <circle cx="210" cy="135" r="36" fill="#bb7d3a"></circle>
+                    <circle cx="290" cy="110" r="40" fill="#8a5522"></circle>
+                </svg>
+                <figcaption>A fresh batch of granola energy bites.</figcaption>
+            </figure>
+
+            <!--
+              MULTI-COLUMN TEXT (LO 07.03)
+              The .recipe-intro paragraph below flows into TWO columns,
+              like a newspaper. See ".recipe-intro" (column-count) in CSS.
+            -->
+            <p class="recipe-intro">
+                These no-bake granola bites are packed with oats, honey, and
+                peanut butter for a quick energy boost before a hike. They take
+                about ten minutes to mix and need an hour to chill. Roll them
+                into balls, store them in the fridge, and grab a few whenever
+                you need fuel on the trail. They keep for up to a week.
+            </p>
+
+            <!--
+              SECTION (LO 07.01 / 07.09)
+              A <section> is a THEMATIC grouping of content that naturally
+              has a heading. It is NOT a generic container - use <div> for
+              styling-only wrappers. Here each section is a logical part of
+              the recipe: ingredients and steps.
+            -->
+            <section>
+                <h3>Ingredients</h3>
+                <!-- &frac12; and &frac14; are HTML entities for fractions -->
+                <ul>
+                    <li>2 cups rolled oats</li>
+                    <li>&frac12; cup peanut butter</li>
+                    <li>&frac14; cup honey</li>
+                    <li>&frac14; cup mini chocolate chips</li>
+                </ul>
+            </section>
+
+            <section>
+                <h3>Steps</h3>
+                <!--
+                  The ordered list items below are targeted individually with
+                  the nth-of-type() pseudo-class in CSS to highlight step 1.
+                -->
+                <ol>
+                    <li>Stir all ingredients together in a bowl.</li>
+                    <li>Chill the mixture for 30 minutes.</li>
+                    <li>Roll into 1-inch balls.</li>
+                    <li>Refrigerate and enjoy within a week.</li>
+                </ol>
+            </section>
+
+            <!--
+              DETAILS + SUMMARY (LO 07.01)
+              <details> creates a collapsible disclosure widget. <summary>
+              is the always-visible heading the user clicks to expand it.
+              No JavaScript required - the browser handles the toggle.
+            -->
+            <details>
+                <summary>Nutrition facts (click to expand)</summary>
+                <p>Per serving: 180 calories, 7g protein, 9g fat, 22g carbs.</p>
+            </details>
+        </article>
+
+        <!--
+          ASIDE (LO 07.01 / 07.11)
+          An <aside> holds content TANGENTIALLY related to the content
+          around it - a sidebar. Common uses: pull-quotes, glossary terms,
+          related links, or extra info about an ingredient. It is styled
+          differently (italic, tinted background) so it stands out.
+        -->
+        <aside>
+            <h3>Did you know?</h3>
+            <p>
+                Oats are a whole grain rich in fiber, which helps keep you
+                full longer - perfect for long hikes.
+            </p>
+            <h3>Related</h3>
+            <ul>
+                <li>Energy Bar Comparison</li>
+                <li>Hydration on the Trail</li>
+                <li>Pre-Workout Snacks</li>
+            </ul>
+        </aside>
+
+    </main>
+
+    <!--
+      FOOTER
+      Closing content for the page. We demonstrate the opacity property on
+      the small print here (see ".fine-print" in styles.css).
+    -->
+    <footer>
+        <p class="fine-print">
+            &copy; 2026 Trail Mix Cafe &middot; Chapter 7 layout demo for AWD 1000
+        </p>
+    </footer>
+
+</body>
+</html>

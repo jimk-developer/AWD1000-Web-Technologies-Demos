@@ -1,0 +1,261 @@
+/* ==========================================================================
+   styles.css  -  Chapter 7 Demo: Improving Web Design with New Page Layouts
+   --------------------------------------------------------------------------
+   Read this file top to bottom with index.html open beside it. Each section
+   is labeled with the Chapter 7 concept it demonstrates.
+   ========================================================================== */
+
+
+/* --------------------------------------------------------------------------
+   THE UNIVERSAL SELECTOR (*) + box-sizing  (LO 07.05)
+   --------------------------------------------------------------------------
+   The asterisk (*) selects EVERY element on the page at once.
+
+   box-sizing: border-box; makes an element's declared width INCLUDE its
+   padding and border, instead of adding them on top. This makes layouts
+   far easier to reason about - a width of 300px stays 300px. Applying it
+   with * is a common reset that affects the whole page.
+-------------------------------------------------------------------------- */
+* {
+    box-sizing: border-box;   /* padding + border counted INSIDE the width */
+    margin: 0;                /* clear the browser's default margins */
+    padding: 0;
+}
+
+
+/* --------------------------------------------------------------------------
+   BASE PAGE STYLES
+   -------------------------------------------------------------------------- */
+body {
+    font-family: Verdana, Geneva, sans-serif;
+    line-height: 1.6;
+    color: #2b2b2b;
+    background-color: #f4f1ea;
+}
+
+
+/* --------------------------------------------------------------------------
+   HEADER + text-shadow  (LO 07.06)
+   --------------------------------------------------------------------------
+   text-shadow takes (at minimum) two values:
+     1) h-shadow : horizontal offset of the shadow
+     2) v-shadow : vertical offset of the shadow
+   An optional third value is the blur radius, followed by a color.
+   Below: 2px right, 2px down, 4px blur, semi-transparent black.
+-------------------------------------------------------------------------- */
+header {
+    background-color: #3b6b4a;
+    color: #ffffff;
+    text-align: center;
+    padding: 2rem 1rem;
+}
+
+header h1 {
+    font-size: 2.5rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);   /* h  v  blur  color */
+}
+
+
+/* --------------------------------------------------------------------------
+   CSS GRID LAYOUT  (LO 07.03)
+   --------------------------------------------------------------------------
+   The <main class="layout"> contains an <article> and an <aside>.
+   display: grid turns main into a grid container. grid-template-columns
+   defines the columns:
+       2fr  = the article takes 2 "fraction" units of the free space
+       1fr  = the aside takes 1 fraction unit (so article is twice as wide)
+   gap puts space BETWEEN the grid items (the row/column gutters).
+
+   Grid gives more reliable, accurate multi-column layouts than the old
+   float / width / clear technique.
+-------------------------------------------------------------------------- */
+.layout {
+    display: grid;
+    grid-template-columns: 2fr 1fr;   /* article : aside  =  2 : 1 */
+    gap: 1.5rem;                      /* space between the columns */
+    max-width: 1000px;
+    margin: 1.5rem auto;              /* center the grid on the page */
+    padding: 0 1rem;
+}
+
+
+/* --------------------------------------------------------------------------
+   ARTICLE styling
+   -------------------------------------------------------------------------- */
+article {
+    background-color: #ffffff;
+    padding: 1.5rem;
+    border-radius: 8px;
+}
+
+article h2 {
+    color: #3b6b4a;
+}
+
+.byline {
+    font-size: 0.85rem;
+    color: #777;
+    margin-bottom: 1rem;
+}
+
+
+/* --------------------------------------------------------------------------
+   FIGURE + FIGCAPTION  (LO 07.02 / 07.07)
+   -------------------------------------------------------------------------- */
+figure {
+    margin: 1rem 0;
+}
+
+figure svg {
+    width: 100%;
+    height: auto;
+    border-radius: 6px;
+    display: block;
+}
+
+figcaption {
+    font-size: 0.85rem;
+    font-style: italic;
+    text-align: center;
+    color: #555;
+    margin-top: 0.4rem;
+}
+
+
+/* --------------------------------------------------------------------------
+   MULTI-COLUMN TEXT  (LO 07.03)
+   --------------------------------------------------------------------------
+   column-count flows ONE block of text into multiple newspaper-style
+   columns. column-gap sets the space between columns, and column-rule
+   draws a divider line between them (works like the border shorthand).
+-------------------------------------------------------------------------- */
+.recipe-intro {
+    column-count: 2;                   /* split into 2 columns */
+    column-gap: 2rem;                  /* space between columns */
+    column-rule: 1px solid #ccc;       /* divider line: width style color */
+    margin: 1rem 0;
+}
+
+
+/* --------------------------------------------------------------------------
+   SECTION styling
+   -------------------------------------------------------------------------- */
+section {
+    margin-top: 1.25rem;
+}
+
+section h3 {
+    color: #b5651d;
+    border-bottom: 2px solid #e0d8c5;
+    padding-bottom: 0.25rem;
+}
+
+section ul,
+section ol {
+    margin-left: 1.5rem;   /* indent the list items */
+    margin-top: 0.5rem;
+}
+
+
+/* --------------------------------------------------------------------------
+   nth-of-type() PSEUDO-CLASS  (LO 07.10)
+   --------------------------------------------------------------------------
+   nth-of-type(n) selects a specific element by its position among
+   siblings of the SAME type. Here we grab the FIRST <li> inside the
+   ordered list and highlight it, without adding any class in the HTML.
+   You could also use values like 2, odd, even, or 3n.
+-------------------------------------------------------------------------- */
+section ol li:nth-of-type(1) {
+    font-weight: bold;
+    color: #3b6b4a;
+}
+
+
+/* --------------------------------------------------------------------------
+   DETAILS + SUMMARY styling
+   --------------------------------------------------------------------------
+   These render as a native collapsible widget. We only style them; the
+   browser provides the open/close behavior for free.
+-------------------------------------------------------------------------- */
+details {
+    margin-top: 1.25rem;
+    background-color: #f4f1ea;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 0.75rem 1rem;
+}
+
+summary {
+    cursor: pointer;       /* show a clickable cursor on hover */
+    font-weight: bold;
+    color: #3b6b4a;
+}
+
+
+/* --------------------------------------------------------------------------
+   ASIDE styling  (LO 07.11)
+   --------------------------------------------------------------------------
+   The aside is formatted DIFFERENTLY from the article so it clearly reads
+   as a sidebar: tinted background, accent border, and italic text.
+-------------------------------------------------------------------------- */
+aside {
+    background-color: #eef3ec;
+    border-left: 4px solid #3b6b4a;
+    padding: 1.25rem;
+    border-radius: 8px;
+    font-style: italic;          /* make the sidebar text stand out */
+}
+
+aside h3 {
+    color: #3b6b4a;
+    font-style: normal;          /* keep the headings upright */
+    margin-top: 0.75rem;
+}
+
+aside h3:first-of-type {
+    margin-top: 0;
+}
+
+aside ul {
+    margin-left: 1.25rem;
+}
+
+
+/* --------------------------------------------------------------------------
+   FOOTER + opacity  (LO 07.04)
+   --------------------------------------------------------------------------
+   opacity sets the transparency of an element:
+       1   = fully opaque (the default)
+       0   = fully transparent (invisible)
+       0.5 = 50% transparent
+   NOTE: opacity affects the WHOLE element, including any nested content,
+   which inherits the transparency.
+-------------------------------------------------------------------------- */
+footer {
+    background-color: #2b2b2b;
+    color: #ffffff;
+    text-align: center;
+    padding: 1.25rem;
+}
+
+.fine-print {
+    opacity: 0.6;            /* 60% opaque = 40% transparent */
+    font-size: 0.8rem;
+}
+
+
+/* --------------------------------------------------------------------------
+   RESPONSIVE: stack the grid into one column on narrow screens
+   --------------------------------------------------------------------------
+   On small (mobile) viewports a single-column layout is best. The media
+   query overrides the two-column grid below 700px wide.
+-------------------------------------------------------------------------- */
+@media (max-width: 700px) {
+    .layout {
+        grid-template-columns: 1fr;   /* one column: items stack vertically */
+    }
+
+    .recipe-intro {
+        column-count: 1;              /* drop back to a single text column */
+    }
+}

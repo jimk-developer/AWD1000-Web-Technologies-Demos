@@ -1,0 +1,433 @@
+/*
+  ============================================================
+  GUIDE 9 DEMO: styles.css
+  ============================================================
+  PURPOSE
+    Styles for the Prairie Bakery media page.
+    This file demonstrates how to:
+      - Style page regions that contain audio and video
+      - Make the <video> element responsive with CSS
+      - Use a CSS reset so the layout is consistent
+        across different browsers
+      - Organize a stylesheet with clearly labeled sections
+
+  TEACHING NOTES
+    Walk students through each section in order.
+    Point out how the selectors in this file target elements
+    that appear in index.html.
+  ============================================================
+*/
+
+
+/* ============================================================
+   SECTION 1: CSS RESET
+   ------------------------------------------------------------
+   Every browser ships with default styles (margins, padding,
+   font sizes).  They are all slightly different.  The reset
+   below clears those defaults so our design starts from a
+   predictable baseline in every browser.
+
+   The universal selector * targets every element on the page.
+   box-sizing: border-box means width and height include padding
+   and border, which makes layout arithmetic predictable.
+   ============================================================ */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+
+/* ============================================================
+   SECTION 2: CUSTOM PROPERTIES (CSS VARIABLES)
+   ------------------------------------------------------------
+   Custom properties (variables) are declared on :root so they
+   are available everywhere in the stylesheet.  Using variables
+   for repeated values (like brand colors) means we change
+   one line and the whole site updates automatically.
+   ============================================================ */
+
+:root {
+    /* Brand colors */
+    --color-primary:    #8B1A1A;  /* deep bakery red                    */
+    --color-secondary:  #D4A017;  /* warm wheat gold                    */
+    --color-dark:       #2C1A0E;  /* dark espresso brown (text)         */
+    --color-light:      #FDF6EC;  /* warm off-white (page background)   */
+    --color-border:     #E8D5B0;  /* light wheat for borders            */
+
+    /* Typography */
+    --font-body:        Georgia, 'Times New Roman', serif;
+    --font-mono:        'Courier New', Courier, monospace;
+
+    /* Spacing scale */
+    --space-sm:   0.75rem;   /* 12px at default font size */
+    --space-md:   1.25rem;   /* 20px */
+    --space-lg:   2rem;      /* 32px */
+    --space-xl:   3rem;      /* 48px */
+
+    /* Borders and shadows */
+    --border-radius:  10px;
+    --shadow:         0 4px 16px rgba(0, 0, 0, 0.12);
+}
+
+
+/* ============================================================
+   SECTION 3: BASE STYLES
+   ------------------------------------------------------------
+   Base styles apply to fundamental elements like body, links,
+   and headings.  They establish the default look and feel that
+   all other rules build on top of.
+   ============================================================ */
+
+/* Body: sets the overall background, font, and text color */
+body {
+    font-family: var(--font-body);
+    font-size: 1rem;          /* 16px: standard readable body size      */
+    line-height: 1.7;         /* generous spacing between lines         */
+    color: var(--color-dark);
+    background-color: var(--color-light);
+}
+
+/* Headings: establish a clear visual hierarchy */
+h1 {
+    font-size: 2rem;
+    margin-bottom: var(--space-sm);
+}
+
+h2 {
+    font-size: 1.5rem;
+    margin-bottom: var(--space-md);
+    color: var(--color-primary);
+
+    /* A left border accent ties headings to the brand color */
+    padding-left: 0.75rem;
+    border-left: 4px solid var(--color-secondary);
+}
+
+h3 {
+    font-size: 1.15rem;
+    margin-bottom: var(--space-sm);
+    color: var(--color-primary);
+}
+
+/* Paragraph spacing: breathing room between blocks of text */
+p {
+    margin-bottom: var(--space-md);
+}
+
+/* Anchor tags: remove underline by default; show on hover */
+a {
+    color: var(--color-primary);
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+    color: var(--color-secondary);
+}
+
+/* Inline code: monospace and slightly highlighted */
+code {
+    font-family: var(--font-mono);
+    font-size: 0.88em;
+    background-color: #F0E4CC;
+    padding: 1px 5px;
+    border-radius: 3px;
+}
+
+
+/* ============================================================
+   SECTION 4: LAYOUT
+   ------------------------------------------------------------
+   The page structure is: <header> at the top, <main> in the
+   middle, <footer> at the bottom.  We use a container wrapper
+   to constrain the maximum width and center the content.
+   ============================================================ */
+
+/* Header */
+header {
+    background-color: var(--color-primary);
+    color: white;
+    text-align: center;
+    padding: var(--space-lg) var(--space-md);
+}
+
+header h1 {
+    color: white;
+    margin-bottom: 0.25rem;
+}
+
+header p {
+    margin-bottom: 0;
+    opacity: 0.85;
+    font-style: italic;
+}
+
+/* Main: adds vertical breathing room around the content area */
+main {
+    max-width: 860px;       /* constrain width for readability          */
+    margin: 0 auto;         /* center horizontally                      */
+    padding: var(--space-xl) var(--space-md);
+}
+
+/* Footer */
+footer {
+    background-color: var(--color-dark);
+    color: rgba(255, 255, 255, 0.75);
+    text-align: center;
+    padding: var(--space-md);
+    font-size: 0.9rem;
+}
+
+
+/* ============================================================
+   SECTION 5: MEDIA SECTIONS
+   ------------------------------------------------------------
+   Each concept (podcast, video, downloads, format reference)
+   lives in its own <section class="media-section">.  These
+   rules add consistent vertical spacing, a card-like white
+   background, and a subtle shadow.
+   ============================================================ */
+
+.media-section {
+    background-color: white;
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius);
+    padding: var(--space-lg);
+    margin-bottom: var(--space-xl);     /* space between sections        */
+    box-shadow: var(--shadow);
+}
+
+/* The last section needs no bottom margin */
+.media-section:last-child {
+    margin-bottom: 0;
+}
+
+
+/* ============================================================
+   SECTION 6: AUDIO ELEMENT STYLING
+   ------------------------------------------------------------
+   HTML gives <audio> a minimal player.  CSS lets us control
+   its width and a little display tweaking.
+   
+   NOTE: The actual appearance of the controls (play button,
+   timeline, volume) is drawn by the browser and cannot be
+   fully overridden with CSS.  For a fully custom player,
+   JavaScript is required (covered in Guide 10).
+   ============================================================ */
+
+audio {
+    /* Make the audio player fill the width of its container  */
+    width: 100%;
+
+    /* Small vertical margin above and below the player       */
+    margin: var(--space-md) 0;
+
+    /* display:block removes the thin gap below audio that    */
+    /* occurs when it sits inline (a quirk of inline layout)  */
+    display: block;
+}
+
+
+/* ============================================================
+   SECTION 7: EPISODE INFO
+   ------------------------------------------------------------
+   Three pieces of metadata appear below the audio player:
+   the episode number, title, and duration.
+   We use flexbox to place them in a row with gaps between.
+   ============================================================ */
+
+.episode-info {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    flex-wrap: wrap;           /* wraps to the next line on small screens */
+    font-size: 0.9rem;
+    color: #666;
+}
+
+/* The episode number badge */
+.episode-label {
+    background-color: var(--color-primary);
+    color: white;
+    padding: 2px 10px;
+    border-radius: 999px;      /* pill shape                             */
+    font-size: 0.8rem;
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+.episode-title {
+    font-weight: bold;
+    color: var(--color-dark);
+}
+
+.episode-duration {
+    margin-left: auto;         /* pushes duration to the right end       */
+    white-space: nowrap;
+}
+
+
+/* ============================================================
+   SECTION 8: VIDEO ELEMENT - RESPONSIVE SIZING
+   ------------------------------------------------------------
+   This is the most important CSS rule for video.
+
+   The <video> element in index.html has width="800" and
+   height="450" attributes.  On a narrow phone screen that
+   would overflow the page.
+
+   max-width: 100%  ensures the video never exceeds the
+                    width of its container.
+   height: auto     preserves the aspect ratio so the video
+                    is never stretched or squashed.
+
+   Together these two lines make the video responsive.
+   it scales down on small screens and never overflows.
+
+   IMPORTANT: Keep the width/height HTML attributes anyway!
+   The browser uses them to reserve the correct amount of
+   vertical space BEFORE the video file loads.  Without them,
+   the page layout shifts when the video finally arrives.
+   ============================================================ */
+
+video {
+    max-width: 100%;           /* never wider than the container         */
+    height: auto;              /* scale height proportionally            */
+    display: block;            /* removes the inline gap quirk           */
+    margin: var(--space-md) 0;
+
+    /* Rounded corners and shadow to match the overall card style */
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+}
+
+/* Caption note below the video */
+.caption-note {
+    font-size: 0.88rem;
+    color: #555;
+    margin-bottom: 0;
+    padding: 0.4rem 0.75rem;
+    border-left: 3px solid var(--color-secondary);
+}
+
+
+/* ============================================================
+   SECTION 9: DOWNLOAD LIST (EXTERNAL LINKS)
+   ------------------------------------------------------------
+   The external media section uses a <ul> with custom styling.
+   Removing the default bullet and adding padding makes the
+   links look like a clean link list instead of a raw list.
+   ============================================================ */
+
+.download-list {
+    list-style: none;          /* remove default bullet points           */
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+}
+
+.download-list li a {
+    display: block;
+    padding: 0.8rem 1.1rem;
+    background-color: var(--color-light);
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    font-size: 1rem;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.download-list li a:hover {
+    background-color: #F0E4CC;
+    border-color: var(--color-secondary);
+    text-decoration: none;
+}
+
+
+/* ============================================================
+   SECTION 10: FORMAT REFERENCE GRID
+   ------------------------------------------------------------
+   A two-column reference card showing audio formats on the
+   left and video formats on the right.  CSS Grid makes this
+   effortless: declare two equal columns and the browser does
+   the rest.  On narrow screens the grid collapses to one column.
+   ============================================================ */
+
+.format-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;  /* two equal columns               */
+    gap: var(--space-lg);
+}
+
+/* Each group (audio or video) is a card inside the grid */
+.format-group {
+    background-color: var(--color-light);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    padding: var(--space-md);
+}
+
+/* Description list inside each format group */
+.format-group dl {
+    margin: 0;
+}
+
+.format-group dt {
+    font-weight: bold;
+    color: var(--color-primary);
+    margin-top: var(--space-sm);
+}
+
+.format-group dd {
+    margin-left: var(--space-md);
+    color: #555;
+    font-size: 0.9rem;
+    margin-bottom: 0.25rem;
+}
+
+
+/* ============================================================
+   SECTION 11: RESPONSIVE MEDIA QUERIES
+   ------------------------------------------------------------
+   Guide 9 concepts:
+     - Responsive video is handled by CSS (max-width: 100%)
+       rather than by media queries, which means it just works
+       at any screen size automatically.
+     - We still use a media query here to collapse the
+       two-column format grid to a single column on phones.
+
+   Mobile-first note: we wrote desktop styles above, and this
+   query adjusts them for smaller screens (max-width approach).
+   The mobile-first way would be to write mobile styles first
+   and use min-width to add desktop styles.  Both work; this
+   file uses max-width for simplicity in demonstration.
+   ============================================================ */
+
+@media only screen and (max-width: 600px) {
+
+    /* Collapse the format reference to one column on phones */
+    .format-grid {
+        grid-template-columns: 1fr;
+    }
+
+    /* Reduce main padding on narrow screens */
+    main {
+        padding: var(--space-lg) var(--space-sm);
+    }
+
+    /* Stack episode info vertically on phones */
+    .episode-info {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--space-sm);
+    }
+
+    /* Reset the auto-margin on duration (no longer right-aligned) */
+    .episode-duration {
+        margin-left: 0;
+    }
+
+}
+/* end media query */

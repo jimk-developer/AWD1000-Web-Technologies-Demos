@@ -1,0 +1,944 @@
+/*
+  ============================================================
+  GUIDE 10 DEMO: styles.css
+  ============================================================
+  PURPOSE
+    Styles for the Prairie Bakery interactivity demo page.
+    This file demonstrates:
+      - The transition property (smooth changes between states)
+      - The transform property (translate, scale, rotate, skew)
+      - Combining :hover pseudo-class with transform
+      - CSS @keyframes animations (spin, pulse, slide-in)
+      - The animation shorthand property and its sub-properties
+      - Hamburger menu CSS (hiding/showing nav with a class toggle)
+
+  SECTIONS IN THIS FILE
+    1.  CSS Reset and Custom Properties
+    2.  Base Styles (body, type, links)
+    3.  Layout (header, main, footer)
+    4.  Hamburger Navigation
+    5.  Hero Section Animations
+    6.  Demo Section Wrapper
+    7.  CSS Transforms Demo
+    8.  CSS Animations Demo
+    9.  JavaScript Demos (buttons, DOM target, event log)
+    10. @keyframes Rules (all animation definitions)
+    11. Responsive Media Query
+  ============================================================
+*/
+
+
+/* ============================================================
+   SECTION 1: CSS RESET AND CUSTOM PROPERTIES
+   ============================================================ */
+
+/* Universal reset: removes default margins/padding and
+   applies border-box sizing to every element               */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* CSS custom properties (variables) declared on :root are
+   available throughout the entire stylesheet               */
+:root {
+    /* Brand colors */
+    --color-primary: #8B1A1A;
+    /* deep red          */
+    --color-secondary: #D4A017;
+    /* wheat gold        */
+    --color-accent: #1A6B8A;
+    /* teal blue         */
+    --color-dark: #2C1A0E;
+    /* espresso brown    */
+    --color-light: #FDF6EC;
+    /* warm off-white    */
+    --color-border: #E8D5B0;
+    /* light tan border  */
+
+    /* Timing for transitions and animations */
+    --transition-speed: 0.3s;
+
+    /* Spacing scale */
+    --space-sm: 0.75rem;
+    --space-md: 1.25rem;
+    --space-lg: 2rem;
+    --space-xl: 3rem;
+
+    /* Borders */
+    --border-radius: 10px;
+    --shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+}
+
+
+/* ============================================================
+   SECTION 2: BASE STYLES
+   ============================================================ */
+
+body {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--color-dark);
+    background-color: var(--color-light);
+}
+
+h1 {
+    font-size: 2rem;
+}
+
+h2 {
+    font-size: 1.5rem;
+    color: var(--color-primary);
+    margin-bottom: var(--space-md);
+}
+
+h3 {
+    font-size: 1.1rem;
+    margin-bottom: var(--space-sm);
+}
+
+p {
+    margin-bottom: var(--space-md);
+}
+
+a {
+    color: var(--color-primary);
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* Inline code snippets */
+code {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.88em;
+    background: #F0E4CC;
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: var(--color-primary);
+}
+
+/* Small label badges that appear next to section headings */
+.tag-badge {
+    font-family: 'Courier New', monospace;
+    font-size: 0.65rem;
+    background: var(--color-accent);
+    color: white;
+    padding: 3px 8px;
+    border-radius: 999px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    vertical-align: middle;
+}
+
+/* Row of buttons, spaced evenly */
+.btn-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+}
+
+
+/* ============================================================
+   SECTION 3: LAYOUT
+   ============================================================ */
+
+header {
+    background-color: var(--color-dark);
+    color: white;
+    position: sticky;
+    /* sticks to the top of the viewport on scroll */
+    top: 0;
+    z-index: 1000;
+    /* stays above all other content                */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.header-inner {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0.9rem var(--space-md);
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+}
+
+.logo {
+    color: var(--color-secondary);
+    font-size: 1.25rem;
+    font-weight: bold;
+    text-decoration: none;
+    flex-shrink: 0;
+}
+
+main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: var(--space-xl) var(--space-md);
+}
+
+footer {
+    background-color: var(--color-dark);
+    color: rgba(255, 255, 255, 0.65);
+    text-align: center;
+    padding: var(--space-md);
+    font-size: 0.9rem;
+}
+
+
+/* ============================================================
+   SECTION 4: HAMBURGER NAVIGATION
+   ============================================================
+   CONCEPT: CSS is the "show/hide" half of the hamburger pattern.
+   JavaScript (in main.js) only toggles one CSS class: "open".
+   Everything else is handled here with CSS selectors.
+
+   DESKTOP behavior (default):
+     - The hamburger button is hidden with display: none
+     - The <nav> links are displayed in a row
+
+   MOBILE behavior (inside the media query at the bottom):
+     - The <nav> is hidden with display: none by default
+     - The hamburger button appears
+     - When JS adds class="open" to <nav>, display: flex shows it
+     - When JS adds class="open" to the button, the three bars
+       animate into an X shape
+   ============================================================ */
+
+/* DESKTOP: show nav links in a row, hide the hamburger button */
+nav {
+    display: flex;
+    gap: var(--space-md);
+    margin-left: auto;
+    /* pushes nav to the right side of the header */
+}
+
+nav a {
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 0.95rem;
+    padding: 4px 0;
+    border-bottom: 2px solid transparent;
+    transition: border-color var(--transition-speed) ease;
+}
+
+nav a:hover {
+    border-bottom-color: var(--color-secondary);
+    text-decoration: none;
+    color: white;
+}
+
+/* The hamburger button is invisible on desktop */
+.hamburger-btn {
+    display: none;
+}
+
+
+/* ============================================================
+   HAMBURGER BUTTON BARS
+   The three <span class="bar"> elements inside the button.
+   They start as three horizontal lines and animate into an X.
+   ============================================================ */
+
+/* Each bar is a horizontal line */
+.bar {
+    display: block;
+    width: 24px;
+    height: 3px;
+    background-color: white;
+    border-radius: 2px;
+    /*
+        transition is essential here.
+        When JS adds/removes the .open class, CSS smoothly
+        animates the transform and opacity changes below.
+        Without transition the change would be instant (jarring).
+    */
+    transition:
+        transform var(--transition-speed) ease,
+        opacity var(--transition-speed) ease;
+}
+
+/*
+    When the .open class is on the button (added by JS),
+    transform bar 1 and bar 3 into the two arms of an X.
+    Bar 2 simply fades out.
+
+    rotate(45deg)  -> tilts bar 1 to form one arm of the X
+    translateY()   -> moves it down to the center
+    rotate(-45deg) -> tilts bar 3 the other way
+    translateY()   -> moves it up to the center
+*/
+.hamburger-btn.open .bar:nth-child(1) {
+    transform: rotate(45deg) translateY(8px);
+}
+
+.hamburger-btn.open .bar:nth-child(2) {
+    opacity: 0;
+}
+
+.hamburger-btn.open .bar:nth-child(3) {
+    transform: rotate(-45deg) translateY(-8px);
+}
+
+
+/* ============================================================
+   SECTION 5: HERO SECTION
+   ============================================================
+   The hero section contains two animated elements.
+   Their animation is triggered by class names that connect
+   to the @keyframes rules defined in Section 10.
+   ============================================================ */
+
+.hero {
+    background: linear-gradient(135deg, var(--color-primary) 0%, #4A0E0E 100%);
+    color: white;
+    text-align: center;
+    padding: var(--space-xl) var(--space-lg);
+}
+
+.hero h1 {
+    color: white;
+    font-size: 2.5rem;
+    margin-bottom: var(--space-sm);
+}
+
+.hero p {
+    font-size: 1.15rem;
+    opacity: 0.9;
+    margin-bottom: 0;
+}
+
+/*
+    ANIMATION APPLIED: slide-in
+    ----------------------------
+    animation-name      -> must match the @keyframes name exactly
+    animation-duration  -> how long one cycle takes
+    animation-timing-function -> speed curve (ease-out starts fast, slows)
+    animation-fill-mode -> "both" means the element starts from the "from"
+                           state and stays at the "to" state when done
+*/
+.animate-slide-in {
+    animation-name: slide-in;
+    animation-duration: 0.8s;
+    animation-timing-function: ease-out;
+    animation-fill-mode: both;
+}
+
+/*
+    ANIMATION APPLIED: fade-in (with a delay)
+    ------------------------------------------
+    animation-delay -> waits 0.5s before starting so it follows the h1
+*/
+.animate-fade-in {
+    animation-name: fade-in;
+    animation-duration: 0.8s;
+    animation-delay: 0.5s;
+    animation-fill-mode: both;
+}
+
+
+/* ============================================================
+   SECTION 6: DEMO SECTION WRAPPER
+   ============================================================ */
+
+.demo-section {
+    background-color: white;
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius);
+    padding: var(--space-lg);
+    margin-bottom: var(--space-xl);
+    box-shadow: var(--shadow);
+}
+
+.demo-section h2 {
+    border-left: 5px solid var(--color-primary);
+    padding-left: var(--space-sm);
+    margin-bottom: var(--space-md);
+}
+
+.demo-block {
+    background: var(--color-light);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    padding: var(--space-md);
+    margin-bottom: var(--space-md);
+}
+
+.demo-block h3 {
+    color: var(--color-primary);
+    margin-bottom: 0.5rem;
+}
+
+
+/* ============================================================
+   SECTION 7: CSS TRANSFORMS DEMO
+   ============================================================
+   CONCEPT: transform + transition working together.
+
+   Step 1: Add transition to the element in its normal state.
+           This tells the browser to animate any property change
+           over 0.3 seconds with an ease timing curve.
+
+   Step 2: Apply a transform inside the :hover rule.
+           When the mouse enters, the browser smoothly transitions
+           FROM the current state TO the transformed state.
+           When the mouse leaves, it transitions back.
+   ============================================================ */
+
+.transform-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: var(--space-md);
+}
+
+/* Base card styles shared by all four transform demo cards */
+.card {
+    background: white;
+    border: 2px solid var(--color-border);
+    border-radius: var(--border-radius);
+    padding: var(--space-md);
+    text-align: center;
+    cursor: default;
+
+    /*
+        TRANSITION: smooth the transform change on hover.
+        We list specific properties (not "all") for performance.
+        transform -> the CSS transform function
+        box-shadow -> the shadow gets deeper on hover too
+        border-color -> the border color changes on hover
+    */
+    transition:
+        transform var(--transition-speed) ease,
+        box-shadow var(--transition-speed) ease,
+        border-color var(--transition-speed) ease;
+}
+
+.card-icon {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+    color: var(--color-primary);
+}
+
+.card h3 {
+    font-family: 'Courier New', monospace;
+    color: var(--color-accent);
+    margin-bottom: 0.4rem;
+}
+
+.card p {
+    font-size: 0.88rem;
+    color: #666;
+    margin-bottom: 0.5rem;
+}
+
+.card code {
+    display: block;
+    font-size: 0.8rem;
+    margin-top: 0.5rem;
+}
+
+/*
+    TRANSFORM: translate()
+    Moves the element RIGHT by 10px and UP by 6px on hover.
+    The surrounding elements do NOT move because transform
+    does not affect document flow.
+*/
+.card-translate:hover {
+    transform: translate(10px, -6px);
+    border-color: var(--color-primary);
+    box-shadow: 0 8px 24px rgba(139, 26, 26, 0.2);
+}
+
+/*
+    TRANSFORM: scale()
+    Enlarges the card to 108% of its original size.
+    Values > 1 enlarge; values < 1 shrink.
+    The center of the element stays in place by default.
+*/
+.card-scale:hover {
+    transform: scale(1.08);
+    border-color: var(--color-accent);
+    box-shadow: 0 8px 24px rgba(26, 107, 138, 0.2);
+}
+
+/*
+    TRANSFORM: rotate()
+    Spins the card 6 degrees clockwise.
+    Positive degrees = clockwise.
+    Negative degrees = counter-clockwise.
+*/
+.card-rotate:hover {
+    transform: rotate(6deg);
+    border-color: var(--color-secondary);
+    box-shadow: 0 8px 24px rgba(212, 160, 23, 0.25);
+}
+
+/*
+    TRANSFORM: skewX()
+    Tilts the vertical sides of the card 8 degrees.
+    skewX affects horizontal tilt; skewY affects vertical tilt.
+*/
+.card-skew:hover {
+    transform: skewX(8deg);
+    border-color: #6B46C1;
+    box-shadow: 0 8px 24px rgba(107, 70, 193, 0.2);
+}
+
+
+/* ============================================================
+   SECTION 8: CSS ANIMATIONS DEMO
+   ============================================================
+   Each animated element has an "animation" shorthand property.
+   The shorthand order is:
+     animation: name duration timing-function delay iteration direction
+
+   The actual movement/appearance changes are defined in the
+   @keyframes rules in Section 10 below.
+   ============================================================ */
+
+.animation-showcase {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: var(--space-lg);
+    text-align: center;
+}
+
+.anim-demo {
+    background: var(--color-light);
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius);
+    padding: var(--space-lg) var(--space-md);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-md);
+}
+
+.anim-demo p {
+    font-size: 0.8rem;
+    color: #555;
+    margin: 0;
+}
+
+/*
+    ANIMATION 1: SPINNER
+    Applies the @keyframes spin rule (defined in Section 10).
+    1.2s duration | linear speed (constant, no easing) | infinite loops
+    linear is important here. ease would look jerky on a rotation.
+*/
+.spinner {
+    width: 60px;
+    height: 60px;
+    border: 6px solid var(--color-border);
+    border-top-color: var(--color-primary);
+    /* only the top is colored */
+    border-radius: 50%;
+
+    animation-name: spin;
+    animation-duration: 1.2s;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+}
+
+/*
+    ANIMATION 2: PULSE BADGE
+    Applies the @keyframes pulse rule (defined in Section 10).
+    1.5s | ease-in-out (slow at start and end) | infinite | alternate
+
+    animation-direction: alternate means:
+      Even cycles play FORWARD (normal direction)
+      Odd  cycles play BACKWARD (reverses itself)
+    Result: the badge grows, then shrinks, then grows, etc.
+*/
+.pulse-badge {
+    background: var(--color-primary);
+    color: white;
+    font-weight: bold;
+    font-size: 0.85rem;
+    padding: 12px 24px;
+    border-radius: 999px;
+    letter-spacing: 0.1em;
+
+    animation-name: pulse;
+    animation-duration: 1.5s;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+}
+
+/*
+    ANIMATION 3: SLIDE + FADE IN
+    Applies the @keyframes slide-in rule (defined in Section 10).
+    0.8s | ease-out | runs once | fill-mode: both
+
+    animation-fill-mode: both means:
+      - BEFORE it starts, the element is invisible (from state)
+      - AFTER it finishes, it stays at full opacity (to state)
+    Without "both", the element would flash at full opacity before
+    the animation begins and reset to invisible after it ends.
+*/
+.slide-demo {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--color-primary);
+    background: white;
+    border: 2px solid var(--color-primary);
+    padding: 16px 30px;
+    border-radius: var(--border-radius);
+
+    animation-name: slide-in;
+    animation-duration: 0.8s;
+    animation-timing-function: ease-out;
+    animation-iteration-count: 1;
+    animation-fill-mode: both;
+}
+
+
+/* ============================================================
+   SECTION 9: JAVASCRIPT DEMO STYLES
+   ============================================================ */
+
+/* Shared button style for all demo buttons */
+.demo-btn {
+    background: var(--color-primary);
+    color: white;
+    border: none;
+    padding: 0.7rem 1.4rem;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    font-family: inherit;
+    cursor: pointer;
+    /*
+        Transition on transform and background-color so that
+        the :hover and :active states look polished.
+    */
+    transition:
+        background-color var(--transition-speed) ease,
+        transform 0.15s ease;
+}
+
+.demo-btn:hover {
+    background-color: var(--color-dark);
+}
+
+/* The :active pseudo-class fires while the button is held down */
+.demo-btn:active {
+    transform: scale(0.96);
+    /* slight press effect */
+}
+
+/* Reset button gets a neutral color */
+.btn-reset {
+    background-color: #6B7280;
+}
+
+.btn-reset:hover {
+    background-color: #374151;
+}
+
+/* The box that JS will find and modify in the DOM demo */
+.dom-target-box {
+    background: #F0FFF4;
+    border: 2px dashed #4CAF50;
+    border-radius: 8px;
+    padding: var(--space-md);
+    margin-bottom: var(--space-md);
+    min-height: 70px;
+    display: flex;
+    align-items: center;
+}
+
+.dom-target-box p {
+    margin: 0;
+    font-size: 1rem;
+    color: #555;
+}
+
+/* Events demo grid */
+.events-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--space-md);
+    margin-bottom: var(--space-lg);
+}
+
+.event-demo {
+    background: var(--color-light);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    padding: var(--space-md);
+}
+
+.event-demo h3 {
+    font-family: 'Courier New', monospace;
+    color: var(--color-accent);
+    font-size: 0.95rem;
+    margin-bottom: 0.4rem;
+}
+
+.event-demo p {
+    font-size: 0.85rem;
+    color: #666;
+    margin-bottom: var(--space-sm);
+}
+
+.event-demo label {
+    display: block;
+    font-size: 0.85rem;
+    margin-bottom: 4px;
+    color: var(--color-dark);
+}
+
+.event-demo select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 0.9rem;
+    cursor: pointer;
+}
+
+/* The box that the visitor hovers over */
+.hover-target {
+    background: var(--color-accent);
+    color: white;
+    text-align: center;
+    padding: 12px;
+    border-radius: 6px;
+    cursor: default;
+    font-weight: bold;
+    transition: background-color var(--transition-speed) ease;
+}
+
+.hover-target:hover {
+    background-color: var(--color-primary);
+}
+
+/* The event log that JS writes into */
+.event-log-wrapper {
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.event-log-header {
+    background: var(--color-dark);
+    color: rgba(255, 255, 255, 0.7);
+    padding: 6px 14px;
+    font-family: 'Courier New', monospace;
+    font-size: 0.8rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+#event-log {
+    background: #1E1E1E;
+    color: #9CDCFE;
+    font-family: 'Courier New', monospace;
+    font-size: 0.85rem;
+    padding: var(--space-sm) var(--space-md);
+    min-height: 100px;
+    max-height: 200px;
+    overflow-y: auto;
+    /* scroll when the log fills up */
+}
+
+.log-placeholder {
+    color: #555;
+    margin: 0;
+}
+
+/* Individual log entries appended by JS */
+.log-entry {
+    color: #6A9955;
+    margin: 0;
+    padding: 2px 0;
+    border-bottom: 1px solid #2D2D30;
+}
+
+.log-entry:last-child {
+    border-bottom: none;
+}
+
+
+/* ============================================================
+   SECTION 10: @keyframes RULES
+   ============================================================
+   CONCEPT: A @keyframes rule defines WHAT changes at each stage
+   of an animation.  It does NOT run by itself.  It only runs
+   when an element references it using the animation-name
+   property (or the animation shorthand).
+
+   Think of @keyframes as a recipe.  The animation property
+   on an element tells the browser to "use this recipe now."
+   ============================================================ */
+
+/*
+    @keyframes spin
+    ---------------
+    Rotates from 0 degrees to 360 degrees (one full turn).
+    Used by the .spinner element.
+    transform: rotate() accepts degrees (deg) or turns (turn).
+    rotate(1turn) is equivalent to rotate(360deg).
+*/
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/*
+    @keyframes pulse
+    ----------------
+    Scales the element from 100% to 110% size.
+    Used by the .pulse-badge element with direction: alternate,
+    so it grows then shrinks repeatedly.
+*/
+@keyframes pulse {
+    from {
+        transform: scale(1.0);
+    }
+
+    to {
+        transform: scale(1.1);
+    }
+}
+
+/*
+    @keyframes slide-in
+    --------------------
+    The element starts off-screen to the LEFT and invisible,
+    then slides right to its natural position and becomes opaque.
+
+    Uses two properties changing at once:
+      transform: translateX() -> horizontal movement
+      opacity                 -> visibility
+
+    Used by .slide-demo, .animate-slide-in (hero h1).
+*/
+@keyframes slide-in {
+    from {
+        transform: translateX(-60px);
+        /* starts 60px to the left  */
+        opacity: 0;
+        /* starts invisible          */
+    }
+
+    to {
+        transform: translateX(0);
+        /* ends at natural position  */
+        opacity: 1;
+        /* ends fully visible        */
+    }
+}
+
+/*
+    @keyframes fade-in
+    ------------------
+    Simple opacity transition from invisible to visible.
+    Used by .animate-fade-in (hero paragraph).
+*/
+@keyframes fade-in {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+
+/* ============================================================
+   SECTION 11: RESPONSIVE MEDIA QUERY
+   ============================================================
+   CONCEPT: This media query implements the mobile half of the
+   hamburger menu pattern.  JavaScript only toggles the .open
+   class.  CSS does all the showing and hiding.
+
+   On screens narrower than 700px:
+     - The <nav> is hidden by default
+     - The hamburger button becomes visible
+     - When JS adds class="open" to the nav, it becomes visible
+   ============================================================ */
+
+@media only screen and (max-width: 700px) {
+
+    /* Show the hamburger button on narrow screens */
+    .hamburger-btn {
+        display: flex;
+        /* was display:none on desktop */
+        flex-direction: column;
+        gap: 5px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 6px;
+        margin-left: auto;
+    }
+
+    /*
+        Hide the nav links on mobile by default.
+        They will appear when JS adds the .open class.
+    */
+    nav {
+        display: none;
+        /* hidden by default on mobile   */
+        position: absolute;
+        /* drops below the header        */
+        top: 100%;
+        left: 0;
+        right: 0;
+        background-color: var(--color-dark);
+        flex-direction: column;
+        padding: var(--space-md);
+        gap: var(--space-sm);
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+    }
+
+    /*
+        When JS adds the .open class to the nav,
+        this rule overrides display:none and shows the links.
+        This is the entire CSS side of the hamburger pattern.
+    */
+    nav.open {
+        display: flex;
+    }
+
+    nav a {
+        padding: 10px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        font-size: 1rem;
+    }
+
+    nav a:last-child {
+        border-bottom: none;
+    }
+
+    /* Keep the header-inner from overflowing on small screens */
+    .header-inner {
+        position: relative;
+        /* needed so nav can position: absolute  */
+        flex-wrap: wrap;
+    }
+
+    /* Reduce hero padding on mobile */
+    .hero {
+        padding: var(--space-lg) var(--space-md);
+    }
+
+    .hero h1 {
+        font-size: 1.6rem;
+    }
+
+}
+
+/* end media query */

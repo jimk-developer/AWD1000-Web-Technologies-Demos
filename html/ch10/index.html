@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<!--
+  ============================================================
+  GUIDE 10 DEMO: Creating Interactivity with CSS and JavaScript
+  ============================================================
+  PURPOSE
+    This page demonstrates every key concept from Guide 10:
+      - CSS transform property (translate, scale, rotate, skew)
+      - CSS transitions (making transforms animate smoothly)
+      - CSS @keyframes animations (auto-running, multi-stage)
+      - The <script> element (inline JS shown here; see main.js
+        for the external JS file approach)
+      - JavaScript variables (let and const)
+      - JavaScript functions (defining and calling)
+      - JavaScript if/else statements
+      - JavaScript events and event handlers (onclick, onload)
+      - The Document Object Model (getElementById, querySelector)
+      - Changing element content and style with JavaScript
+      - The hamburger menu pattern (toggle nav on mobile)
+
+  TEACHING NOTES
+    Open this file, styles.css, and main.js in three VSCode
+    editor tabs.  Use Live Server to preview.  Walk through
+    each section in order.  Every interactive element on the
+    page calls a function defined in main.js.
+
+  FILE STRUCTURE
+    g10-demo/
+    ├── index.html   (this file - structure and HTML event hooks)
+    ├── styles.css   (CSS transforms, transitions, @keyframes)
+    └── main.js      (JavaScript functions, DOM, event handlers)
+  ============================================================
+-->
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prairie Bakery - Interactivity Demo</title>
+
+    <!--
+        LINKING THE EXTERNAL STYLESHEET
+        The <link> element connects styles.css to this page.
+        rel="stylesheet" tells the browser what kind of file it is.
+        All visual styling, transforms, and animations live there.
+    -->
+    <link rel="stylesheet" href="styles.css">
+
+    <script src="main.js" defer></script>
+
+</head>
+
+<!--
+    THE onload EVENT HANDLER
+    ------------------------
+    onload on <body> fires as soon as the entire page has finished
+    loading.  Here it calls the greetVisitor() function defined
+    in main.js, which displays a personalized welcome message.
+
+    This is the simplest event handler pattern:
+      event attribute on an HTML element -> calls a JS function
+-->
+
+<body onload="greetVisitor()">
+
+    <!-- ========================================================
+         SITE HEADER + HAMBURGER NAVIGATION
+         ========================================================
+         This header contains:
+           - The site logo/name
+           - A hamburger button (visible on mobile only via CSS)
+           - The <nav> element (collapses on mobile by default)
+
+         The hamburger pattern requires THREE things to work:
+           1. HTML: the button with onclick, and the nav with an id
+           2. CSS: rules that hide the nav and show it when .open
+           3. JS: the toggleMenu() function that adds/removes .open
+         All three pieces are labeled below.
+         ======================================================== -->
+    <header id="site-header">
+
+        <div class="header-inner">
+
+            <a href="index.html" class="logo">Prairie Bakery</a>
+
+            <!--
+                HAMBURGER BUTTON (HTML PIECE)
+                The button is hidden on desktop (CSS hides it).
+                On mobile it appears as three horizontal bars.
+                onclick calls toggleMenu() in main.js.
+                aria-label provides an accessible name for screen readers.
+                aria-expanded starts as "false" and is toggled by JS.
+            -->
+            <button class="hamburger-btn" onclick="toggleMenu()"
+                aria-label="Toggle navigation menu" aria-expanded="false"
+                id="hamburger-btn">
+                <!--
+                    Each <span> is one bar of the hamburger icon.
+                    CSS draws them as horizontal lines.
+                    When the .open class is added, CSS rotates
+                    bars 1 and 3 into an X and hides bar 2.
+                -->
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </button>
+
+            <!--
+                NAV ELEMENT (HTML PIECE)
+                id="main-nav" gives JS a handle to find this element.
+                On mobile, CSS hides it by default (display:none).
+                The toggleMenu() function adds/removes class="open",
+                and CSS makes .open elements visible.
+            -->
+            <nav id="main-nav">
+                <a href="#transforms">Transforms</a>
+                <a href="#animations">Animations</a>
+                <a href="#javascript">JavaScript</a>
+                <a href="#dom">The DOM</a>
+                <a href="#events">Events</a>
+            </nav>
+
+        </div><!-- end header-inner -->
+
+    </header>
+
+
+    <!-- ========================================================
+         HERO SECTION
+         Uses a CSS @keyframes animation: the heading slides in
+         from the left on page load.  The animation is triggered
+         by the class="animate-slide-in" on the <h1>.
+         ======================================================== -->
+    <section class="hero">
+        <!--
+            The class "animate-slide-in" connects this element to
+            the @keyframes rule of the same name in styles.css.
+            The animation runs automatically when the page loads.
+            No JavaScript needed. CSS handles it entirely.
+        -->
+        <h1 class="animate-slide-in">Craft. Community. Fresh Every Day.</h1>
+        <p class="animate-fade-in">Baked in small batches since 2014.</p>
+    </section>
+
+
+    <main>
+
+        <!-- ====================================================
+             SECTION 1: CSS TRANSFORMS
+             ====================================================
+             Demonstrates the transform property with four
+             transform functions.  Each card has a :hover rule in
+             styles.css that applies a different transform.
+             Hover over each card to see the effect.
+             ==================================================== -->
+        <section class="demo-section" id="transforms">
+
+            <h2>CSS Transforms <span class="tag-badge">styles.css</span></h2>
+
+            <p>
+                The <code>transform</code> property changes an element's
+                shape, position, or size without affecting the surrounding
+                layout. Hover over each card to see the transform applied.
+                A <code>transition</code> on the card makes the change smooth.
+            </p>
+
+            <!--
+                TRANSFORM DEMO CARDS
+                Each card demonstrates one transform function.
+                The actual transform rules are in styles.css.
+                Look for .card:hover { transform: ... } there.
+            -->
+            <div class="transform-grid">
+
+                <!-- translate() - moves the element -->
+                <div class="card card-translate">
+                    <div class="card-icon">↔</div>
+                    <h3>translate()</h3>
+                    <p>Moves the element horizontally, vertically, or both.</p>
+                    <code>transform: translateX(10px)</code>
+                </div>
+
+                <!-- scale() - resizes the element -->
+                <div class="card card-scale">
+                    <div class="card-icon">⤢</div>
+                    <h3>scale()</h3>
+                    <p>Resizes the element. Greater than 1 enlarges; less than 1
+                        shrinks.</p>
+                    <code>transform: scale(1.08)</code>
+                </div>
+
+                <!-- rotate() - spins the element -->
+                <div class="card card-rotate">
+                    <div class="card-icon">↻</div>
+                    <h3>rotate()</h3>
+                    <p>Rotates clockwise. Negative degrees rotate
+                        counter-clockwise.</p>
+                    <code>transform: rotate(6deg)</code>
+                </div>
+
+                <!-- skew() - tilts the sides -->
+                <div class="card card-skew">
+                    <div class="card-icon">⟋</div>
+                    <h3>skew()</h3>
+                    <p>Tilts the sides of the element along the X or Y axis.</p>
+                    <code>transform: skewX(8deg)</code>
+                </div>
+
+            </div><!-- end transform-grid -->
+
+        </section><!-- end transforms section -->
+
+
+        <!-- ====================================================
+             SECTION 2: CSS ANIMATIONS
+             ====================================================
+             Demonstrates @keyframes.  Two elements are animated:
+               1. A looping spinner (@keyframes spin - infinite)
+               2. A pulsing badge  (@keyframes pulse - infinite)
+             Both animations run automatically without JavaScript.
+             The animation shorthand property connects an element
+             to its @keyframes rule.
+             ==================================================== -->
+        <section class="demo-section" id="animations">
+
+            <h2>CSS Animations <span class="tag-badge">styles.css</span></h2>
+
+            <p>
+                CSS animations use two steps: first define stages with
+                <code>@keyframes</code>, then apply them with the
+                <code>animation</code> property. These run automatically
+                with no JavaScript required.
+            </p>
+
+            <div class="animation-showcase">
+
+                <!--
+                    ANIMATION 1: LOOPING SPINNER
+                    Connected to @keyframes spin in styles.css.
+                    animation-iteration-count: infinite means it never stops.
+                    animation-timing-function: linear means constant speed.
+                -->
+                <div class="anim-demo">
+                    <div class="spinner"></div>
+                    <p><code>animation: spin 1.2s linear infinite</code></p>
+                </div>
+
+                <!--
+                    ANIMATION 2: PULSING BADGE
+                    Connected to @keyframes pulse in styles.css.
+                    Uses scale() inside @keyframes to grow and shrink.
+                    animation-direction: alternate reverses on each cycle.
+                -->
+                <div class="anim-demo">
+                    <div class="pulse-badge">FRESH TODAY</div>
+                    <p><code>animation: pulse 1.5s ease-in-out infinite alternate</code>
+                    </p>
+                </div>
+
+                <!--
+                    ANIMATION 3: SLIDE AND FADE
+                    Connected to @keyframes slide-in in styles.css.
+                    Shows from/to with both transform and opacity changing.
+                    animation-fill-mode: forwards keeps the final state.
+                -->
+                <div class="anim-demo">
+                    <div class="slide-demo">Sourdough</div>
+                    <p><code>animation: slide-in 0.8s ease-out forwards</code>
+                    </p>
+                </div>
+
+            </div><!-- end animation-showcase -->
+
+        </section><!-- end animations section -->
+
+
+        <!-- ====================================================
+             SECTION 3: JAVASCRIPT FUNDAMENTALS
+             ====================================================
+             Demonstrates variables, functions, and if/else.
+             Each button calls a function in main.js.
+             Open main.js and read the comments above each
+             function while demonstrating here.
+             ==================================================== -->
+        <section class="demo-section" id="javascript">
+
+            <h2>JavaScript Fundamentals <span class="tag-badge">main.js</span>
+            </h2>
+
+            <!-- - - - - - - - - - - - - - - - - - - - - - - - -
+                 DEMO 3a: VARIABLES AND FUNCTIONS
+                 Clicking the button calls showSpecial() in main.js.
+                 That function uses a const variable and alert().
+                 - - - - - - - - - - - - - - - - - - - - - - - - -->
+            <div class="demo-block">
+                <h3>Variables and Functions</h3>
+                <p>
+                    A <strong>function</strong> is a named, reusable block of
+                    code.
+                    A <strong>variable</strong> stores a value so it can be used
+                    later.
+                    Click the button to call <code>showSpecial()</code> in
+                    main.js.
+                </p>
+                <!--
+                    onclick="showSpecial()" is the event handler attribute.
+                    When the button is clicked, the browser calls that function.
+                -->
+                <button class="demo-btn" onclick="showSpecial()">
+                    See Today's Special
+                </button>
+            </div>
+
+            <!-- - - - - - - - - - - - - - - - - - - - - - - - -
+                 DEMO 3b: ARGUMENTS (PASSING DATA TO FUNCTIONS)
+                 The two buttons call the same function (orderItem)
+                 but pass different arguments.  This shows how
+                 functions can be reused with different inputs.
+                 - - - - - - - - - - - - - - - - - - - - - - - - -->
+            <div class="demo-block">
+                <h3>Passing Arguments to Functions</h3>
+                <p>
+                    An <strong>argument</strong> is a value passed into a
+                    function.
+                    Both buttons call <code>orderItem()</code> but send
+                    different text.
+                </p>
+                <div class="btn-row">
+                    <!--
+                        "Sourdough Loaf" is the argument.
+                        orderItem() receives it as a parameter called itemName.
+                    -->
+                    <button class="demo-btn"
+                        onclick="orderItem('Sourdough Loaf')">
+                        Order Sourdough
+                    </button>
+                    <button class="demo-btn" onclick="orderItem('Croissant')">
+                        Order Croissant
+                    </button>
+                </div>
+            </div>
+
+            <!-- - - - - - - - - - - - - - - - - - - - - - - - -
+                 DEMO 3c: if/else STATEMENT
+                 The button calls checkHours() in main.js.
+                 That function uses a Date object to get the
+                 current hour, then uses if/else to decide which
+                 message to show.
+                 - - - - - - - - - - - - - - - - - - - - - - - - -->
+            <div class="demo-block">
+                <h3>if / else Statements</h3>
+                <p>
+                    An <strong>if/else</strong> statement makes a decision.
+                    Click to run <code>checkHours()</code>, which checks the
+                    current time and shows a different message depending on
+                    whether the bakery is open or closed.
+                </p>
+                <button class="demo-btn" onclick="checkHours()">
+                    Are You Open?
+                </button>
+            </div>
+
+        </section><!-- end javascript section -->
+
+
+        <!-- ====================================================
+             SECTION 4: THE DOCUMENT OBJECT MODEL (DOM)
+             ====================================================
+             Demonstrates finding elements by id and by CSS
+             selector, then changing their text content and CSS.
+             The output of each JS call appears in the #dom-output
+             paragraph directly on the page (no alert needed).
+             ==================================================== -->
+        <section class="demo-section" id="dom">
+
+            <h2>The DOM <span class="tag-badge">main.js</span></h2>
+
+            <p>
+                The <strong>DOM</strong> (Document Object Model) is how
+                JavaScript sees the HTML page: a tree of objects.
+                JavaScript uses DOM methods to find elements and change
+                them live, without reloading the page.
+            </p>
+
+            <!-- - - - - - - - - - - - - - - - - - - - - - - - -
+                 This is the element that JS will find and modify.
+                 The buttons below each call a function that uses
+                 a different DOM method to reach this same element,
+                 then changes its textContent and/or style.
+                 - - - - - - - - - - - - - - - - - - - - - - - - -->
+            <div class="dom-target-box">
+                <p id="dom-output">
+                    Click a button below to change this text using JavaScript.
+                </p>
+            </div>
+
+            <div class="btn-row">
+                <!--
+                    Each button demonstrates a different DOM selector method.
+                    The function is defined in main.js.
+                    Arguments tell the function WHICH selector was used
+                    so the output message reflects the method shown.
+                -->
+
+                <!-- getElementById() - selects by the id attribute -->
+                <button class="demo-btn" onclick="domDemo('byId')">
+                    getElementById()
+                </button>
+
+                <!-- querySelector() - selects using a CSS selector -->
+                <button class="demo-btn" onclick="domDemo('byQuery')">
+                    querySelector()
+                </button>
+
+                <!-- Change the element's CSS style property -->
+                <button class="demo-btn" onclick="domDemo('byStyle')">
+                    Change Style
+                </button>
+
+                <!-- Reset back to starting text and style -->
+                <button class="demo-btn btn-reset" onclick="domDemo('reset')">
+                    Reset
+                </button>
+
+            </div><!-- end btn-row -->
+
+        </section><!-- end DOM section -->
+
+
+        <!-- ====================================================
+             SECTION 5: EVENTS AND EVENT HANDLERS
+             ====================================================
+             Demonstrates multiple event handler types:
+               - onclick (button click)
+               - onmouseover / onmouseout (mouse enters/leaves)
+               - onchange (dropdown selection changes)
+             The event-log div records what is happening so
+             students can see which event fired in real time.
+             ==================================================== -->
+        <section class="demo-section" id="events">
+
+            <h2>Events and Event Handlers <span class="tag-badge">main.js</span>
+            </h2>
+
+            <p>
+                An <strong>event</strong> is something that happens on the page.
+                An <strong>event handler</strong> is the JavaScript function
+                that runs in response. Try all three controls below.
+            </p>
+
+            <div class="events-grid">
+
+                <!-- - - - - - - - - - - - - - - - - - - - - - -
+                     EVENT: onclick
+                     The simplest and most common event handler.
+                     Fires once when the element is clicked.
+                     - - - - - - - - - - - - - - - - - - - - - - -->
+                <div class="event-demo">
+                    <h3>onclick</h3>
+                    <p>Fires when the element is clicked.</p>
+                    <button class="demo-btn event-btn"
+                        onclick="logEvent('onclick fired on the button')">
+                        Click Me
+                    </button>
+                </div>
+
+                <!-- - - - - - - - - - - - - - - - - - - - - - -
+                     EVENTS: onmouseover and onmouseout
+                     Two complementary handlers on the same element.
+                     onmouseover fires when the mouse enters.
+                     onmouseout fires when the mouse leaves.
+                     - - - - - - - - - - - - - - - - - - - - - - -->
+                <div class="event-demo">
+                    <h3>onmouseover / onmouseout</h3>
+                    <p>Fires when the mouse enters or leaves.</p>
+                    <div class="hover-target"
+                        onmouseover="logEvent('onmouseover: mouse entered the box')"
+                        onmouseout="logEvent('onmouseout: mouse left the box')">
+                        Hover Over Me
+                    </div>
+                </div>
+
+                <!-- - - - - - - - - - - - - - - - - - - - - - -
+                     EVENT: onchange
+                     Fires when the selected value in a form
+                     control changes.  Works on <select>, <input
+                     type="text">, <input type="checkbox">, etc.
+                     The selected value is passed to logEvent().
+                     - - - - - - - - - - - - - - - - - - - - - - -->
+                <div class="event-demo">
+                    <h3>onchange</h3>
+                    <p>Fires when a form control's value changes.</p>
+                    <label for="bread-select">Choose a loaf:</label>
+                    <select id="bread-select"
+                        onchange="logEvent('onchange: you selected ' + this.value)">
+                        <option value="">-- pick one --</option>
+                        <option value="Sourdough">Sourdough</option>
+                        <option value="Whole Wheat">Whole Wheat</option>
+                        <option value="Rye">Rye</option>
+                        <option value="Baguette">Baguette</option>
+                    </select>
+                </div>
+
+            </div><!-- end events-grid -->
+
+            <!--
+                EVENT LOG OUTPUT
+                This div is updated by the logEvent() function in main.js.
+                Every event that fires appends a timestamped entry here.
+                id="event-log" lets JS find and update it with getElementById.
+            -->
+            <div class="event-log-wrapper">
+                <div class="event-log-header">Event Log</div>
+                <div id="event-log">
+                    <p class="log-placeholder">Events will appear here as they
+                        fire...</p>
+                </div>
+            </div>
+
+        </section><!-- end events section -->
+
+    </main><!-- end main -->
+
+
+    <!-- ========================================================
+         SITE FOOTER
+         ======================================================== -->
+    <footer>
+        <p>&copy; 2026 Prairie Bakery &bull; Guide 10 Demo</p>
+    </footer>
+
+
+    <!--
+        LINKING THE EXTERNAL JAVASCRIPT FILE
+        =====================================
+        The <script> element with a src attribute links to main.js.
+        It is placed here at the BOTTOM of the body, just before
+        </body>.  This is intentional:
+
+        Reason: HTML is read top to bottom. If the <script> were
+        in the <head>, JavaScript would try to find elements like
+        getElementById("main-nav") before those elements existed
+        in the DOM, and the code would fail.  Placing it at the
+        bottom ensures all HTML elements are loaded and ready
+        before any script runs.
+
+        Alternative: Using defer or DOMContentLoaded in the JS
+        itself also works, but bottom-of-body is the simplest
+        approach for beginners.
+    -->
+
+</body>
+
+</html>

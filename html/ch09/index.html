@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<!--
+  ============================================================
+  GUIDE 9 DEMO: Integrating Audio and Video
+  ============================================================
+  PURPOSE
+    This file demonstrates every key concept from Guide 9:
+      - The <audio> element with controls, loop, and preload
+      - Multiple <source> elements for cross-browser format support
+      - The <video> element with controls, poster, and muted
+      - Responsive video sizing via CSS
+      - The <track> element for captions (WebVTT)
+      - Fallback text for unsupported browsers
+      - Embedded vs. external media links
+
+  TEACHING NOTES
+    Open this file and styles.css side by side in VSCode.
+    Use Live Server to preview.  The media elements will not
+    actually play unless real .mp3 / .mp4 / .vtt files are
+    placed in the audio/, video/, captions/, and images/
+    folders. The HTML structure, attributes, and CSS
+    are all visible and correct for classroom discussion.
+
+  FILE STRUCTURE
+    g9-demo/
+    ├── index.html          (this file)
+    ├── styles.css
+    ├── audio/
+    │   ├── episode1.mp3    (add a real MP3 here to test)
+    │   └── episode1.ogg    (add a real OGG here to test)
+    ├── video/
+    │   ├── tour.mp4        (add a real MP4 here to test)
+    │   └── tour.webm       (add a real WebM here to test)
+    ├── images/
+    │   └── tour-poster.jpg (add a poster image here)
+    └── captions/
+        └── tour-en.vtt     (add a WebVTT file here)
+  ============================================================
+-->
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <!-- viewport meta tag is required for responsive behavior on mobile -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prairie Bakery Media</title>
+    <!-- External stylesheet linked with rel="stylesheet" -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+    <!-- ========================================================
+         SITE HEADER
+         Static content that appears at the top of every page.
+         ======================================================== -->
+    <header>
+        <h1>Prairie Bakery</h1>
+        <p>Stories, sounds, and a tour of the bakery</p>
+    </header>
+
+    <!-- ========================================================
+         MAIN CONTENT
+         The <main> element wraps the primary, unique content
+         of this page.
+         ======================================================== -->
+    <main>
+
+        <!-- ====================================================
+             SECTION 1: PODCAST (AUDIO ELEMENT)
+             Demonstrates:
+               - The <audio> element
+               - The controls attribute (shows browser player)
+               - The loop attribute (restarts when finished)
+               - The preload="metadata" attribute (loads file
+                 info but not the full audio until play is pressed)
+               - Multiple <source> elements for cross-browser
+                 format support: MP3 first, then OGG as fallback
+               - The type attribute on <source> (MIME type tells
+                 the browser which format each file uses so it can
+                 skip ones it doesn't support without downloading)
+               - Fallback text between opening and closing tags
+                 (shown only in browsers that don't support <audio>)
+             ==================================================== -->
+        <section class="media-section">
+
+            <h2>🎙️ Podcast: The Bread Lab</h2>
+
+            <p>
+                Each week we talk with our bakers about sourdough science,
+                seasonal ingredients, and the stories behind the loaves.
+                Use the player below to listen to the latest episode.
+            </p>
+
+            <!--
+                THE AUDIO ELEMENT
+                -----------------
+                controls  -> shows the built-in play/pause/seek/volume bar
+                loop      -> restarts from the beginning when the track ends
+                preload   -> hint to the browser about how much to load:
+                             "none"     - don't load anything until play
+                             "metadata" - load duration and file info only
+                             "auto"     - load the whole file immediately
+                
+                NOTE: We do NOT use autoplay here because browsers block
+                autoplay with sound enabled, and unexpected audio annoys
+                visitors.  Always let the user decide when to play.
+            -->
+            <audio controls loop preload="metadata">
+
+                <!--
+                    FIRST SOURCE: MP3
+                    MP3 is the safest default. Every modern browser
+                    supports it.  List it first so most browsers use it.
+                    type="audio/mpeg" is the correct MIME type for MP3.
+                -->
+                <source src="audio/episode1.mp3" type="audio/mpeg">
+
+                <!--
+                    SECOND SOURCE: OGG VORBIS
+                    OGG is an open-source format supported by Firefox
+                    and Chrome.  It acts as a fallback if a browser
+                    can't play MP3 (rare today, but good practice).
+                    type="audio/ogg" is the correct MIME type for OGG.
+                -->
+                <source src="audio/episode1.ogg" type="audio/ogg">
+
+                <!--
+                    FALLBACK TEXT
+                    This text only appears in very old browsers that
+                    don't understand the <audio> element at all.
+                    Modern browsers ignore it.  Always include it
+                    as a professional courtesy.
+                -->
+                Your browser does not support the audio element.
+                <a href="audio/episode1.mp3">Download the episode</a>.
+
+            </audio>
+
+            <!-- Episode information displayed below the player -->
+            <div class="episode-info">
+                <span class="episode-label">Episode 12</span>
+                <span class="episode-title">The Science of Sourdough Starter</span>
+                <span class="episode-duration">38 min</span>
+            </div>
+
+        </section><!-- end podcast section -->
+
+
+        <!-- ====================================================
+             SECTION 2: VIDEO TOUR (VIDEO ELEMENT)
+             Demonstrates:
+               - The <video> element
+               - The controls attribute
+               - The poster attribute (still image shown before play)
+               - The width and height attributes (reserve layout
+                 space before the video loads; CSS makes it fluid)
+               - The muted attribute (required for autoplay in most
+                 browsers; also useful for background loops)
+               - The preload attribute (same as audio)
+               - Multiple <source> elements: MP4 then WebM
+               - The <track> element for captions (WebVTT)
+               - Fallback text for unsupported browsers
+             ==================================================== -->
+        <section class="media-section">
+
+            <h2>🎬 Video: A Tour of the Bakery</h2>
+
+            <p>
+                Take a three-minute walk through our kitchen and see how
+                every loaf is shaped by hand before it goes into the oven.
+            </p>
+
+            <!--
+                THE VIDEO ELEMENT
+                -----------------
+                controls        -> shows play/pause/seek/volume/fullscreen
+                poster          -> image shown in the video frame BEFORE
+                                   the visitor clicks play.  Without this
+                                   the browser shows the first video frame
+                                   (often a black square).
+                width / height  -> pixels reserved for the video container.
+                                   CSS overrides these for responsive sizing.
+                                   Keep them here so the browser can reserve
+                                   the correct space before the file loads,
+                                   preventing layout shifts.
+                muted           -> starts with sound off. Required by most
+                                   browsers for autoplay to work at all.
+                preload="metadata" -> load only the duration/dimensions info
+            -->
+            <video
+                controls
+                poster="images/tour-poster.jpg"
+                width="800"
+                height="450"
+                muted
+                preload="metadata">
+
+                <!--
+                    FIRST SOURCE: MP4 (H.264 video + AAC audio)
+                    MP4 with H.264 is the most widely supported video
+                    format on the web.  Use it first.
+                    type="video/mp4" is the correct MIME type.
+                -->
+                <source src="video/tour.mp4" type="video/mp4">
+
+                <!--
+                    SECOND SOURCE: WebM
+                    WebM is an open-source format from Google.
+                    Chrome and Firefox prefer it; Safari support varies.
+                    Providing it gives browsers a modern alternative.
+                    type="video/webm" is the correct MIME type.
+                -->
+                <source src="video/tour.webm" type="video/webm">
+
+                <!--
+                    THE TRACK ELEMENT (CAPTIONS)
+                    ----------------------------
+                    The <track> element links a WebVTT caption file to
+                    the video.  It must be placed INSIDE the <video>
+                    element, after the <source> elements.
+
+                    src      -> path to the .vtt caption file
+                    kind     -> type of track:
+                                "captions"     - dialogue + sounds
+                                "subtitles"    - translation only
+                                "descriptions" - visual narration for
+                                                 blind users
+                                "chapters"     - named chapter markers
+                    srclang  -> language code for the track content
+                                ("en" = English)
+                    label    -> the name shown in the browser's
+                                caption-selection menu
+                    default  -> makes this track active by default
+
+                    ACCESSIBILITY NOTE: Captions are essential for
+                    deaf and hard-of-hearing visitors.  They also help
+                    viewers in noisy or quiet environments, and let
+                    search engines index the video content.
+                -->
+                <track
+                    src="captions/tour-en.vtt"
+                    kind="captions"
+                    srclang="en"
+                    label="English"
+                    default>
+
+                <!--
+                    FALLBACK TEXT
+                    Shown only in browsers that don't support <video>.
+                    Offer a download link as a fallback action.
+                -->
+                Your browser does not support the video element.
+                <a href="video/tour.mp4">Download the video</a>.
+
+            </video>
+
+            <p class="caption-note">
+                ♿ Closed captions are available. Click the CC button
+                in the video controls.
+            </p>
+
+        </section><!-- end video section -->
+
+
+        <!-- ====================================================
+             SECTION 3: EXTERNAL MEDIA LINKS
+             Demonstrates:
+               - The difference between EMBEDDED media (plays on
+                 the page using <audio>/<video>) and EXTERNAL media
+                 (a link the visitor clicks to open or download
+                 the file in a new tab or their media player).
+               - When to use each approach:
+                 EMBEDDED - short clips, podcasts, demos, tours
+                 EXTERNAL - downloadable files, large archives,
+                            content the visitor should save locally
+             ==================================================== -->
+        <section class="media-section">
+
+            <h2>📥 Download Our Media</h2>
+
+            <p>
+                Prefer to listen or watch offline? Download any of
+                our media files directly to your device.
+            </p>
+
+            <ul class="download-list">
+
+                <!--
+                    EXTERNAL AUDIO LINK
+                    This is NOT an <audio> element.  It is a plain
+                    anchor tag that links directly to the media file.
+                    The browser will either download it or open it
+                    in the system media player, depending on the
+                    visitor's settings.
+
+                    The "download" attribute suggests to the browser
+                    that it should download rather than navigate to
+                    the file, and optionally renames the saved file.
+                -->
+                <li>
+                    <a href="audio/episode1.mp3" download="PrairieBakery-Episode12.mp3">
+                        🎙️ Episode 12: The Science of Sourdough Starter (MP3)
+                    </a>
+                </li>
+
+                <!--
+                    EXTERNAL VIDEO LINK
+                    Same concept for video.  The visitor's device
+                    will download the file or open it in their
+                    default video player.
+                -->
+                <li>
+                    <a href="video/tour.mp4" download="PrairieBakery-Tour.mp4">
+                        🎬 Bakery Tour Video (MP4)
+                    </a>
+                </li>
+
+                <!--
+                    LINKING TO AN EXTERNAL SITE'S MEDIA
+                    You can also link to media hosted on another
+                    server (like YouTube or SoundCloud) using a
+                    full absolute URL.  target="_blank" opens in
+                    a new tab so the visitor doesn't leave your site.
+                -->
+                <li>
+                    <a href="https://www.youtube.com" target="_blank" rel="noopener">
+                        ▶ Watch all our videos on YouTube ↗
+                    </a>
+                </li>
+
+            </ul>
+
+        </section><!-- end external links section -->
+
+
+        <!-- ====================================================
+             SECTION 4: FORMAT REFERENCE
+             A simple reference card summarizing the audio and
+             video formats covered in Guide 9.  Good for students
+             to see the concepts summarized alongside live code.
+             ==================================================== -->
+        <section class="media-section format-reference">
+
+            <h2>📂 Format Quick Reference</h2>
+
+            <div class="format-grid">
+
+                <!-- Audio formats -->
+                <div class="format-group">
+                    <h3>🎵 Audio Formats</h3>
+                    <dl>
+                        <!-- MP3 -->
+                        <dt>.mp3 <code>audio/mpeg</code></dt>
+                        <dd>Best all-round choice. Supported everywhere.</dd>
+                        <!-- AAC -->
+                        <dt>.aac / .m4a <code>audio/aac</code></dt>
+                        <dd>Better quality than MP3 at the same file size.</dd>
+                        <!-- OGG -->
+                        <dt>.ogg <code>audio/ogg</code></dt>
+                        <dd>Open-source. Chrome and Firefox; limited Safari.</dd>
+                        <!-- WAV -->
+                        <dt>.wav <code>audio/wav</code></dt>
+                        <dd>Uncompressed. Great quality; very large files.</dd>
+                    </dl>
+                </div>
+
+                <!-- Video formats -->
+                <div class="format-group">
+                    <h3>🎬 Video Formats</h3>
+                    <dl>
+                        <!-- MP4 -->
+                        <dt>.mp4 <code>video/mp4</code></dt>
+                        <dd>Safe default. Supported by all modern browsers.</dd>
+                        <!-- WebM -->
+                        <dt>.webm <code>video/webm</code></dt>
+                        <dd>Open-source from Google. Smaller files.</dd>
+                        <!-- OGV -->
+                        <dt>.ogv <code>video/ogg</code></dt>
+                        <dd>Open-source Theora. Limited Safari support.</dd>
+                    </dl>
+                </div>
+
+            </div><!-- end format-grid -->
+
+        </section><!-- end format reference section -->
+
+    </main><!-- end main -->
+
+
+    <!-- ========================================================
+         SITE FOOTER
+         Static content that appears at the bottom of every page.
+         The &copy; entity displays the copyright symbol ©.
+         ======================================================== -->
+    <footer>
+        <p>&copy; 2026 Prairie Bakery &bull; All media is original content</p>
+    </footer>
+
+</body>
+</html>

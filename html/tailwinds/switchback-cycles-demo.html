@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <!--
+        The viewport meta tag below is what makes "mobile-first" responsive
+        design possible in the first place. Without it, mobile browsers
+        zoom the page out to fit a desktop-sized layout, and none of the
+        Tailwind breakpoint prefixes (sm:, md:, lg:) below would behave the
+        way you expect when testing on an actual phone.
+    -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Switchback Cycles</title>
+
+    <!-- ================================================================
+         TAILWIND SETUP
+         The Play CDN script below loads Tailwind directly in the browser.
+         No build step, no config file, no npm install. The moment this
+         script runs, it scans the rest of the page for class names it
+         recognizes (like "flex" or "text-lime-400") and generates only
+         the matching CSS on the fly.
+         This script tag MUST go in the <head>, and it should load before
+         any of your content needs styling, which is why it sits here
+         rather than at the bottom of the page.
+    ================================================================= -->
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<!--
+    The <body> tag, and every element inside it, has no custom CSS file
+    linked anywhere on this page. There is no <link rel="stylesheet">
+    tag at all. Every visual decision below, spacing, color, layout,
+    type, hover effects, comes from Tailwind utility classes written
+    directly on the elements that need them. If you "View Page Source"
+    on this file, the styling is sitting right there in the markup.
+-->
+
+<body class="bg-slate-100 text-slate-800">
+    <!--
+        These two classes are set once on <body> and apply to the whole
+        page unless something more specific overrides them further down:
+        - "bg-slate-100"   a very light gray background color, almost white
+        - "text-slate-800" a dark gray text color, easier on the eyes than pure black
+        Any element inside <body> automatically inherits this text color
+        until a class like "text-lime-400" or "text-slate-900" overrides it.
+    -->
+
+    <!-- ============================================================
+         NAVIGATION BAR
+         Concept: FLEXBOX
+         - "flex"            turns this nav into a flex container, which means
+                              its direct children (the logo and the link group)
+                              line up in a row instead of stacking like normal
+                              block elements would
+         - "justify-between" this is the flexbox property "justify-content: space-between"
+                              it pushes the FIRST child to the far left edge and
+                              the LAST child to the far right edge, with any extra
+                              children spaced evenly in between
+         - "items-center"    this is "align-items: center", it vertically centers
+                              the children along the cross axis so the logo text
+                              and the nav links line up with each other even if
+                              one is taller than the other
+         - "gap-6"           puts even spacing between the nav links (1.5rem, or 24px)
+         - "px-6 py-4"       padding on the x-axis (left/right, 1.5rem) and
+                              y-axis (top/bottom, 1rem), giving the bar breathing
+                              room instead of text touching the browser edge
+         - "bg-slate-900"    a near-black background color for the bar itself
+         - "text-slate-100"  a near-white text color so it's readable against
+                              that dark background
+    ============================================================= -->
+    <nav
+        class="flex justify-between items-center bg-slate-900 text-slate-100 px-6 py-4">
+
+        <!-- Logo / shop name -->
+        <span class="text-xl font-bold tracking-wide">Switchback Cycles</span>
+        <!--
+            "text-xl"        font size, larger than the default body text
+            "font-bold"      heavier font weight so it reads like a logo/wordmark
+            "tracking-wide"  adds a bit of extra letter spacing, a common touch
+                              for brand names and logos
+        -->
+
+        <!-- Link group: a second flex container nested inside the nav -->
+        <div class="flex gap-6 text-sm font-medium">
+            <!--
+                This div is ALSO a flex container, completely independent from
+                the <nav> flex container above it. Nesting flex containers like
+                this is normal and expected; each one only controls its own
+                direct children.
+                - "text-sm"      smaller font size than the body default, appropriate
+                                 for navigation links
+                - "font-medium"  a font weight between normal and bold
+            -->
+
+            <!--
+                Concept: HOVER STATES + TRANSITIONS
+                "hover:text-lime-400" is a VARIANT. The "hover:" prefix tells
+                Tailwind "only apply this class while the mouse is hovering over
+                this exact element." Without the prefix, text-lime-400 would
+                apply all the time.
+                "transition" by itself turns on smooth animation for any property
+                that changes (color, in this case). Without "transition" present,
+                the color would just snap instantly the moment the mouse arrives,
+                instead of fading smoothly.
+            -->
+            <a href="#featured" class="hover:text-lime-400 transition">Featured
+                Bikes</a>
+            <a href="#visit" class="hover:text-lime-400 transition">Visit</a>
+            <a href="#" class="hover:text-lime-400 transition">Service</a>
+        </div>
+    </nav>
+
+    <!-- ============================================================
+         HERO SECTION
+         Concept: TYPOGRAPHY + COLOR + SPACING + RESPONSIVE PREFIXES
+    ============================================================= -->
+    <header class="bg-slate-800 text-center py-20 px-6">
+        <!--
+            "bg-slate-800"  a dark slate background, slightly lighter than the
+                            nav bar above it so the two areas feel related but
+                            not identical
+            "text-center"   centers all the inline content (the heading and
+                            paragraph text) horizontally inside this header
+            "py-20 px-6"    generous padding: 5rem top/bottom, 1.5rem left/right,
+                            which is what gives a hero section that big, roomy feel
+        -->
+
+        <!--
+            Responsive font sizing:
+            "text-4xl"     applies on every screen size by default. Tailwind is
+                           "mobile first," meaning a plain, unprefixed class like
+                           this one is the BASE style that always applies unless
+                           something overrides it.
+            "md:text-6xl"  OVERRIDES the size, but only once the screen reaches
+                           the md breakpoint (768px) or wider. Below 768px, the
+                           heading stays at text-4xl.
+            Resize the browser window during the demo to show this heading grow
+            right at the 768px mark.
+        -->
+        <h1 class="text-4xl md:text-6xl font-bold text-lime-400 mb-4">
+            Find Your Next Ride
+        </h1>
+        <!--
+            "font-bold"      heavy weight, appropriate for a hero headline
+            "text-lime-400"  the bright accent color used throughout this page
+            "mb-4"           margin-bottom, pushes the next element away from this one
+        -->
+
+        <!-- "max-w-xl mx-auto" caps the line length and centers the paragraph block -->
+        <p class="text-slate-300 text-lg max-w-xl mx-auto mb-8">
+            Local bike shop carrying road, mountain, and commuter bikes, with a
+            service bay that can true a wheel while you wait.
+        </p>
+        <!--
+            "text-slate-300"  a light gray, slightly dimmer than pure white so the
+                               paragraph doesn't compete with the bright heading
+            "text-lg"          slightly larger than normal body text
+            "max-w-xl"          caps the paragraph's width so lines of text don't
+                               stretch uncomfortably wide on a large screen
+            "mx-auto"           with a max-width set, this centers the block
+                               horizontally (it sets both left and right margin to "auto")
+            "mb-8"              margin-bottom, more space than the heading's mb-4
+                               since this is a bigger visual break before the button
+        -->
+
+        <!--
+            Concept: BUTTON WITH HOVER + FOCUS + TRANSITION
+            "bg-lime-500"          default background color
+            "hover:bg-lime-600"    a darker shade that only applies on mouse hover,
+                                   giving visual feedback that the button is clickable
+            "focus:ring-4"         when this button receives keyboard focus (for
+                                   example, by tabbing to it), Tailwind draws a 4px
+                                   ring around it. This matters for accessibility,
+                                   since not every visitor uses a mouse.
+            "focus:ring-lime-300"  sets the color of that focus ring
+            "text-slate-900"       dark text on the bright lime background, for
+                                   readable contrast
+            "rounded-full"         fully rounded corners, turning this into a pill shape
+            "transition duration-300" animates the hover/focus changes over 300
+                                   milliseconds instead of snapping instantly
+        -->
+        <button class="bg-lime-500 hover:bg-lime-600 focus:ring-4 focus:ring-lime-300
+                        text-slate-900 font-semibold px-8 py-3 rounded-full
+                        transition duration-300">
+            Shop the Floor Models
+        </button>
+    </header>
+
+    <!-- ============================================================
+         FEATURED BIKES SECTION
+         Concept: GRID + RESPONSIVE COLUMNS + CARD HOVER EFFECTS + IMAGES
+    ============================================================= -->
+    <section id="featured" class="max-w-5xl mx-auto px-6 py-16">
+        <!--
+            "max-w-5xl mx-auto" caps the width of this whole section and centers
+                                it, the same pattern used on the hero paragraph,
+                                just applied to a much wider block
+            "px-6 py-16"        padding so the section content doesn't touch the
+                                edges of the page or the sections above/below it
+        -->
+
+        <h2 class="text-3xl font-bold text-slate-900 mb-2">Featured Bikes</h2>
+        <p class="text-slate-500 mb-10">In stock now, ready to roll out the
+            door.</p>
+
+        <!--
+            Responsive grid:
+            "grid"            turns this div into a grid container
+            "grid-cols-1"     1 column by default (mobile). Mobile first again:
+                              this is the base layout every screen size starts with.
+            "sm:grid-cols-2"  OVERRIDES to 2 columns starting at the sm breakpoint
+                              (640px) and up
+            "lg:grid-cols-3"  OVERRIDES again to 3 columns starting at the lg
+                              breakpoint (1024px) and up. Notice it does NOT need
+                              an "sm:" version too; once a wider breakpoint's rule
+                              is set, it takes over from there upward.
+            "gap-8"           even spacing between every card, both the horizontal
+                              gap between columns and the vertical gap between rows
+        -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+
+            <!--
+                BIKE CARD 1
+                Concept: CARD HOVER EFFECT
+                "bg-white"               white card background, contrasting against
+                                         the light slate page background behind it
+                "rounded-xl"             large rounded corners on the card itself
+                "shadow-md"              a medium drop shadow so the card reads as
+                                         raised off the page even before hovering
+                "p-5"                   padding on all four sides, inside the card
+                "transition duration-300" tells the browser to animate ANY property
+                                         that changes on this element over 300ms,
+                                         which is what makes both effects below
+                                         feel smooth instead of jumpy
+                "hover:-translate-y-2"   lifts the whole card UP slightly on hover.
+                                         The negative value (the dash before
+                                         "translate") moves it up rather than down.
+                "hover:shadow-xl"        swaps in a bigger, more spread out shadow
+                                         on hover, reinforcing the "lifted" feeling
+            -->
+            <div class="bg-white rounded-xl shadow-md p-5 transition duration-300
+                        hover:-translate-y-2 hover:shadow-xl">
+
+                <!--
+                    Image container:
+                    "bg-amber-200"      a fallback background color that shows through
+                                       if the image is slow to load, fails to load,
+                                       or has transparent areas
+                    "h-40"             fixes the container's height (10rem / 160px)
+                                       so every card in the row lines up evenly,
+                                       even though the actual photos may have
+                                       different proportions
+                    "rounded-lg"        rounds the corners of the image container to
+                                       match the rounded card around it
+                    "mb-4"             margin-bottom, separating the image from the
+                                       text below it
+                    "overflow-hidden"   this is important: it clips anything inside
+                                       this div that doesn't fit, so the image's
+                                       corners get cut to match "rounded-lg" instead
+                                       of the image showing square corners poking
+                                       out past the rounded container
+                -->
+                <div class="bg-amber-200 h-40 rounded-lg mb-4 overflow-hidden">
+                    <img src="images/fsx29-hd-comp-mtbk-9.jpg"
+                        class="w-full h-full object-contain">
+                    <!--
+                        "w-full"         the image stretches to fill 100% of the
+                                        container's width
+                        "h-full"         the image also stretches to fill 100% of
+                                        the container's height (the fixed h-40
+                                        from the parent div)
+                        "object-contain" this is the key class for product photos:
+                                        it scales the image to fit ENTIRELY inside
+                                        the box while keeping its original aspect
+                                        ratio, so the bike never looks stretched or
+                                        squished. Any leftover space inside the box
+                                        shows the amber background color from the
+                                        parent div instead of cropping the photo.
+                                        If you used "object-cover" instead, the
+                                        image would fill the box completely with no
+                                        background showing, but the edges of the
+                                        photo could get cropped off to make that fit.
+                    -->
+                </div>
+
+                <h3 class="font-semibold text-slate-900">Ridgeline Trail</h3>
+                <p class="text-sm text-slate-500 mb-2">Mountain, full suspension
+                </p>
+                <p class="text-lime-600 font-bold">$1,899.00</p>
+                <!--
+                    "font-semibold"   bike name, slightly bolder than normal text
+                    "text-sm"         the description line is smaller than the title
+                    "text-slate-500"  a medium gray, deliberately less prominent
+                                     than the dark heading above it
+                    "mb-2"            small gap before the price line
+                    "text-lime-600"   ties the price back to the page's accent color
+                    "font-bold"       makes the price stand out as the most
+                                     important number on the card
+                -->
+            </div>
+
+            <!-- BIKE CARD 2: identical structure and classes to Card 1 above,
+                 just a different image, name, description, and price -->
+            <div class="bg-white rounded-xl shadow-md p-5 transition duration-300
+                        hover:-translate-y-2 hover:shadow-xl">
+
+                <div class="bg-amber-200 h-40 rounded-lg mb-4 overflow-hidden">
+                    <img src="images/90026-63_ALLEZ-E5-DUNEWHT-DPLAKE_HERO-PDP.webp"
+                        class="w-full h-full object-contain">
+                </div>
+                <h3 class="font-semibold text-slate-900">Velocity Pro</h3>
+                <p class="text-sm text-slate-500 mb-2">Road, carbon frame</p>
+                <p class="text-lime-600 font-bold">$2,450.00</p>
+            </div>
+
+            <!-- BIKE CARD 3: same structure again. Repeating the exact same set
+                 of classes across all three cards is intentional, it keeps every
+                 card visually consistent without writing any custom CSS rules -->
+            <div class="bg-white rounded-xl shadow-md p-5 transition duration-300
+                        hover:-translate-y-2 hover:shadow-xl">
+
+                <div class="bg-amber-200 h-40 rounded-lg mb-4 overflow-hidden">
+                    <img src="images/92425-75_SIRRUS-X-30-ST-ASHGRY-BLKLQDMET_HERO-PDP.webp"
+                        class="w-full h-full object-contain" alt="Town Hauler">
+                    <!--
+                        This third image includes an "alt" attribute describing the
+                        photo. Every <img> tag should have one; it's read aloud by
+                        screen readers and shown if the image fails to load. It has
+                        nothing to do with Tailwind, it's plain HTML accessibility
+                        practice that still matters on a Tailwind-styled page.
+                    -->
+                </div>
+
+                <h3 class="font-semibold text-slate-900">Town Hauler</h3>
+                <p class="text-sm text-slate-500 mb-2">Commuter, step-through
+                </p>
+                <p class="text-lime-600 font-bold">$899.00</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================
+         VISIT US SECTION
+         Concept: FLEXBOX DIRECTION CHANGE ACROSS BREAKPOINTS
+         This is a different flex pattern than the nav bar above: instead
+         of always staying in a row, this layout STACKS on mobile and
+         becomes a side by side row once the screen is wide enough.
+    ============================================================= -->
+    <section id="visit" class="bg-slate-200 py-16 px-6">
+        <!--
+            "bg-slate-200"  a slightly darker gray than the page background,
+                           just enough contrast to visually separate this
+                           section from the white cards above it
+        -->
+        <div class="max-w-5xl mx-auto">
+
+            <!--
+                "flex-col"     stacked vertically by default (mobile). This is the
+                              flexbox property "flex-direction: column," meaning
+                              children line up top to bottom instead of left to right.
+                "md:flex-row" OVERRIDES to a horizontal row once the screen reaches
+                              the md breakpoint (768px) and up
+                "gap-10"      spacing between the two columns/rows, larger than the
+                              gap-6 used in the nav since these are bigger content
+                              blocks, not small nav links
+            -->
+            <div class="flex flex-col md:flex-row gap-10">
+
+                <!--
+                    "flex-1" lets this column GROW to fill the available space
+                    evenly. Since there are two divs here both set to "flex-1",
+                    they split the row 50/50 once the layout becomes horizontal
+                    at the md breakpoint. On mobile, where the parent is
+                    "flex-col" instead, flex-1 has no visible columns to split,
+                    so each block just takes the full width on its own row.
+                -->
+                <div class="flex-1">
+                    <h2 class="text-2xl font-bold text-slate-900 mb-3">Visit the
+                        Shop</h2>
+                    <p class="text-slate-600">
+                        Roll in for a free brake and gear check on any bike,
+                        used or
+                        new. Our service bay handles flats, tune-ups, and full
+                        rebuilds.
+                    </p>
+                </div>
+
+                <div class="flex-1">
+                    <h2 class="text-2xl font-bold text-slate-900 mb-3">Store
+                        Hours</h2>
+
+                    <!--
+                        A simple two-column layout built with flex, no <table> needed.
+                        Each row below is its OWN small flex container:
+                        "flex justify-between"  pushes the day to the left edge and
+                                                the time to the right edge of the row
+                        "border-b border-slate-300" a thin bottom border, used to
+                                                separate the rows visually like
+                                                horizontal ruled lines
+                        "py-2"                  padding top and bottom, giving each
+                                                row some breathing room
+                    -->
+                    <div
+                        class="flex justify-between text-slate-600 border-b border-slate-300 py-2">
+                        <span>Monday to Friday</span><span>9am to 6pm</span>
+                    </div>
+                    <div
+                        class="flex justify-between text-slate-600 border-b border-slate-300 py-2">
+                        <span>Saturday</span><span>9am to 5pm</span>
+                    </div>
+                    <!--
+                        The last row has no "border-b" class, since there's nothing
+                        below it left to separate from. This is a deliberate choice,
+                        not a mistake, the same way the last item in a list usually
+                        doesn't need a trailing divider.
+                    -->
+                    <div class="flex justify-between text-slate-600 py-2">
+                        <span>Sunday</span><span>Closed</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================
+         FOOTER
+         Concept: FLEXBOX + RESPONSIVE STACKING, reused on purpose so
+         students see the same pattern from the hero/visit sections
+         applied again at the very end of the page.
+    ============================================================= -->
+    <footer class="bg-slate-900 text-slate-400 text-sm">
+        <!--
+            "bg-slate-900"   matches the nav bar's background, visually bookending
+                            the page with the same dark color top and bottom
+            "text-slate-400" a medium-light gray, dimmer than the nav's
+                            text-slate-100 since footer text is usually meant to
+                            be quieter and less attention-grabbing
+            "text-sm"        smaller font size, standard for footer content
+        -->
+        <div
+            class="max-w-5xl mx-auto px-6 py-6
+                    flex flex-col sm:flex-row justify-between items-center gap-2">
+            <!--
+                "flex-col"        stacked by default (mobile)
+                "sm:flex-row"     becomes a horizontal row starting at the sm
+                                 breakpoint (640px), narrower than the md breakpoint
+                                 used in the Visit section above. A footer has less
+                                 content, so it can comfortably go horizontal at a
+                                 smaller screen width than the two-column Visit
+                                 section could.
+                "justify-between" once horizontal, pushes the copyright text to the
+                                 left and the social links to the right
+                "items-center"    keeps everything vertically aligned with each other
+                "gap-2"           small spacing used while stacked on mobile, so the
+                                 copyright line and the link row aren't jammed
+                                 together
+            -->
+            <p>&copy; 2026 Switchback Cycles. All rights reserved.</p>
+            <div class="flex gap-4">
+                <a href="#" class="hover:text-lime-400 transition">Instagram</a>
+                <a href="#"
+                    class="hover:text-lime-400 transition">Newsletter</a>
+            </div>
+        </div>
+    </footer>
+
+</body>
+
+</html>

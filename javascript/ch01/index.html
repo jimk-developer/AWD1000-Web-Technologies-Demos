@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!--
+    ============================================================
+    PIXEL ARCADE — GUIDE 1 LIVE DEMO
+    ============================================================
+    INSTRUCTOR NOTES (read before class)
+
+    This is the Guide 1 demo reskinned with the same Pixel Arcade
+    theme as the Guide 2 demo, so the two feel like one connected
+    series to students. Only Guide 1 concepts are covered here —
+    functions, scope, data types, and the event capture/bubbling
+    model all belong to Guide 2's demo, not this one.
+
+    1. Open the file in the browser first so students see the
+       finished page, then come back to VS Code and walk through
+       the code in this order.
+
+    2. SECTION MAP (matches Guide 1 headings):
+         - The <script> Element & Statements ......... lines ~115-130
+         - document.write() ............................ lines ~117-121
+         - Comments (line vs block) .................... throughout
+         - Objects, Properties, Methods ................ calculateTokenOrder()
+         - Variables & Constants (let/const/var) ....... lines ~123-138
+         - camelCase naming ............................ everywhere
+         - Expressions / operators / concatenation ..... calculateTokenOrder()
+         - Event handler attributes (onclick, etc.) .... buttons below
+         - window.alert() ............................... insertCoin()
+         - document.getElementById() ................... multiple spots
+         - Multiple <script> sections ................... script #1 vs #2
+         - External JS file + defer ..................... script.js link
+
+    3. LIVE-DEMO IDEAS (things to break on purpose):
+         - Uncomment the line in script #2 that tries to reassign
+           ARCADE_NAME (a const) to show students the TypeError.
+         - Temporarily move the external <script src="script.js">
+           tag up into <head> WITHOUT defer to show the "Cannot read
+           properties of null" error in the console, because the
+           footer element doesn't exist yet when the script runs.
+         - Change "let" to "var" in script #1 and ask students if
+           anything visibly breaks (it won't — that's the point:
+           var's looser scoping is a quiet bug magnet, not a loud one).
+    ============================================================
+-->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pixel Arcade — JavaScript Demo (Guide 1)</title>
+
+    <style>
+        :root {
+            --bg: #0D0B1E;
+            --panel: #181530;
+            --neon-pink: #FF2E92;
+            --neon-cyan: #2EE6D6;
+            --neon-yellow: #F4E04D;
+            --text: #E8E6F5;
+            --border: #3A3568;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 0 20px 50px;
+        }
+
+        header {
+            background: linear-gradient(135deg, #1B1640 0%, #0D0B1E 100%);
+            border-bottom: 2px solid var(--neon-cyan);
+            padding: 25px 20px;
+            text-align: center;
+            margin: 0 -20px 30px;
+        }
+
+        header h1 {
+            margin: 0 0 5px;
+            color: var(--neon-cyan);
+            text-shadow: 0 0 10px rgba(46, 230, 214, 0.6);
+        }
+
+        header p { margin: 0; color: #A8A4D9; font-size: 0.95rem; }
+
+        main { max-width: 700px; margin: 0 auto; }
+
+        section {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+
+        section h2 {
+            margin-top: 0;
+            color: var(--neon-pink);
+            font-size: 1.2rem;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 8px;
+        }
+
+        button {
+            background: var(--neon-cyan);
+            color: #0D0B1E;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin: 4px 6px 4px 0;
+        }
+
+        button:hover { background: var(--neon-yellow); }
+
+        #orderResult, #variableOutput {
+            margin-top: 15px;
+            padding: 12px;
+            background: #0D0B1E;
+            border: 1px dashed var(--border);
+            border-radius: 8px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            /* Disable ligatures so things like "!==" render as plain
+               characters instead of merged glyphs in monospace fonts */
+            font-variant-ligatures: none;
+            white-space: pre-line;
+            min-height: 20px;
+            color: var(--neon-yellow);
+        }
+
+        .cabinet-card {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            border-radius: 10px;
+            background: #14112B;
+            border: 1px solid var(--border);
+            transition: background 0.3s ease;
+        }
+
+        .cabinet-card .swatch {
+            width: 60px;
+            height: 60px;
+            border-radius: 8px;
+            flex-shrink: 0;
+            background: #4A4470; /* classic cabinet color */
+            transition: background 0.3s ease;
+        }
+
+        footer {
+            text-align: center;
+            color: #6E699C;
+            font-size: 0.85rem;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>🕹️ Pixel Arcade</h1>
+        <p>JavaScript Demo &mdash; Guide 1: Introduction to JavaScript</p>
+    </header>
+
+    <!--
+        ================================================================
+        document.write() DEMO
+        ================================================================
+        document.write() only works safely while the page is still
+        loading. Placing it here, right in the body flow, inserts a
+        paragraph at this exact spot. If you tried to call this same
+        method from a button's onclick AFTER the page finished loading,
+        it would wipe out the entire page — a good live "gotcha" to show.
+    -->
+    <script>
+        // Single-line comment: this runs immediately as the page loads.
+        document.write("<p style='text-align:center; color:#2EE6D6;'>" +
+            "INSERT COIN &mdash; written onto the page by document.write()!</p>");
+    </script>
+
+    <main>
+
+        <!--
+            ============================================================
+            SCRIPT #1 (placed early): declares the "shared" variables.
+            Guide 1 point: variables declared in one <script> block are
+            still visible to every <script> block that comes after it
+            on the same page — they all act like one connected program.
+            ============================================================
+        -->
+        <script>
+            /* Block comment:
+               These are our "global" demo variables. Notice the mix of
+               let, const, and var on purpose so we can compare them. */
+
+            const ARCADE_NAME = "Pixel Arcade";    // const: never reassigned
+            let tokenPrice = 0.75;                 // let: will change later
+            let serviceFee = 0.25;                 // let: may change later
+            const TAX_RATE = 0.08;                 // const: a fixed rate
+            var legacyGreeting = "Game On!";       // var: shown for comparison only
+
+            // camelCase naming convention: first word lowercase, each
+            // additional word capitalized. Compare tokenCount vs TOKENCOUNT.
+            let tokenCount = 1;
+        </script>
+
+        <section>
+            <h2>1. Variables &amp; Constants</h2>
+            <p>Click to see the current values of variables declared with
+                <code>let</code>, <code>const</code>, and <code>var</code>.</p>
+            <button type="button" onclick="showVariables()">Show Variable Values</button>
+            <div id="variableOutput"></div>
+        </section>
+
+        <section>
+            <h2>2. Expressions &amp; the Token Calculator</h2>
+            <p>Uses arithmetic operators and string concatenation with <code>+</code>.</p>
+            <button type="button" onclick="changeQuantity(1)">Add a Token (+1)</button>
+            <button type="button" onclick="calculateTokenOrder()">Calculate Total</button>
+            <div id="orderResult"></div>
+        </section>
+
+        <section>
+            <h2>3. Events in Action</h2>
+
+            <!-- Inline event handler attribute: onclick -->
+            <button type="button" onclick="insertCoin()">Insert Coin</button>
+
+            <!-- onmouseover / onmouseout: inline event handlers that
+                 change a property (style.color) directly -->
+            <h3 onmouseover="this.style.color='#FF2E92'"
+                onmouseout="this.style.color=''"
+                style="cursor:default;">Hover Over the High Score Board!</h3>
+
+            <!-- Cabinet skin toggled by document.getElementById() -->
+            <div class="cabinet-card">
+                <div class="swatch" id="cabinetSwatch"></div>
+                <span id="cabinetLabel">Classic Cabinet</span>
+            </div>
+            <button type="button" onclick="toggleCabinetSkin()">Show Neon Cabinet</button>
+        </section>
+
+    </main>
+
+    <footer id="arcadeFooter">
+        <!-- This text gets filled in by the EXTERNAL script.js file -->
+        Loading arcade hours&hellip;
+    </footer>
+
+    <!--
+        ============================================================
+        SCRIPT #2: the functions that respond to events above.
+        Notice it can use ARCADE_NAME, tokenPrice, etc. from SCRIPT #1
+        even though they are in a completely separate <script> block.
+        ============================================================
+    -->
+    <script>
+        // --- Variables & Constants demo -------------------------------
+        function showVariables() {
+            // Uncomment the next line to demonstrate a TypeError:
+            // ARCADE_NAME = "Renamed Arcade"; // can't reassign a const!
+
+            let output = "ARCADE_NAME (const): " + ARCADE_NAME + "\n";
+            output += "tokenPrice (let): " + tokenPrice + "\n";
+            output += "legacyGreeting (var): " + legacyGreeting + "\n";
+            output += "tokenCount (let, changes below): " + tokenCount;
+
+            document.getElementById("variableOutput").textContent = output;
+        }
+
+        // --- Expressions / calculator demo -----------------------------
+        function changeQuantity(amount) {
+            // Reassigning a let variable: no keyword needed again
+            tokenCount = tokenCount + amount; // could also write tokenCount += amount;
+        }
+
+        function calculateTokenOrder() {
+            // Building an expression from variables and an operator
+            let subtotal = tokenPrice * tokenCount;
+            let taxAmount = subtotal * TAX_RATE;
+            let total = subtotal + taxAmount + serviceFee;
+
+            // String concatenation with +: joining text and numbers.
+            // .toFixed(2) keeps the money values readable (two decimals).
+            let result = tokenCount + " token(s) from " + ARCADE_NAME + "\n";
+            result += "Subtotal: $" + subtotal.toFixed(2) + "\n";
+            result += "Tax: $" + taxAmount.toFixed(2) + "\n";
+            result += "Service Fee: $" + serviceFee.toFixed(2) + "\n";
+            result += "Total: $" + total.toFixed(2);
+
+            document.getElementById("orderResult").textContent = result;
+
+            /* Quick gotcha to show in class:
+               console.log(10 + "10");  // logs "1010", not 20
+               Mixing a number and a string with + always produces a
+               string. Try it in the browser console. */
+        }
+
+        // --- Events demo -------------------------------------------------
+        function insertCoin() {
+            // window.alert() pauses the page until the user clicks OK
+            window.alert("Thanks for playing at " + ARCADE_NAME + "!");
+        }
+
+        let showingNeon = false; // tracks which cabinet skin is displayed
+
+        function toggleCabinetSkin() {
+            // document.getElementById() grabs a reference to an element,
+            // then we read or change its properties directly.
+            let swatch = document.getElementById("cabinetSwatch");
+            let label = document.getElementById("cabinetLabel");
+
+            showingNeon = !showingNeon; // flip the boolean
+
+            if (showingNeon) {
+                swatch.style.background = "#FF2E92";   // neon skin color
+                label.textContent = "Neon Cabinet";
+            } else {
+                swatch.style.background = "#4A4470";   // classic skin color
+                label.textContent = "Classic Cabinet";
+            }
+        }
+    </script>
+
+    <!--
+        ============================================================
+        EXTERNAL SCRIPT FILE
+        ============================================================
+        Linked here with the defer attribute, which means: keep
+        downloading this file in the background while parsing the
+        rest of the HTML, but don't RUN it until the whole page
+        (including the footer above) has been built. That avoids
+        the "element not found" error you'd get if this ran too early.
+    -->
+    <script src="script.js" defer></script>
+
+</body>
+</html>

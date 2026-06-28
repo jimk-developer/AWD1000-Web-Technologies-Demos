@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!--
+    ============================================================
+    PIXEL ARCADE — GUIDE 2 LIVE DEMO
+    ============================================================
+    INSTRUCTOR NOTES
+
+    Section map (matches Guide 2 headings):
+      - Functions (named / anonymous / return) ........ Section 1 & 2
+      - Built-in functions (parseInt, isNaN, Number) ... Section 1
+      - Variable scope (block / function / global) .... Section 3
+      - Data types & typeof ............................ Section 4
+      - Truthy/falsy & the conditional operator ........ Section 5
+      - Comparison operators (== vs ===) ............... Section 6
+      - Operator precedence ............................. Section 1 (comments)
+      - Events: attribute, object property,
+        addEventListener, capture & bubbling ............ Section 7
+      - Form controls (value, checked, change event,
+        innerHTML) ........................................ Section 1
+      - Browser console / debugging ..................... bottom comment
+
+    LIVE-DEMO IDEAS (things to break on purpose):
+      - In script.js, change "false" to "true" in one of the
+        addEventListener capture-phase calls and have students
+        predict the new firing order before you click the button.
+      - In the Score Calculator, type letters into the score box
+        and click Calculate — isNaN() catches it and shows a
+        friendly message instead of "NaN" leaking onto the page.
+      - Open the console (F12) and misspell an id in
+        document.getElementById() in any function to show students
+        a live TypeError, exactly like the "Locating Errors" section
+        of the guide.
+    ============================================================
+-->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pixel Arcade — JavaScript Demo (Guide 2)</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <header>
+        <h1>🕹️ Pixel Arcade — Score Console</h1>
+        <p>JavaScript Demo &mdash; Guide 2: Functions, Data Types &amp;
+            Operators</p>
+    </header>
+
+    <!--
+        ============================================================
+        Global variables (global scope): visible to every function
+        and every <script> block on this page, including script.js.
+        ============================================================
+    -->
+    <script>
+        const PLAYER_NAME = "Pixel";      // const, global scope
+        let totalGamesPlayed = 0;         // let, global scope, will change
+    </script>
+
+    <main>
+
+        <!-- ============================================================
+             SECTION 1: Score Calculator
+             Covers: built-in functions, form control values, checkbox
+             .checked, the change event, compound assignment, template
+             literals, and operator precedence.
+        ============================================================= -->
+        <section>
+            <h2>1. Score Calculator</h2>
+            <p>Enter a raw score, choose a difficulty, and toggle Hardcore Mode.
+            </p>
+
+            <label>Raw score:
+                <input type="text" id="rawScoreInput" placeholder="e.g. 1500">
+            </label>
+            <br>
+
+            <label>
+                <input type="checkbox" id="hardcoreMode"> Hardcore Mode (+50%
+                bonus)
+            </label>
+            <br>
+
+            <!-- onchange recalculates automatically when the difficulty
+                 changes, even before the Calculate button is clicked -->
+            <label>Difficulty:
+                <select id="difficultySelect" onchange="calculateFinalScore()">
+                    <option value="1">Easy (x1.0)</option>
+                    <option value="1.25" selected>Normal (x1.25)</option>
+                    <option value="1.5">Hard (x1.5)</option>
+                </select>
+            </label>
+            <br>
+
+            <button type="button" onclick="calculateFinalScore()">Calculate Final
+                Score</button>
+            <div class="output" id="scoreOutput">Enter a score above and click
+                Calculate.</div>
+        </section>
+
+        <!-- ============================================================
+             SECTION 2: Functions — Named vs. Anonymous
+             The named function below is called by name from an onclick
+             attribute. The "Mystery Bonus" button has NO onclick attribute
+             at all — script.js attaches an anonymous function to it with
+             addEventListener, which is the more common real-world pattern.
+        ============================================================= -->
+        <section>
+            <h2>2. Functions: Named vs. Anonymous</h2>
+            <p>Roll for a bonus item using a named function you can see and call
+                directly.</p>
+            <button type="button" onclick="rollBonusItem()">Roll Bonus Item (named
+                function)</button>
+
+            <p>This button has no <code>onclick</code> in the HTML at all — open
+                script.js to see
+                the anonymous function attached to it with
+                <code>addEventListener()</code>.</p>
+            <button type="button" class="secondary" id="mysteryBonusBtn">Roll Mystery
+                Bonus</button>
+
+            <div class="output" id="bonusOutput">No bonus rolled yet.</div>
+        </section>
+
+        <!-- ============================================================
+             SECTION 3: Variable Scope Explorer
+             Block scope vs. function scope vs. global scope, live.
+        ============================================================= -->
+        <section>
+            <h2>3. Variable Scope Explorer</h2>
+            <p>Run the function below to see which variables are visible where.
+            </p>
+            <button type="button" onclick="runScopeDemo()">Run Scope Demo</button>
+            <div class="output" id="scopeOutput"></div>
+        </section>
+
+        <!-- ============================================================
+             SECTION 4: Data Types & typeof
+        ============================================================= -->
+        <section>
+            <h2>4. Data Types &amp; <code>typeof</code></h2>
+            <p>Click repeatedly to cycle a mystery variable through different
+                data types.</p>
+            <button type="button" onclick="inspectMysteryValue()">Inspect Mystery
+                Variable</button>
+            <div class="output" id="typeOutput"></div>
+        </section>
+
+        <!-- ============================================================
+             SECTION 5: Truthy / Falsy & the Conditional Operator
+        ============================================================= -->
+        <section>
+            <h2>5. Truthy/Falsy &amp; the Conditional (Ternary) Operator</h2>
+
+            <p><strong>Test a real JavaScript value</strong> (this is the
+                correct way to test
+                the guide's six falsy values, since they include actual numbers
+                and the
+                actual values <code>null</code>/<code>undefined</code> — not
+                text):</p>
+
+            <select id="falsyTestSelect">
+                <option value="emptyString">"" (empty string)</option>
+                <option value="zero">0 (the number zero)</option>
+                <option value="negZero">-0 (negative zero)</option>
+                <option value="nan">NaN</option>
+                <option value="nullVal">null</option>
+                <option value="undefinedVal">undefined</option>
+                <option value="falseBool">false (boolean)</option>
+                <option value="stringZero" selected>"0" (the STRING zero)
+                </option>
+                <option value="stringFalse">"false" (the STRING false)</option>
+                <option value="number42">42</option>
+                <option value="helloString">"hello"</option>
+            </select>
+            <button type="button" onclick="checkSelectedValue()">Check Selected Value</button>
+            <div class="output" id="falsyTestOutput"></div>
+
+            <p style="margin-top:18px;"><strong>Now try the text box</strong>
+                &mdash; type
+                <code>0</code> into it and click Check. It will say
+                <em>truthy</em>, and that's
+                correct: a text input can only ever hand back a string, so
+                typing <code>0</code>
+                gives you the string <code>"0"</code> (a non-empty string),
+                never the actual
+                number <code>0</code>. Compare that to "0" (the STRING zero) in
+                the dropdown
+                above &mdash; same value, same truthy result, for the same
+                reason.
+            </p>
+
+            <label>Combo text (try leaving it blank, or typing 0):
+                <input type="text" id="comboInput"
+                    placeholder="type something...">
+            </label>
+            <br>
+            <button type="button" onclick="checkTruthyFalsy()">Check Text Box</button>
+            <div class="output" id="truthyOutput"></div>
+        </section>
+
+        <!-- ============================================================
+             SECTION 6: Strict vs. Loose Equality
+        ============================================================= -->
+        <section>
+            <h2>6. Strict (<code>===</code>) vs. Loose (<code>==</code>)
+                Equality</h2>
+            <p>Compares the number <code>5</code> with the string
+                <code>"5"</code>.</p>
+            <button type="button" onclick="compareEquality()">Compare 5 and "5"</button>
+            <div class="output" id="equalityOutput"></div>
+        </section>
+
+        <!-- ============================================================
+             SECTION 7: Event Model — Capture & Bubbling
+             Three nested elements. script.js attaches listeners to all
+             three, once for the capture phase and once for the bubbling
+             phase, so clicking the button reveals the full travel path
+             of the event.
+        ============================================================= -->
+        <section>
+            <h2>7. Event Model: Capture &amp; Bubbling</h2>
+            <p>Click the button inside the nested boxes and watch the order
+                events fire in the log below.</p>
+
+            <div id="arcadeOuter">
+                OUTER CABINET
+                <div id="arcadeMiddle">
+                    MIDDLE SCREEN
+                    <br><br>
+                    <button type="button" id="arcadeButton">PRESS START</button>
+                </div>
+            </div>
+
+            <button type="button" class="secondary"
+                onclick="document.getElementById('eventLog').textContent = ''">
+                Clear Log
+            </button>
+            <div class="log" id="eventLog">(click PRESS START above)</div>
+        </section>
+
+    </main>
+
+    <footer id="arcadeFooter">Loading arcade status&hellip;</footer>
+
+    <!--
+        ============================================================
+        SCRIPT BLOCK #2 (still inline): functions for sections 1–6.
+        These run from onclick attributes, and they can see PLAYER_NAME
+        and totalGamesPlayed declared in script block #1 above, since
+        all script blocks on a page share the same global scope.
+        ============================================================
+    -->
+    <script>
+        // ---------- Section 1: Score Calculator -------------------------
+        function calculateFinalScore() {
+            let rawValue = document.getElementById("rawScoreInput").value;
+
+            // parseInt() converts the text box's string value to a whole
+            // number. Form values are ALWAYS strings, even from a number
+            // input, so this conversion step is required before any math.
+            let rawScore = parseInt(rawValue);
+
+
+            // isNaN() catches bad input (e.g. the box was empty, or the
+            // player typed letters) before it can break the calculation.
+            if (isNaN(rawScore)) {
+                document.getElementById("scoreOutput").textContent =
+                    "Enter a numeric score first (you typed: \"" + rawValue + "\").";
+                return; // stop here — nothing else in the function runs
+            }
+
+            let difficultyMultiplier = Number(document.getElementById("difficultySelect").value);
+            let isHardcore = document.getElementById("hardcoreMode").checked; // boolean
+
+            // Conditional (ternary) operator: pick a bonus rate based on
+            // the checkbox's boolean value.
+            let hardcoreBonus = isHardcore ? 1.5 : 1;
+
+            // Precedence note: multiplication happens before the variable
+            // is ever read again here — there's no ambiguity because each
+            // step is stored in its own variable, which is the easiest way
+            // to keep precedence readable in real code.
+            let finalScore = rawScore * difficultyMultiplier * hardcoreBonus;
+
+            totalGamesPlayed += 1; // compound assignment, global variable
+
+            // Template literal with embedded expressions (${ })
+            let message = `Final score: ${finalScore.toFixed(0)} pts
+Difficulty multiplier: x${difficultyMultiplier}
+Hardcore bonus: x${hardcoreBonus}
+Games played this session: ${totalGamesPlayed}`;
+
+            document.getElementById("scoreOutput").textContent = message;
+        }
+
+        // ---------- Section 2: Named function ----------------------------
+        function rollBonusItem() {
+            // An array of possible bonus items (objects/arrays are covered
+            // in a later guide — here it's just a simple lookup list).
+            let bonusItems = ["Extra Life", "Double Coins", "Shield Power-Up", "Speed Boost"];
+            let randomIndex = Math.floor(Math.random() * bonusItems.length);
+
+            // return sends a value back to whatever called this function
+            return showBonusResult(bonusItems[randomIndex]);
+        }
+
+        // Helper named function — also demonstrates passing an argument
+        function showBonusResult(itemName) {
+            document.getElementById("bonusOutput").textContent =
+                PLAYER_NAME + " received: " + itemName;
+        }
+
+        // ---------- Section 3: Scope demo --------------------------------
+        function runScopeDemo() {
+            let sessionMultiplier = 1; // function scope: visible anywhere in this function
+
+            let report = "Global scope: PLAYER_NAME = \"" + PLAYER_NAME + "\" (visible everywhere)\n";
+            report += "Function scope: sessionMultiplier starts at " + sessionMultiplier + "\n";
+
+            if (totalGamesPlayed >= 0) {
+                // bonusRound only exists inside this if-block (block scope)
+                let bonusRound = true;
+                sessionMultiplier = sessionMultiplier + 0.5;
+                report += "Block scope: bonusRound = " + bonusRound + " (only visible inside this if-block)\n";
+            }
+            // Uncomment the next line in class to show a ReferenceError:
+            // report += bonusRound;  // bonusRound does not exist out here!
+
+            report += "Back in function scope: sessionMultiplier is now " + sessionMultiplier;
+
+            document.getElementById("scopeOutput").textContent = report;
+        }
+
+        // ---------- Section 4: Data types & typeof -----------------------
+        let mysteryValues = [42, "high score", true, undefined, null, 3.14];
+        let mysteryIndex = 0;
+
+        function inspectMysteryValue() {
+            let currentValue = mysteryValues[mysteryIndex];
+
+            // typeof returns a string naming the value's data type
+            let result = "Value: " + currentValue + "\ntypeof result: \"" + typeof currentValue + "\"";
+
+            // Bonus gotcha worth mentioning out loud in class:
+            // typeof null actually returns "object", a long-standing
+            // quirk in JavaScript — not what most students expect!
+            if (currentValue === null) {
+                result += "\n(Yes, typeof null is \"object\" — a famous JavaScript quirk.)";
+            }
+
+            document.getElementById("typeOutput").textContent = result;
+
+            mysteryIndex = (mysteryIndex + 1) % mysteryValues.length; // cycle through the list
+        }
+
+        // ---------- Section 5: Truthy/Falsy & ternary --------------------
+
+        // HTML <option> values are always strings, so we can't put an
+        // actual number, null, or undefined directly in the markup.
+        // This lookup object maps each option's string key to the REAL
+        // JavaScript value we want to test — this is the only way to
+        // get true falsy values like the number 0, null, and undefined
+        // into the demo at all.
+        let falsyTestValues = {
+            emptyString: "",
+            zero: 0,
+            negZero: -0,
+            nan: NaN,
+            nullVal: null,
+            undefinedVal: undefined,
+            falseBool: false,
+            stringZero: "0",      // a non-empty string — truthy!
+            stringFalse: "false", // also a non-empty string — truthy!
+            number42: 42,
+            helloString: "hello"
+        };
+
+        function checkSelectedValue() {
+            let selectedKey = document.getElementById("falsyTestSelect").value;
+            let actualValue = falsyTestValues[selectedKey];
+
+            // Compact falsy check — equivalent to: actualValue ? ... : ...
+            let truthLabel = actualValue ? "truthy" : "falsy";
+
+            document.getElementById("falsyTestOutput").textContent =
+                `Value: ${String(actualValue)}\n` +
+                `typeof: "${typeof actualValue}"\n` +
+                `Result: ${truthLabel}`;
+        }
+
+        function checkTruthyFalsy() {
+            // IMPORTANT: .value on any text input is ALWAYS a string.
+            // Typing 0, false, or null here produces the STRINGS "0",
+            // "false", or "null" — every one of which is a non-empty
+            // string, and every non-empty string is truthy. Only an
+            // actually empty box (comboText === "") will be falsy here.
+            let comboText = document.getElementById("comboInput").value;
+
+            // Compact truthy/falsy check — equivalent to: if (comboText !== "")
+            let truthLabel = comboText ? "truthy" : "falsy";
+
+            // Ternary operator picks an achievement message
+            let achievement = totalGamesPlayed >= 1 ? "🏆 Veteran Player" : "🆕 New Player";
+
+            document.getElementById("truthyOutput").textContent =
+                `comboInput value: "${comboText}" (typeof: "${typeof comboText}")\n` +
+                `That value is: ${truthLabel}\nStatus: ${achievement}`;
+        }
+
+        // ---------- Section 6: Strict vs. loose equality -----------------
+        function compareEquality() {
+            let numberFive = 5;
+            let stringFive = "5";
+
+            let looseResult = (numberFive == stringFive);   // converts type first
+            let strictResult = (numberFive === stringFive); // compares type too
+
+            document.getElementById("equalityOutput").textContent =
+                `5 == "5"  -> ${looseResult}  (type conversion happens)\n` +
+                `5 === "5" -> ${strictResult}  (no conversion — number is never a string)`;
+        }
+    </script>
+
+    <!--
+        ============================================================
+        EXTERNAL SCRIPT FILE (script.js), loaded with defer.
+        Handles: window load event setup, events assigned as object
+        properties, addEventListener with anonymous functions, and
+        the capture/bubbling demo for Section 7.
+        ============================================================
+    -->
+    <script src="script.js" defer></script>
+
+</body>
+
+</html>

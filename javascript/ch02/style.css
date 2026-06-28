@@ -1,0 +1,148 @@
+        :root {
+            --bg: #0D0B1E;
+            --panel: #181530;
+            --neon-pink: #FF2E92;
+            --neon-cyan: #2EE6D6;
+            --neon-yellow: #F4E04D;
+            --text: #E8E6F5;
+            --border: #3A3568;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 0 20px 50px;
+        }
+
+        header {
+            background: linear-gradient(135deg, #1B1640 0%, #0D0B1E 100%);
+            border-bottom: 2px solid var(--neon-cyan);
+            padding: 25px 20px;
+            text-align: center;
+            margin: 0 -20px 30px;
+        }
+
+        header h1 {
+            margin: 0 0 5px;
+            color: var(--neon-cyan);
+            text-shadow: 0 0 10px rgba(46, 230, 214, 0.6);
+        }
+
+        header p {
+            margin: 0;
+            color: #A8A4D9;
+            font-size: 0.95rem;
+        }
+
+        main {
+            max-width: 720px;
+            margin: 0 auto;
+        }
+
+        section {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 22px 25px;
+            margin-bottom: 22px;
+        }
+
+        section h2 {
+            margin-top: 0;
+            color: var(--neon-pink);
+            font-size: 1.15rem;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 8px;
+        }
+
+        input[type="text"],
+        select {
+            background: #0D0B1E;
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 8px 10px;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            margin: 4px 4px 4px 0;
+        }
+
+        label {
+            font-size: 0.9rem;
+            margin-right: 12px;
+        }
+
+        button {
+            background: var(--neon-cyan);
+            color: #0D0B1E;
+            border: none;
+            padding: 9px 16px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin: 4px 6px 4px 0;
+        }
+
+        button:hover {
+            background: var(--neon-yellow);
+        }
+
+        button.secondary {
+            background: var(--neon-pink);
+            color: white;
+        }
+
+        button.secondary:hover {
+            background: #C9136F;
+        }
+
+        .output,
+        .log {
+            margin-top: 14px;
+            padding: 12px;
+            background: #0D0B1E;
+            border: 1px dashed var(--border);
+            border-radius: 8px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            /* Disable ligatures so combos like !==, >=, <= render as
+               plain characters instead of merged glyphs */
+            font-variant-ligatures: none;
+            white-space: pre-line;
+            min-height: 20px;
+            color: var(--neon-yellow);
+        }
+
+        /* Nested boxes for the capture/bubbling demo */
+        #arcadeOuter {
+            background: #14112B;
+            border: 2px solid var(--neon-pink);
+            border-radius: 10px;
+            padding: 25px;
+            text-align: center;
+        }
+
+        #arcadeMiddle {
+            background: #1E1A40;
+            border: 2px solid var(--neon-cyan);
+            border-radius: 10px;
+            padding: 25px;
+            display: inline-block;
+        }
+
+        #arcadeButton {
+            background: var(--neon-yellow);
+            color: #0D0B1E;
+        }
+
+        footer {
+            text-align: center;
+            color: #6E699C;
+            font-size: 0.85rem;
+            margin-top: 30px;
+        }

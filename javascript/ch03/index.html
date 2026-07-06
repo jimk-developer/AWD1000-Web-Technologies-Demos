@@ -1,0 +1,1192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!--
+    ============================================================
+    PIXEL ARCADE — GUIDE 3 LIVE DEMO
+    ============================================================
+    INSTRUCTOR NOTES
+
+    Section map (matches Guide 3 headings):
+
+      1. Arrays ................................. S1: Game Roster
+           - Array literal vs new Array()
+           - Elements & indexes (0-based)
+           - .length property
+           - Sparse arrays
+           - Multidimensional arrays (2D cabinet grid)
+
+      2. HTML Collections ....................... S2: Cabinet Wall
+           - getElementsByClassName()
+           - getElementsByTagName()
+           - Accessing by index vs by id
+           - Scoped search on a parent element
+
+      3. Console Logging ........................ S3: Log to Console
+           - console.log() for arrays & collections
+
+      4. Loops .................................. S4: Loops Lab
+           - while (pretest): credit drain countdown
+           - do...while (posttest): prize wheel (runs >= once)
+           - for: leaderboard builder + insertAdjacentHTML()
+           - Nested for: 2D arcade grid
+
+      5. Array Methods .......................... S5: Score Analytics
+           - forEach()  — list all scores
+           - map()      — bonus weekend multiplier
+           - filter()   — scores above threshold
+           - find()     — first player over a target
+           - reduce()   — total all scores
+
+      6. Decision Making ........................ S6: Rank Calculator
+           - if / if else / else if chain
+           - Nested if (VIP + score threshold)
+           - Browser test (navigator.geolocation)
+
+      7. switch Statement ....................... S7: Game Mode & Hours
+           - Basic switch with break
+           - Intentional fallthrough (Sat/Sun hours)
+
+      8. Flow Control ........................... S8: Loop Control Lab
+           - break: stop search when target found
+           - continue: skip undefined score slots
+           - Labeled loop: break out of both loops at once
+
+    LIVE "BREAK IT ON PURPOSE" IDEAS:
+      - In S4 while loop: comment out "credits--" to show
+        infinite loop (reload tab to recover).
+      - In S7 switch: remove a break to show accidental fallthrough.
+      - In S8 labeled loop: change "break gridSearch" to plain
+        "break" and ask students to predict the new behavior.
+      - Open DevTools (F12) before clicking S3 buttons to see
+        the expandable array in the console panel.
+    ============================================================
+-->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pixel Arcade — JavaScript Demo (Guide 3)</title>
+
+    <style>
+        :root {
+            --bg:          #0D0B1E;
+            --panel:       #181530;
+            --neon-pink:   #FF2E92;
+            --neon-cyan:   #2EE6D6;
+            --neon-yellow: #F4E04D;
+            --neon-purple: #A855F7;
+            --neon-green:  #22D65F;
+            --text:        #E8E6F5;
+            --border:      #3A3568;
+            --dim:         #6E699C;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 0 20px 60px;
+        }
+
+        header {
+            background: linear-gradient(135deg, #1B1640 0%, #0D0B1E 100%);
+            border-bottom: 2px solid var(--neon-cyan);
+            padding: 22px 20px;
+            text-align: center;
+            margin: 0 -20px 30px;
+        }
+
+        header h1 {
+            margin: 0 0 4px;
+            color: var(--neon-cyan);
+            text-shadow: 0 0 10px rgba(46,230,214,0.6);
+        }
+
+        header p { margin: 0; color: #A8A4D9; font-size: 0.92rem; }
+
+        main { max-width: 760px; margin: 0 auto; }
+
+        section {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 22px 25px;
+            margin-bottom: 24px;
+        }
+
+        section h2 {
+            margin-top: 0;
+            color: var(--neon-pink);
+            font-size: 1.12rem;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 8px;
+        }
+
+        section h3 {
+            color: var(--neon-cyan);
+            font-size: 0.95rem;
+            margin: 18px 0 8px;
+            border-left: 3px solid var(--neon-cyan);
+            padding-left: 8px;
+        }
+
+        button {
+            background: var(--neon-cyan);
+            color: #0D0B1E;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 6px;
+            font-size: 0.88rem;
+            font-weight: 700;
+            cursor: pointer;
+            margin: 4px 6px 4px 0;
+        }
+
+        button:hover { background: var(--neon-yellow); }
+
+        button.pink   { background: var(--neon-pink);   color: white; }
+        button.purple { background: var(--neon-purple);  color: white; }
+        button.green  { background: var(--neon-green);   color: #0D0B1E; }
+
+        button.pink:hover,
+        button.purple:hover,
+        button.green:hover { background: var(--neon-yellow); color: #0D0B1E; }
+
+        input[type="text"], input[type="number"], select {
+            background: #0D0B1E;
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 7px 10px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            margin: 4px 6px 4px 0;
+        }
+
+        /* ── output / log boxes ── */
+        .output {
+            margin-top: 12px;
+            padding: 12px 14px;
+            background: #0D0B1E;
+            border: 1px dashed var(--border);
+            border-radius: 8px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            /* Disable ligatures so !=, !==, >=, <= render as plain chars */
+            font-variant-ligatures: none;
+            font-feature-settings: "liga" 0, "calt" 0;
+            white-space: pre-wrap;
+            min-height: 22px;
+            color: var(--neon-yellow);
+            font-size: 0.88rem;
+            line-height: 1.6;
+        }
+
+        /* ── HTML Collection demo cabinet cards ── */
+        #cabinetWall {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 12px 0;
+        }
+
+        .game-card {
+            background: #14112B;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            padding: 10px 14px;
+            font-size: 0.85rem;
+            transition: border-color 0.25s, background 0.25s;
+        }
+
+        .game-card.highlighted {
+            border-color: var(--neon-yellow);
+            background: #2B2450;
+        }
+
+        /* ── loops rendered output targets ── */
+        #leaderboardList { list-style: none; padding: 0; margin: 8px 0 0; }
+        #leaderboardList li {
+            padding: 6px 12px;
+            border-radius: 6px;
+            margin-bottom: 5px;
+            background: #14112B;
+            border-left: 3px solid var(--neon-cyan);
+            font-size: 0.88rem;
+        }
+
+        #arcadeGrid {
+            display: grid;
+            gap: 6px;
+            margin: 10px 0 0;
+        }
+
+        .grid-cell {
+            background: #1E1A40;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 8px 10px;
+            font-size: 0.8rem;
+            text-align: center;
+        }
+
+        .grid-cell.found-cell {
+            background: var(--neon-purple);
+            color: white;
+            border-color: var(--neon-purple);
+        }
+
+        /* ── array methods output ── */
+        #analyticsOutput { color: var(--neon-green); }
+
+        footer {
+            text-align: center;
+            color: var(--dim);
+            font-size: 0.82rem;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>🕹️ Pixel Arcade — Command Center</h1>
+    <p>JavaScript Demo &mdash; Guide 3: Arrays, Loops, Decisions &amp; Flow Control</p>
+</header>
+
+<!--
+    ============================================================
+    GLOBAL DATA (declared early so every section can use it)
+    ============================================================
+-->
+<script>
+    // Array literal: the most common way to create an array.
+    // Values are listed inside square brackets, separated by commas.
+    let gameRoster = ["Galactic Blaster", "Turbo Drift", "Shadow Maze", "Neon Fighter", "Pixel Quest"];
+
+    // A second array with a different data type (numbers)
+    let dailyTokens = [320, 415, 289, 510, 388];
+
+    // Multidimensional array: an array of arrays.
+    // Think of it as a grid — each inner array is one row.
+    // Row 0 = cabinet row A, Row 1 = row B, Row 2 = row C.
+    let arcadeCabinets = [
+        ["Galactic Blaster", "Turbo Drift",  "Neon Fighter"],  // Row A
+        ["Shadow Maze",      "Pixel Quest",  "Retro Racers"],   // Row B
+        ["Thunder Strike",   "Grid Runner",  "Cyber Punch"]     // Row C
+    ];
+
+    // Leaderboard data used by several sections
+    let leaderboard = [
+        { name: "AceX",    score: 14800 },
+        { name: "NeonZap",  score: 9200 },
+        { name: "PixelKid", score: 6750 },
+        { name: "GridRacer",score: 3400 },
+        { name: "BlastR",   score: 18500 }
+    ];
+</script>
+
+<main>
+
+<!-- ============================================================
+     SECTION 1 — ARRAYS
+     Concepts: literal, new Array(), indexes, length, sparse, 2D
+============================================================ -->
+<section>
+    <h2>1. Arrays — The Game Roster</h2>
+
+    <h3>Array Literal &amp; Indexes</h3>
+    <p>The <code>gameRoster</code> array holds 5 game names. Click to inspect it.</p>
+    <button onclick="showRosterInfo()">Inspect Roster Array</button>
+
+    <h3>Read &amp; Update by Index</h3>
+    <label>Index (0 – 4):
+        <input type="number" id="indexInput" value="0" min="0" max="4" style="width:60px;">
+    </label>
+    <button onclick="readByIndex()">Read Element</button>
+    <button class="pink" onclick="replaceByIndex()">Replace with "COIN-OP"</button>
+
+    <h3>Sparse Array</h3>
+    <p>A sparse array has gaps — some index positions are left <code>undefined</code>. Its
+        <code>.length</code> counts from 0 to the highest assigned index, including any gaps.</p>
+    <button class="purple" onclick="showSparseArray()">Build &amp; Inspect Sparse Array</button>
+
+    <h3>Multidimensional Array (2D Cabinet Grid)</h3>
+    <p>Each inner array is one row of arcade cabinets.
+        Access a cell with <code>arcadeCabinets[row][col]</code>.</p>
+    <button class="green" onclick="show2DArray()">Inspect 2D Array</button>
+
+    <div class="output" id="arrayOutput">Click a button above.</div>
+</section>
+
+<script>
+    // ---- Section 1 functions ----------------------------------------
+
+    function showRosterInfo() {
+        // .length reports the total number of elements
+        let info = "gameRoster.length: " + gameRoster.length + "\n\n";
+
+        // Accessing individual elements by their numeric index.
+        // Indexes always start at 0, so the LAST valid index is length - 1.
+        info += "Index 0: " + gameRoster[0] + "\n";
+        info += "Index 2: " + gameRoster[2] + "\n";
+        info += "Last element (index " + (gameRoster.length - 1) + "): "
+              + gameRoster[gameRoster.length - 1] + "\n\n";
+
+        // Logging the full array in a formatted list
+        info += "Full roster:\n";
+        for (let i = 0; i < gameRoster.length; i++) {
+            info += "  [" + i + "] " + gameRoster[i] + "\n";
+        }
+
+        document.getElementById("arrayOutput").textContent = info;
+    }
+
+    function readByIndex() {
+        let idx = parseInt(document.getElementById("indexInput").value);
+
+        // Guard against out-of-bounds indexes
+        if (idx < 0 || idx >= gameRoster.length || isNaN(idx)) {
+            document.getElementById("arrayOutput").textContent =
+                "Index out of range. Valid indexes: 0 to " + (gameRoster.length - 1);
+            return;
+        }
+
+        document.getElementById("arrayOutput").textContent =
+            "gameRoster[" + idx + "] = \"" + gameRoster[idx] + "\"";
+    }
+
+    function replaceByIndex() {
+        let idx = parseInt(document.getElementById("indexInput").value);
+        if (idx < 0 || idx >= gameRoster.length || isNaN(idx)) { return; }
+
+        let oldValue = gameRoster[idx];
+
+        // Assigning to an indexed position REPLACES the value at that spot.
+        // The array's length does not change.
+        gameRoster[idx] = "COIN-OP";
+
+        document.getElementById("arrayOutput").textContent =
+            "gameRoster[" + idx + "] changed:\n" +
+            "  Before: \"" + oldValue + "\"\n" +
+            "  After:  \"" + gameRoster[idx] + "\"\n\n" +
+            "Length is still: " + gameRoster.length;
+    }
+
+    function showSparseArray() {
+        // Start with an empty array, then assign values at non-consecutive indexes.
+        // Indexes 1 through 4 are skipped, leaving them as undefined.
+        let tickets = [];
+        tickets[0] = 101;
+        tickets[5] = 106; // indexes 1-4 are implicit undefined
+
+        let info = "tickets[0] = " + tickets[0] + "\n";
+        info += "tickets[1] = " + tickets[1] + " (undefined — never assigned)\n";
+        info += "tickets[5] = " + tickets[5] + "\n\n";
+        info += "tickets.length = " + tickets.length +
+                " (NOT 2 — length goes up to highest index + 1)";
+
+        document.getElementById("arrayOutput").textContent = info;
+    }
+
+    function show2DArray() {
+        // arcadeCabinets[row][col] — first bracket picks the inner array (row),
+        // second bracket picks the element within that row (column).
+        let info = "arcadeCabinets[0][0] = \"" + arcadeCabinets[0][0] + "\"  (Row A, Col 0)\n";
+        info += "arcadeCabinets[1][2] = \"" + arcadeCabinets[1][2] + "\"  (Row B, Col 2)\n";
+        info += "arcadeCabinets[2][1] = \"" + arcadeCabinets[2][1] + "\"  (Row C, Col 1)\n\n";
+
+        // .length on the outer array = number of rows
+        info += "Row count: arcadeCabinets.length = " + arcadeCabinets.length + "\n";
+        // .length on an inner array = number of columns in that row
+        info += "Cols in Row A: arcadeCabinets[0].length = " + arcadeCabinets[0].length + "\n\n";
+
+        info += "Full grid:\n";
+        for (let row = 0; row < arcadeCabinets.length; row++) {
+            for (let col = 0; col < arcadeCabinets[row].length; col++) {
+                info += "  [" + row + "][" + col + "] " + arcadeCabinets[row][col] + "\n";
+            }
+        }
+
+        document.getElementById("arrayOutput").textContent = info;
+    }
+</script>
+
+
+<!-- ============================================================
+     SECTION 2 — HTML COLLECTIONS
+     Concepts: getElementsByClassName, getElementsByTagName,
+               access by index, access by id, scoped search
+============================================================ -->
+<section>
+    <h2>2. HTML Collections — Cabinet Wall</h2>
+
+    <p>The boxes below are <code>&lt;div&gt;</code> elements with class <code>"game-card"</code>.
+        JavaScript can grab them all at once as a live collection.</p>
+
+    <!-- These are the elements the collection demo will work with.
+         Note the mix of class names for the scoped search demo. -->
+    <div id="cabinetWall">
+        <div class="game-card featured-card" id="card-galactic">🚀 Galactic Blaster</div>
+        <div class="game-card" id="card-turbo">🏎️ Turbo Drift</div>
+        <div class="game-card featured-card" id="card-shadow">🌑 Shadow Maze</div>
+        <div class="game-card" id="card-neon">⚡ Neon Fighter</div>
+        <div class="game-card" id="card-pixel">👾 Pixel Quest</div>
+    </div>
+
+    <button onclick="getByClassName()">getElementsByClassName()</button>
+    <button class="pink" onclick="getByTagName()">getElementsByTagName()</button>
+    <button class="purple" onclick="getScopedSearch()">Scoped Search (featured cards only)</button>
+    <button class="green" onclick="resetCards()">Reset Cards</button>
+
+    <div class="output" id="collectionOutput">Click a button to inspect the collection.</div>
+</section>
+
+<script>
+    // ---- Section 2 functions ----------------------------------------
+
+    function getByClassName() {
+        // getElementsByClassName() returns a live HTML Collection of all elements
+        // that currently have the specified class, anywhere on the page.
+        let cards = document.getElementsByClassName("game-card");
+
+        let info = "getElementsByClassName(\"game-card\")\n";
+        info += "Collection length: " + cards.length + "\n\n";
+
+        // Collections are accessed by index, just like arrays.
+        // Here we loop through and highlight each card on the page.
+        for (let i = 0; i < cards.length; i++) {
+            cards[i].classList.add("highlighted");
+            info += "[" + i + "] id = \"" + cards[i].id + "\"\n";
+        }
+
+        document.getElementById("collectionOutput").textContent = info;
+    }
+
+    function getByTagName() {
+        // getElementsByTagName() grabs every element matching a tag name.
+        // "div" will match a LOT of elements on the page, so we scope it.
+        let wall = document.getElementById("cabinetWall");
+
+        // Calling getElementsByTagName on a specific element (wall) instead
+        // of document narrows the search to JUST that element's children.
+        let divs = wall.getElementsByTagName("div");
+
+        let info = "getElementsByTagName(\"div\") scoped to #cabinetWall\n";
+        info += "Collection length: " + divs.length + "\n\n";
+
+        for (let i = 0; i < divs.length; i++) {
+            divs[i].classList.add("highlighted");
+        }
+
+        info += "Access by index: divs[0].id = \"" + divs[0].id + "\"\n";
+        // Collections can also be accessed by the element's id attribute
+        info += "Access by id:    divs[\"card-neon\"].id = \"" + divs["card-neon"].id + "\"";
+
+        document.getElementById("collectionOutput").textContent = info;
+    }
+
+    function getScopedSearch() {
+        // Narrow the search further: only .featured-card elements within #cabinetWall
+        let wall = document.getElementById("cabinetWall");
+        let featured = wall.getElementsByClassName("featured-card");
+
+        let info = "Scoped search: #cabinetWall -> .featured-card\n";
+        info += "Collection length: " + featured.length + " (not all " +
+                wall.getElementsByClassName("game-card").length + " cards)\n\n";
+
+        for (let i = 0; i < featured.length; i++) {
+            featured[i].classList.add("highlighted");
+            info += "[" + i + "] " + featured[i].textContent.trim() + "\n";
+        }
+
+        document.getElementById("collectionOutput").textContent = info;
+    }
+
+    function resetCards() {
+        let cards = document.getElementsByClassName("game-card");
+        for (let i = 0; i < cards.length; i++) {
+            cards[i].classList.remove("highlighted");
+        }
+        document.getElementById("collectionOutput").textContent = "Cards reset.";
+    }
+</script>
+
+
+<!-- ============================================================
+     SECTION 3 — CONSOLE LOGGING
+     Concepts: console.log(), inspecting arrays in DevTools
+============================================================ -->
+<section>
+    <h2>3. Console Logging Arrays</h2>
+    <p>Open DevTools (<strong>F12</strong>) and click the buttons. The arrays will appear
+        as expandable objects in the Console panel — far more useful than
+        trying to print a whole array to the page while debugging.</p>
+
+    <button onclick="logGameRoster()">Log gameRoster</button>
+    <button class="pink" onclick="logLeaderboard()">Log leaderboard</button>
+    <button class="purple" onclick="logCabinets()">Log arcadeCabinets (2D)</button>
+
+    <div class="output" id="consoleOutput">Check the browser Console (F12) after clicking.</div>
+</section>
+
+<script>
+    function logGameRoster() {
+        // console.log() sends the value to the browser's developer console.
+        // For arrays this shows an expandable view: click the triangle
+        // in the console to see each index and its value.
+        console.log("gameRoster array:", gameRoster);
+        console.log("gameRoster.length:", gameRoster.length);
+
+        document.getElementById("consoleOutput").textContent =
+            "Logged to console:\n  gameRoster  (length: " + gameRoster.length + ")\n" +
+            "Open DevTools > Console tab to see the expandable array.";
+    }
+
+    function logLeaderboard() {
+        // Arrays of objects expand in the console to show each object's properties.
+        // This is more readable than trying to stringify it onto the page.
+        console.log("leaderboard:", leaderboard);
+
+        document.getElementById("consoleOutput").textContent =
+            "Logged to console:\n  leaderboard  (" + leaderboard.length + " entries)\n" +
+            "Expand each object in the Console to see .name and .score.";
+    }
+
+    function logCabinets() {
+        // A 2D array shows as nested expandable arrays in the console.
+        console.log("arcadeCabinets (2D):", arcadeCabinets);
+        console.log("Row count:", arcadeCabinets.length);
+        console.log("Row B:", arcadeCabinets[1]);
+
+        document.getElementById("consoleOutput").textContent =
+            "Logged to console:\n  arcadeCabinets  (" + arcadeCabinets.length + " rows)\n" +
+            "Expand the outer array, then each inner array to see the grid.";
+    }
+</script>
+
+
+<!-- ============================================================
+     SECTION 4 — LOOPS
+     Concepts: while, do...while, for, nested for, insertAdjacentHTML
+============================================================ -->
+<section>
+    <h2>4. Loops — The Loop Lab</h2>
+
+    <!-- WHILE: pretest loop -->
+    <h3>while Loop (pretest) — Credit Drain</h3>
+    <p>A <code>while</code> loop checks its condition BEFORE each iteration. If the starting
+        value is already falsy, the loop body never runs at all.</p>
+    <label>Starting credits:
+        <input type="number" id="creditInput" value="5" min="0" max="10" style="width:55px;">
+    </label>
+    <button onclick="runWhileLoop()">Run while Loop</button>
+    <div class="output" id="whileOutput"></div>
+
+    <!-- DO...WHILE: posttest loop -->
+    <h3>do...while Loop (posttest) — Prize Wheel</h3>
+    <p>A <code>do...while</code> loop runs its body FIRST, then checks the condition. The
+        body executes at least once even if credits are already 0.</p>
+    <label>Credits:
+        <input type="number" id="wheelCreditInput" value="0" min="0" max="5" style="width:55px;">
+    </label>
+    <button class="pink" onclick="runDoWhileLoop()">Spin Prize Wheel</button>
+    <div class="output" id="doWhileOutput"></div>
+
+    <!-- FOR: building a list with insertAdjacentHTML -->
+    <h3>for Loop — Leaderboard Builder</h3>
+    <p>A <code>for</code> loop keeps init, condition, and update together in one line.
+        <code>insertAdjacentHTML("beforeend", ...)</code> adds each item without
+        replacing what's already in the list.</p>
+    <button class="purple" onclick="buildLeaderboard()">Build Leaderboard</button>
+    <button onclick="clearLeaderboard()">Clear</button>
+    <ul id="leaderboardList"></ul>
+
+    <!-- NESTED FOR: rendering a 2D arcade grid -->
+    <h3>Nested for Loop — 2D Cabinet Grid</h3>
+    <p>The outer loop walks the rows, the inner loop walks each column within that row.
+        The inner loop completes all its iterations for every single outer iteration.</p>
+    <button class="green" onclick="buildArcadeGrid()">Render Cabinet Grid</button>
+    <div id="arcadeGrid"></div>
+</section>
+
+<script>
+    // ---- Section 4 functions ----------------------------------------
+
+    function runWhileLoop() {
+        let credits = parseInt(document.getElementById("creditInput").value);
+        let output = "";
+
+        // A while loop is a PRETEST loop: condition checked BEFORE the body runs.
+        // If credits starts at 0, the body never executes — watch for that!
+        while (credits > 0) {
+            output += "Playing game... credits remaining: " + credits + "\n";
+            credits--; // CRITICAL: without this, we get an infinite loop!
+        }
+
+        // *** DEMO IDEA: comment out "credits--" above and show the
+        //     browser tab hanging. Reload to recover. ***
+
+        output += credits === 0
+            ? "GAME OVER — out of credits."
+            : "(Loop never ran — credits were already 0 or less.)";
+
+        document.getElementById("whileOutput").textContent = output;
+    }
+
+    function runDoWhileLoop() {
+        let credits = parseInt(document.getElementById("wheelCreditInput").value);
+        let prizes = ["Extra Life", "Bonus Coins", "Speed Boost", "Shield", "No Prize"];
+        let output = "";
+        let spins = 0;
+
+        // A do...while is a POSTTEST loop: body runs FIRST, condition checked AFTER.
+        // Even with 0 credits the wheel spins once — guaranteed first execution.
+        do {
+            let prize = prizes[Math.floor(Math.random() * prizes.length)];
+            spins++;
+            output += "Spin #" + spins + " -> " + prize + "\n";
+            credits--;
+        } while (credits > 0); // condition checked AFTER the first spin
+
+        output += "\nTotal spins: " + spins +
+                  "\n(Even starting at 0 credits, the wheel spun once!)";
+
+        document.getElementById("doWhileOutput").textContent = output;
+    }
+
+    function buildLeaderboard() {
+        let list = document.getElementById("leaderboardList");
+        list.innerHTML = ""; // clear any previous build
+
+        // A for loop combines init (let i=0), condition (i < length),
+        // and update (i++) into one compact header line.
+        for (let i = 0; i < leaderboard.length; i++) {
+            let rank = i + 1; // human-readable rank (1-based)
+            let entry = leaderboard[i];
+
+            // insertAdjacentHTML("beforeend", html) APPENDS new HTML inside the
+            // target element without wiping out what's already there.
+            // Compare to innerHTML +=, which re-parses the whole element each time.
+            list.insertAdjacentHTML(
+                "beforeend",
+                "<li>#" + rank + " &nbsp; " + entry.name +
+                " &nbsp; <strong>" + entry.score.toLocaleString() + " pts</strong></li>"
+            );
+        }
+    }
+
+    function clearLeaderboard() {
+        document.getElementById("leaderboardList").innerHTML = "";
+    }
+
+    function buildArcadeGrid() {
+        let grid = document.getElementById("arcadeGrid");
+        grid.innerHTML = "";
+
+        // Set CSS grid columns to match the number of columns in row 0
+        grid.style.gridTemplateColumns =
+            "repeat(" + arcadeCabinets[0].length + ", 1fr)";
+
+        // OUTER loop: iterate over rows
+        for (let row = 0; row < arcadeCabinets.length; row++) {
+            // INNER loop: iterate over every column in the current row.
+            // The inner loop runs to completion for EACH single outer iteration.
+            for (let col = 0; col < arcadeCabinets[row].length; col++) {
+                grid.insertAdjacentHTML(
+                    "beforeend",
+                    "<div class='grid-cell'>" +
+                    "<span style='color:var(--dim);font-size:0.72rem;'>[" + row + "][" + col + "]</span><br>" +
+                    arcadeCabinets[row][col] +
+                    "</div>"
+                );
+            }
+        }
+    }
+</script>
+
+
+<!-- ============================================================
+     SECTION 5 — ARRAY METHODS
+     Concepts: forEach, map, filter, find, reduce (with callbacks)
+============================================================ -->
+<section>
+    <h2>5. Array Methods — Score Analytics</h2>
+    <p>These methods replace manual loops with a callback function. The method name
+        describes the intent; the callback handles the per-element logic.</p>
+
+    <button onclick="runForEach()">forEach() &mdash; List Scores</button>
+    <button class="pink" onclick="runMap()">map() &mdash; Weekend Bonus</button>
+    <button class="purple" onclick="runFilter()">filter() &mdash; High Scores Only</button>
+    <button class="green" onclick="runFind()">find() &mdash; First Player Over 10K</button>
+    <button onclick="runReduce()" style="background:var(--neon-yellow);color:#0D0B1E;">
+        reduce() &mdash; Grand Total
+    </button>
+
+    <div class="output" id="analyticsOutput">Click a method button to run it.</div>
+</section>
+
+<script>
+    // ---- Section 5 functions ----------------------------------------
+
+    function runForEach() {
+        // forEach() calls the callback once for EVERY element in order.
+        // It does NOT return a new array — it's purely for side-effects.
+        let output = "forEach() — iterating leaderboard:\n";
+
+        leaderboard.forEach(function(player) {
+            // "player" is the current element on each iteration
+            output += "  " + player.name + ": " + player.score.toLocaleString() + " pts\n";
+        });
+
+        output += "\n(forEach does not return a new array — it just runs the callback.)";
+        document.getElementById("analyticsOutput").textContent = output;
+    }
+
+    function runMap() {
+        // map() calls the callback for every element and RETURNS A NEW ARRAY
+        // containing whatever the callback returns for each element.
+        // The original array is not changed.
+        const WEEKEND_MULTIPLIER = 1.5;
+
+        let boostedScores = leaderboard.map(function(player) {
+            // Return a new object with the same name but a boosted score.
+            // The original leaderboard array is left unchanged.
+            return { name: player.name, score: Math.round(player.score * WEEKEND_MULTIPLIER) };
+        });
+
+        let output = "map() — Weekend x" + WEEKEND_MULTIPLIER + " bonus scores:\n";
+        boostedScores.forEach(function(p) {
+            output += "  " + p.name + ": " + p.score.toLocaleString() + " pts\n";
+        });
+        output += "\nOriginal leaderboard unchanged:\n";
+        leaderboard.forEach(function(p) {
+            output += "  " + p.name + ": " + p.score.toLocaleString() + " pts\n";
+        });
+
+        document.getElementById("analyticsOutput").textContent = output;
+    }
+
+    function runFilter() {
+        // filter() calls the callback for every element and returns a NEW ARRAY
+        // containing only elements where the callback returned true (truthy).
+        const THRESHOLD = 10000;
+
+        let topPlayers = leaderboard.filter(function(player) {
+            return player.score >= THRESHOLD; // keep this player?
+        });
+
+        let output = "filter() — players with score >= " + THRESHOLD.toLocaleString() + ":\n";
+
+        if (topPlayers.length === 0) {
+            output += "  (no players matched)";
+        } else {
+            topPlayers.forEach(function(p) {
+                output += "  " + p.name + ": " + p.score.toLocaleString() + " pts\n";
+            });
+            output += "\n" + topPlayers.length + " of " + leaderboard.length + " players qualified.";
+        }
+
+        document.getElementById("analyticsOutput").textContent = output;
+    }
+
+    function runFind() {
+        // find() returns the FIRST element where the callback returns true.
+        // If nothing matches, it returns undefined.
+        const TARGET = 10000;
+
+        let found = leaderboard.find(function(player) {
+            return player.score > TARGET;
+        });
+
+        let output = "find() — first player with score > " + TARGET.toLocaleString() + ":\n\n";
+
+        // Check for undefined before using the result
+        if (found !== undefined) {
+            output += "  Found: " + found.name + " with " + found.score.toLocaleString() + " pts\n";
+            output += "\n(Stops searching as soon as the first match is found —\n" +
+                      " does NOT scan the rest of the array.)";
+        } else {
+            output += "  No player found. (find() returned undefined)";
+        }
+
+        document.getElementById("analyticsOutput").textContent = output;
+    }
+
+    function runReduce() {
+        // reduce() combines every element into ONE accumulated result.
+        // The callback receives the running accumulator and the current element.
+        // The second argument to reduce() is the starting value of the accumulator.
+        let grandTotal = leaderboard.reduce(function(accumulator, player) {
+            return accumulator + player.score; // add this player's score to the running total
+        }, 0); // 0 is the accumulator's starting value
+
+        let average = Math.round(grandTotal / leaderboard.length);
+
+        let output = "reduce() — totaling all scores:\n";
+        leaderboard.forEach(function(p) { output += "  + " + p.score.toLocaleString() + "\n"; });
+        output += "  ─────────────────\n";
+        output += "  Grand Total: " + grandTotal.toLocaleString() + " pts\n";
+        output += "  Average:     " + average.toLocaleString() + " pts";
+
+        document.getElementById("analyticsOutput").textContent = output;
+    }
+</script>
+
+
+<!-- ============================================================
+     SECTION 6 — DECISION MAKING
+     Concepts: if, if else, else if, nested if, browser test
+============================================================ -->
+<section>
+    <h2>6. Decision Making — Rank Calculator</h2>
+
+    <h3>if / else if / else Chain</h3>
+    <label>Score:
+        <input type="number" id="rankScoreInput" value="9200" style="width:90px;">
+    </label>
+    <button onclick="calculateRank()">Calculate Rank</button>
+    <div class="output" id="rankOutput"></div>
+
+    <h3>Nested if (VIP Lounge Check)</h3>
+    <label>
+        <input type="checkbox" id="isVipCheck"> VIP Member
+    </label>
+    <label style="margin-left:14px;">Score:
+        <input type="number" id="vipScoreInput" value="9200" style="width:90px;">
+    </label>
+    <button class="pink" onclick="checkVipLounge()">Check VIP Access</button>
+    <div class="output" id="vipOutput"></div>
+
+    <h3>Browser Test</h3>
+    <p>A browser test is an <code>if else</code> that checks whether a feature exists
+        before trying to use it. Click to test if geolocation is supported.</p>
+    <button class="purple" onclick="runBrowserTest()">Test Geolocation Support</button>
+    <div class="output" id="browserTestOutput"></div>
+</section>
+
+<script>
+    // ---- Section 6 functions ----------------------------------------
+
+    function calculateRank() {
+        let score = parseInt(document.getElementById("rankScoreInput").value);
+
+        if (isNaN(score)) {
+            document.getElementById("rankOutput").textContent = "Enter a numeric score.";
+            return;
+        }
+
+        // else if chain: conditions are tested IN ORDER. Only the FIRST
+        // true block runs. Once a match is found, the rest are skipped.
+        let rank, badge;
+
+        if (score >= 15000) {
+            rank = "PLATINUM";
+            badge = "🏆";
+        } else if (score >= 10000) {
+            rank = "GOLD";
+            badge = "🥇";
+        } else if (score >= 5000) {
+            rank = "SILVER";
+            badge = "🥈";
+        } else if (score > 0) {
+            rank = "BRONZE";
+            badge = "🥉";
+        } else {
+            // The final else catches everything that didn't match above
+            rank = "UNRANKED";
+            badge = "👾";
+        }
+
+        document.getElementById("rankOutput").textContent =
+            "Score: " + score.toLocaleString() + " pts\n" +
+            "Rank:  " + badge + " " + rank;
+    }
+
+    function checkVipLounge() {
+        let isVip = document.getElementById("isVipCheck").checked;
+        let score = parseInt(document.getElementById("vipScoreInput").value);
+        let output = "";
+
+        // Nested if: the inner if only runs if the outer condition is true.
+        // This models "must be VIP AND must have a high score."
+        if (isVip) {
+            if (score >= 10000) {
+                output = "✅ VIP Lounge access GRANTED\n(VIP member with qualifying score)";
+            } else {
+                output = "⚠️ VIP badge recognized but score below 10,000.\n" +
+                         "Keep playing to earn lounge access!";
+            }
+        } else {
+            // This else belongs to the OUTER if (isVip check).
+            // The inner score check is never even reached.
+            output = "🚫 VIP Lounge access DENIED — not a VIP member.\n" +
+                     "(Inner score condition was never checked.)";
+        }
+
+        document.getElementById("vipOutput").textContent = output;
+    }
+
+    function runBrowserTest() {
+        // A browser test checks whether an object, property, or method EXISTS
+        // before trying to use it. navigator.geolocation is truthy if supported,
+        // undefined (falsy) if not. This prevents a runtime error on older browsers.
+        if (navigator.geolocation) {
+            document.getElementById("browserTestOutput").textContent =
+                "✅ navigator.geolocation is supported in this browser.\n" +
+                "We could now safely call navigator.geolocation.getCurrentPosition().";
+        } else {
+            document.getElementById("browserTestOutput").textContent =
+                "❌ navigator.geolocation is NOT available.\n" +
+                "The else block provides a fallback experience.";
+        }
+    }
+</script>
+
+
+<!-- ============================================================
+     SECTION 7 — SWITCH STATEMENT
+     Concepts: switch/case/break, default, intentional fallthrough
+============================================================ -->
+<section>
+    <h2>7. switch Statement — Game Mode &amp; Arcade Hours</h2>
+
+    <h3>Basic switch (with break)</h3>
+    <p>A <code>switch</code> compares one expression against multiple <code>case</code> labels.
+        Each <code>break</code> exits the switch after the matching case runs.</p>
+    <select id="gameModeSelect">
+        <option value="story">Story Mode</option>
+        <option value="versus">Versus Mode</option>
+        <option value="survival">Survival Mode</option>
+        <option value="practice">Practice Mode</option>
+    </select>
+    <button onclick="describeGameMode()">Select Mode</button>
+    <div class="output" id="switchOutput"></div>
+
+    <h3>Intentional Fallthrough — Arcade Hours</h3>
+    <p>Omitting <code>break</code> deliberately lets two or more case labels share the same code.
+        Always leave a comment so future readers know it's intentional.</p>
+    <select id="daySelect">
+        <option value="Mon">Monday</option>
+        <option value="Tue">Tuesday</option>
+        <option value="Wed">Wednesday</option>
+        <option value="Thu">Thursday</option>
+        <option value="Fri">Friday</option>
+        <option value="Sat">Saturday</option>
+        <option value="Sun">Sunday</option>
+    </select>
+    <button class="pink" onclick="showArcadeHours()">Show Arcade Hours</button>
+    <div class="output" id="hoursOutput"></div>
+</section>
+
+<script>
+    // ---- Section 7 functions ----------------------------------------
+
+    function describeGameMode() {
+        let mode = document.getElementById("gameModeSelect").value;
+        let description = "";
+
+        // switch uses STRICT equality (===) to match case labels.
+        // Without "break", execution would "fall through" into the next case.
+        switch (mode) {
+            case "story":
+                description = "Story Mode: Single-player campaign across 8 worlds.";
+                break; // exit the switch — don't fall into "versus"
+            case "versus":
+                description = "Versus Mode: 1v1 head-to-head on split screen.";
+                break;
+            case "survival":
+                description = "Survival Mode: Waves of enemies. How long can you last?";
+                break;
+            case "practice":
+                description = "Practice Mode: No timer, no enemies. Learn the controls.";
+                break;
+            default:
+                // default runs if no case label matched — the catch-all.
+                description = "Unknown mode selected.";
+        }
+
+        document.getElementById("switchOutput").textContent =
+            "Selected: \"" + mode + "\"\n" + description;
+    }
+
+    function showArcadeHours() {
+        let day = document.getElementById("daySelect").value;
+        let hours = "";
+
+        switch (day) {
+            case "Mon":
+            case "Tue":
+            case "Wed":
+            case "Thu":
+                // No break between Mon, Tue, Wed, Thu — intentional fallthrough.
+                // All four cases share the same response.
+                // Always comment this so it's clear it's deliberate, not a mistake.
+                hours = "Weekday hours: 2:00 PM – 10:00 PM";
+                break;
+
+            case "Fri":
+                // Friday gets its own hours — no fallthrough here
+                hours = "Friday hours: 2:00 PM – Midnight";
+                break;
+
+            case "Sat":
+            case "Sun":
+                // Sat and Sun share weekend hours — intentional fallthrough
+                hours = "Weekend hours: 11:00 AM – Midnight";
+                break;
+
+            default:
+                hours = "Arcade is closed.";
+        }
+
+        document.getElementById("hoursOutput").textContent =
+            "Hours for " + day + ": " + hours;
+    }
+</script>
+
+
+<!-- ============================================================
+     SECTION 8 — FLOW CONTROL
+     Concepts: break, continue, statement labels (labeled loops)
+============================================================ -->
+<section>
+    <h2>8. Loop Control — break, continue &amp; Labels</h2>
+
+    <h3>break — Stop When Found</h3>
+    <p><code>break</code> exits the loop immediately when the target is found, without
+        scanning the remaining elements.</p>
+    <label>Search for player:
+        <input type="text" id="searchInput" placeholder="e.g. PixelKid" style="width:130px;">
+    </label>
+    <button onclick="searchLeaderboard()">Search with break</button>
+    <div class="output" id="breakOutput"></div>
+
+    <h3>continue — Skip Undefined Slots</h3>
+    <p><code>continue</code> skips the rest of the current iteration and jumps straight
+        to the next one, without exiting the loop entirely.</p>
+    <button class="pink" onclick="sumWithContinue()">Sum Scores (skip undefined)</button>
+    <div class="output" id="continueOutput"></div>
+
+    <h3>Labeled Loop — Break Out of Both Loops at Once</h3>
+    <p>A label names an outer loop so a <code>break labelName</code> inside a nested loop
+        can exit BOTH loops at the same time, not just the inner one.</p>
+    <label>Search grid for:
+        <input type="text" id="gridSearchInput" placeholder="e.g. Pixel Quest" style="width:140px;">
+    </label>
+    <button class="purple" onclick="searchGrid()">Search 2D Grid (labeled break)</button>
+    <div id="arcadeGrid2" style="display:grid;gap:6px;margin:10px 0;"></div>
+    <div class="output" id="labelOutput"></div>
+</section>
+
+<script>
+    // ---- Section 8 functions ----------------------------------------
+
+    function searchLeaderboard() {
+        let target = document.getElementById("searchInput").value.trim();
+        let output = "Searching for \"" + target + "\"...\n";
+        let found = false;
+
+        for (let i = 0; i < leaderboard.length; i++) {
+            output += "  Checking [" + i + "] " + leaderboard[i].name;
+
+            if (leaderboard[i].name === target) {
+                found = true;
+                output += " <- FOUND! Score: " + leaderboard[i].score.toLocaleString() + " pts\n";
+                break; // exit the loop immediately — no need to check the rest
+            }
+            output += " (no match)\n";
+        }
+
+        if (!found) {
+            output += "\nPlayer not found on the leaderboard.";
+        }
+
+        output += "\n(Without break, the loop would continue through all " +
+                  leaderboard.length + " entries even after finding a match.)";
+
+        document.getElementById("breakOutput").textContent = output;
+    }
+
+    function sumWithContinue() {
+        // A sparse-style scores array — some slots are undefined (not assigned)
+        let scores = [1400, undefined, 3200, undefined, 8800, 550];
+        let total = 0;
+        let output = "Processing scores array:\n";
+
+        for (let i = 0; i < scores.length; i++) {
+            if (scores[i] === undefined) {
+                output += "  [" + i + "] undefined -> SKIPPED (continue)\n";
+                continue; // jump to the next iteration; skip the += below
+            }
+
+            total += scores[i];
+            output += "  [" + i + "] " + scores[i] + " -> running total: " + total + "\n";
+        }
+
+        output += "\nFinal total (undefined slots ignored): " + total;
+        output += "\n\n(break would EXIT the loop; continue only SKIPS one iteration.)";
+
+        document.getElementById("continueOutput").textContent = output;
+    }
+
+    function searchGrid() {
+        let target = document.getElementById("gridSearchInput").value.trim();
+        let output = "Searching arcadeCabinets for \"" + target + "\"...\n";
+        let foundRow = -1, foundCol = -1;
+
+        // Render the grid first so we can highlight the found cell
+        let grid = document.getElementById("arcadeGrid2");
+        grid.innerHTML = "";
+        grid.style.gridTemplateColumns =
+            "repeat(" + arcadeCabinets[0].length + ", 1fr)";
+        for (let r = 0; r < arcadeCabinets.length; r++) {
+            for (let c = 0; c < arcadeCabinets[r].length; c++) {
+                grid.insertAdjacentHTML("beforeend",
+                    "<div class='grid-cell' id='gc-" + r + "-" + c + "'>" +
+                    "<span style='color:var(--dim);font-size:0.72rem;'>[" + r + "][" + c + "]</span><br>" +
+                    arcadeCabinets[r][c] + "</div>"
+                );
+            }
+        }
+
+        // gridSearch: is the LABEL for the outer loop.
+        // Writing "break gridSearch" from inside the inner loop exits BOTH loops at once.
+        // A plain "break" (no label) would only exit the INNER loop.
+        gridSearch: for (let row = 0; row < arcadeCabinets.length; row++) {
+            for (let col = 0; col < arcadeCabinets[row].length; col++) {
+                output += "  Checking [" + row + "][" + col + "] " + arcadeCabinets[row][col];
+
+                if (arcadeCabinets[row][col] === target) {
+                    foundRow = row;
+                    foundCol = col;
+                    output += " <- FOUND!\n";
+                    break gridSearch; // exits BOTH the inner AND outer loop
+                }
+                output += "\n";
+            }
+        }
+
+        if (foundRow !== -1) {
+            document.getElementById("gc-" + foundRow + "-" + foundCol)
+                    .classList.add("found-cell");
+            output += "\nFound at [" + foundRow + "][" + foundCol + "].\n" +
+                      "break gridSearch exited both loops immediately.\n" +
+                      "The cell is highlighted purple in the grid above.";
+        } else {
+            output += "\nNot found in any row or column.";
+        }
+
+        document.getElementById("labelOutput").textContent = output;
+    }
+</script>
+
+</main>
+
+<footer id="arcadeFooter">Loading arcade status&hellip;</footer>
+
+<!-- External script: sets footer text, attached via defer -->
+<script src="script.js" defer></script>
+
+</body>
+</html>

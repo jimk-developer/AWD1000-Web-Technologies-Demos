@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!--
+    ============================================================
+    SUMMIT TRAILHEAD — GUIDE 6 LIVE DEMO
+    ============================================================
+    INSTRUCTOR NOTES
+
+    Topic: an expedition registration & gear rental form — a natural
+    fit for Guide 6 since every concept in the guide maps onto a
+    real field: text inputs, a trail (select) list, a multi-select
+    gear list, radio buttons for experience level, a card number
+    field for the Luhn check, and a hidden calculated-total field.
+
+    Section map (matches Guide 6 headings):
+      1. Form Elements ............ S1: document.forms, elements[],
+                                     focus()/blur()/select()
+      2. Selection Lists .......... S2: trailSelect (single),
+                                     gearList (multi-select loop)
+      3. Option Buttons ........... S3: experience level radio group,
+                                     querySelector(':checked'), labels
+      4. Formatting ................ S4: toFixed(), toLocaleString()
+      5. Form Events ............... S5: onchange vs oninput comparison,
+                                     loop-attached listeners
+      6. Hidden Fields & Submit .... S6: hidden calculatedTotal,
+                                     submit()/reset() methods
+      7. Validation ................ S7: native :invalid, Constraint
+                                     Validation API, ValidityState
+      8. Regex ..................... S8: phone pattern, ZIP pattern
+      9. Custom Validation ......... S9: Luhn algorithm, invalid event,
+                                     preventDefault()
+
+    FILE STRUCTURE:
+      index.html  — structure only (this file)
+      style.css   — all CSS
+      app.js      — all JavaScript (deferred, linked at bottom)
+
+    LIVE "BREAK IT ON PURPOSE" IDEAS:
+      S2: Select "Choose a trail..." (placeholder) and click Calculate
+          to show the guide's point about native validation not
+          catching an unchanged select on its own — our custom check
+          catches it.
+      S7: Type an invalid email and click into/out of the field to
+          see the native :invalid red outline appear via CSS alone.
+      S8: Enter a phone number without dashes to see the regex
+          pattern reject it with a specific custom message.
+      S9: Use one of the INVALID test card numbers listed near the
+          card field to see the Luhn check catch a bad number that
+          still "looks" like 16 digits.
+    ============================================================
+-->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Summit Trailhead — JavaScript Demo (Guide 6)</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <div class="header-inner">
+            <span class="header-icon">🏔️</span>
+            <div>
+                <h1>Summit Trailhead</h1>
+                <p>JavaScript Demo &mdash; Guide 6: Enhancing and Validating Forms</p>
+            </div>
+        </div>
+    </header>
+
+    <main>
+
+        <!-- ============================================================
+             THE FORM
+             One form drives Sections 1-9. Fields are grouped visually
+             by section so students can trace HTML -> JS section by section.
+             novalidate disables the browser's automatic validation POPUP
+             timing so our custom JS validation (Section 7-9) can run
+             first and control the experience — native constraint
+             attributes (required, pattern, min, max) are still present
+             and still power checkValidity()/validity, we're just
+             choosing when the browser acts on them.
+        ============================================================ -->
+        <form id="expeditionForm" novalidate>
+
+            <!-- ========================================================
+                 SECTION 1 — FORM ELEMENTS
+                 climberName is the field focus()/blur()/select() target.
+                 This form itself is what document.forms and
+                 document.getElementById("expeditionForm") both reference.
+            ========================================================= -->
+            <section id="s1">
+                <h2>1. Form Elements — Referencing the Form</h2>
+                <p>This form is referenced two ways in <code>app.js</code>:
+                    <code>document.forms[0]</code> and
+                    <code>document.getElementById("expeditionForm")</code>.
+                    The buttons below call <code>focus()</code>,
+                    <code>blur()</code>, and <code>select()</code> on the
+                    Climber Name field.</p>
+
+                <div class="field-row">
+                    <label for="climberName">Climber Name</label>
+                    <input type="text" id="climberName" name="climberName"
+                           value="Alex Rivera" required minlength="2">
+                </div>
+
+                <div class="btn-row">
+                    <button type="button" id="btnFocusName">focus() Name Field</button>
+                    <button type="button" id="btnBlurName">blur() Name Field</button>
+                    <button type="button" id="btnSelectName" class="btn-accent">select() Name Text</button>
+                </div>
+                <div class="output" id="elementsOutput">Click a button to see form/element referencing in action.</div>
+            </section>
+
+
+            <!-- ========================================================
+                 SECTION 2 — SELECTION LISTS
+                 trailSelect: single-selection list, drives a surcharge.
+                 gearList: multi-select list, needs a loop to read all
+                 chosen options (the guide's key point about
+                 selectedIndex only reporting ONE selection).
+            ========================================================= -->
+            <section id="s2">
+                <h2>2. Selection Lists — Trail &amp; Gear</h2>
+
+                <h3>Single Selection — Trail Difficulty</h3>
+                <div class="field-row">
+                    <label for="trailSelect">Choose a Trail</label>
+                    <select id="trailSelect" name="trailSelect" required>
+                        <option value="">Choose a trail&hellip;</option>
+                        <option value="meadow">Meadow Loop &mdash; Easy (no surcharge)</option>
+                        <option value="ridge">Ridge Trail &mdash; Moderate (+$15)</option>
+                        <option value="summit">Summit Push &mdash; Difficult (+$40)</option>
+                    </select>
+                </div>
+                <button type="button" id="btnCheckTrail">Read Selected Trail</button>
+                <div class="output" id="trailOutput">Select a trail and click the button.</div>
+
+                <h3>Multiple Selection — Gear Rental</h3>
+                <p>Hold Ctrl (Windows) or Cmd (Mac) to select more than one item.</p>
+                <div class="field-row">
+                    <label for="gearList">Rent Gear</label>
+                    <select id="gearList" name="gearList" multiple size="4">
+                        <option value="tent" data-price="25">Tent (+$25)</option>
+                        <option value="poles" data-price="8">Trekking Poles (+$8)</option>
+                        <option value="crampons" data-price="18">Crampons (+$18)</option>
+                        <option value="beacon" data-price="12">Avalanche Beacon (+$12)</option>
+                    </select>
+                </div>
+                <button type="button" id="btnCheckGear">Read Selected Gear</button>
+                <div class="output" id="gearOutput">Select one or more gear items and click the button.</div>
+            </section>
+
+
+            <!-- ========================================================
+                 SECTION 3 — OPTION BUTTONS (RADIO)
+                 Three radio buttons sharing name="experienceLevel".
+                 Demonstrates both the querySelector(':checked') approach
+                 and the for-loop approach, plus reading the <label> text.
+            ========================================================= -->
+            <section id="s3">
+                <h2>3. Option Buttons — Experience Level</h2>
+
+                <div class="radio-group">
+                    <div class="radio-option">
+                        <input type="radio" id="expBeginner" name="experienceLevel" value="beginner" checked>
+                        <label for="expBeginner">Beginner &mdash; guide required</label>
+                    </div>
+                    <div class="radio-option">
+                        <input type="radio" id="expIntermediate" name="experienceLevel" value="intermediate">
+                        <label for="expIntermediate">Intermediate &mdash; guide optional</label>
+                    </div>
+                    <div class="radio-option">
+                        <input type="radio" id="expExpert" name="experienceLevel" value="expert">
+                        <label for="expExpert">Expert &mdash; self-guided</label>
+                    </div>
+                </div>
+
+                <div class="btn-row">
+                    <button type="button" id="btnCheckedQuery">querySelector(':checked')</button>
+                    <button type="button" id="btnCheckedLoop" class="btn-accent">for-loop Approach</button>
+                </div>
+                <div class="output" id="radioOutput">Choose a level and click a button to read it two different ways.</div>
+            </section>
+
+
+            <!-- ========================================================
+                 SECTION 4 — FORMATTING VALUES
+                 Independent from the live total below — a standalone
+                 sandbox so students can see toFixed() vs toLocaleString()
+                 side by side on the SAME number.
+            ========================================================= -->
+            <section id="s4">
+                <h2>4. Formatting Data Values</h2>
+                <div class="field-row">
+                    <label for="rawAmountInput">Raw Amount</label>
+                    <input type="text" id="rawAmountInput" value="42.567">
+                </div>
+                <button type="button" id="btnFormatValue">Format This Number</button>
+                <div class="output" id="formatOutput">Click to compare toFixed() and toLocaleString().</div>
+            </section>
+
+
+            <!-- ========================================================
+                 SECTION 5 — FORM EVENTS
+                 Two side-by-side number inputs — one wired to "change",
+                 one wired to "input" — so students see the timing
+                 difference live as they type/tab.
+                 The live order total below uses a LOOP to attach
+                 "change" listeners to every relevant control at once.
+            ========================================================= -->
+            <section id="s5">
+                <h2>5. Responding to Form Events</h2>
+
+                <h3>change vs. input</h3>
+                <div class="event-compare">
+                    <div class="event-col">
+                        <label for="changeDemoInput">"change" event (fires on blur)</label>
+                        <input type="text" id="changeDemoInput" placeholder="Type, then click away">
+                        <div class="event-count" id="changeCount">Fired: 0 times</div>
+                    </div>
+                    <div class="event-col">
+                        <label for="inputDemoInput">"input" event (fires every keystroke)</label>
+                        <input type="text" id="inputDemoInput" placeholder="Type here">
+                        <div class="event-count" id="inputCount">Fired: 0 times</div>
+                    </div>
+                </div>
+
+                <h3>Live Order Total (loop-attached listeners)</h3>
+                <div class="field-row">
+                    <label for="climberCount">Number of Climbers</label>
+                    <input type="number" id="climberCount" name="climberCount" value="1" min="1" max="12" required>
+                </div>
+                <p>Every control above (trail, gear, climber count) updates this total automatically —
+                    <code>app.js</code> attaches one shared listener to all of them with a
+                    <code>for</code> loop, rather than writing a separate listener per field.</p>
+                <div class="total-display" id="liveTotalDisplay">$0.00</div>
+            </section>
+
+
+            <!-- ========================================================
+                 SECTION 6 — HIDDEN FIELDS & SUBMISSION
+                 calculatedTotal is a real hidden input. app.js writes
+                 the live total into it right before submit. submit()
+                 and reset() are called programmatically by buttons here
+                 (separate from the browser's native Submit button).
+            ========================================================= -->
+            <section id="s6">
+                <h2>6. Hidden Fields &amp; Form Submission</h2>
+
+                <!-- This hidden field is invisible to the user but is
+                     populated by JS and would be sent with the form data. -->
+                <input type="hidden" id="calculatedTotal" name="calculatedTotal" value="0.00">
+
+                <p>A hidden field named <code>calculatedTotal</code> exists in this form right now
+                    (inspect it in DevTools Elements panel). It is updated automatically to match the
+                    live total above, and would be submitted along with the visible fields.</p>
+
+                <div class="btn-row">
+                    <button type="button" id="btnShowHidden">Reveal Hidden Field Value</button>
+                    <button type="button" id="btnProgrammaticSubmit" class="btn-accent">submit() Programmatically</button>
+                    <button type="button" id="btnProgrammaticReset" class="btn-danger">reset() Programmatically</button>
+                </div>
+                <div class="output" id="hiddenOutput">Click a button above.</div>
+            </section>
+
+
+            <!-- ========================================================
+                 SECTION 7 — VALIDATION (native + Constraint Validation API)
+                 email uses the native "required" + "type=email" attrs so
+                 :invalid styling (in style.css) triggers automatically.
+                 The Check Validity button uses checkValidity(), validity,
+                 and setCustomValidity() from the Constraint Validation API.
+            ========================================================= -->
+            <section id="s7">
+                <h2>7. Validating Form Data</h2>
+
+                <div class="field-row">
+                    <label for="emailField">Email Address</label>
+                    <input type="email" id="emailField" name="email" required
+                           placeholder="climber@example.com">
+                </div>
+
+                <p>Click into the email field, type something invalid (or leave it blank),
+                    then click away. The red outline is native CSS <code>:invalid</code> styling —
+                    no JavaScript required for that part.</p>
+
+                <button type="button" id="btnCheckValidity">Run checkValidity() + Inspect ValidityState</button>
+                <div class="output" id="validityOutput">Click to inspect the email field's ValidityState object.</div>
+
+                <h3>Validating an Unchanged Selection List</h3>
+                <p>Native validation alone doesn't always catch a select list left on a placeholder —
+                    this checks <code>trailSelect.value</code> directly.</p>
+                <button type="button" id="btnValidateTrail">Validate Trail Selection</button>
+                <div class="output" id="trailValidationOutput">Click to validate the trail dropdown above (Section 2).</div>
+            </section>
+
+
+            <!-- ========================================================
+                 SECTION 8 — REGULAR EXPRESSIONS
+                 phoneField and zipField each get their own regex test.
+            ========================================================= -->
+            <section id="s8">
+                <h2>8. Testing Fields Against a Regular Expression</h2>
+
+                <div class="field-row">
+                    <label for="phoneField">Phone (format: 555-123-4567)</label>
+                    <input type="text" id="phoneField" name="phone" placeholder="555-123-4567">
+                </div>
+                <button type="button" id="btnCheckPhone">Test Phone Pattern</button>
+                <div class="output" id="phoneOutput">Enter a phone number and click to test it against /^\d{3}-\d{3}-\d{4}$/</div>
+
+                <div class="field-row">
+                    <label for="zipField">ZIP Code (5 or 9 digit)</label>
+                    <input type="text" id="zipField" name="zip" placeholder="63301 or 63301-1234">
+                </div>
+                <button type="button" id="btnCheckZip">Test ZIP Pattern</button>
+                <div class="output" id="zipOutput">Enter a ZIP code and click to test it against two combined patterns.</div>
+            </section>
+
+
+            <!-- ========================================================
+                 SECTION 9 — CUSTOM VALIDATION (Luhn algorithm)
+                 cardField is intentionally NOT given a native "pattern"
+                 attribute — the Luhn check is a calculation, not a
+                 format, so it can only be verified in JavaScript.
+            ========================================================= -->
+            <section id="s9">
+                <h2>9. Custom Validity Check — Card Number (Luhn Algorithm)</h2>
+
+                <p>Test numbers &mdash;
+                    <strong>valid:</strong> <code>4532015112830366</code> &nbsp;|&nbsp;
+                    <strong>invalid:</strong> <code>4532015112830367</code>
+                    (only the last digit differs, but the Luhn checksum catches it).</p>
+
+                <div class="field-row">
+                    <label for="cardField">Card Number</label>
+                    <input type="text" id="cardField" name="cardNumber"
+                           placeholder="16 digits, no spaces" maxlength="16">
+                </div>
+                <button type="button" id="btnCheckLuhn">Run Luhn Check</button>
+                <div class="output" id="luhnOutput">Enter a card number and click to run the checksum.</div>
+            </section>
+
+
+            <!-- ========================================================
+                 REAL SUBMIT BUTTON
+                 This triggers the actual "submit" event, which app.js
+                 intercepts with addEventListener("submit", ...) to run
+                 the full validation suite and call preventDefault()
+                 if anything fails — the Section 9 / guide-level pattern.
+            ========================================================= -->
+            <div class="submit-row">
+                <button type="submit" id="btnRealSubmit" class="btn-submit">Submit Expedition Registration</button>
+            </div>
+            <div class="output" id="submitOutput">Fill out the form and click Submit to run full validation.</div>
+
+        </form>
+
+    </main>
+
+    <footer id="trailheadFooter">Loading trailhead status&hellip;</footer>
+
+    <!-- Deferred so the DOM is fully parsed before app.js runs -->
+    <script src="app.js" defer></script>
+
+</body>
+</html>

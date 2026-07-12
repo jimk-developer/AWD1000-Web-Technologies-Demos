@@ -1,0 +1,541 @@
+/*
+ * ============================================================
+ * style.css — Mission Control Guide 5 Demo
+ * ============================================================
+ * Theme: deep-space mission control dashboard.
+ * Color palette:
+ *   --bg          #050B18   page background
+ *   --panel       #0D1424   section card background
+ *   --border      #1E2D45   subtle border
+ *   --blue        #3B82F6   primary interactive color
+ *   --cyan        #06B6D4   accent / output text
+ *   --orange      #F97316   warning / accent buttons
+ *   --green       #10B981   success / timer
+ *   --red         #EF4444   danger / destructive
+ *   --text        #CBD5E1   primary text
+ *   --dim         #64748B   muted / placeholder text
+ *
+ * Guide 5 instructor note on ligatures:
+ *   Monospace fonts in output boxes and code elements have
+ *   font-variant-ligatures: none + feature settings set to 0
+ *   so operators like !=, !==, >=, <= render as plain characters
+ *   rather than merged glyphs.
+ * ============================================================
+ */
+
+/* ── CSS custom properties ── */
+:root {
+    --bg:          #050B18;
+    --panel:       #0D1424;
+    --panel-alt:   #111827;
+    --border:      #1E2D45;
+    --blue:        #3B82F6;
+    --cyan:        #06B6D4;
+    --orange:      #F97316;
+    --green:       #10B981;
+    --red:         #EF4444;
+    --purple:      #8B5CF6;
+    --text:        #CBD5E1;
+    --text-bright: #F1F5F9;
+    --dim:         #64748B;
+}
+
+/* ── Reset ── */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* ── Base ── */
+body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.55;
+    padding: 0 20px 60px;
+}
+
+/* ── Page header ── */
+header {
+    background: linear-gradient(135deg, #0A1628 0%, #050B18 100%);
+    border-bottom: 2px solid var(--cyan);
+    margin: 0 -20px 30px;
+    padding: 20px 28px;
+}
+
+.header-inner {
+    max-width: 800px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.header-icon {
+    font-size: 2.4rem;
+    flex-shrink: 0;
+}
+
+header h1 {
+    color: var(--cyan);
+    font-size: 1.5rem;
+    text-shadow: 0 0 12px rgba(6, 182, 212, 0.5);
+    margin-bottom: 2px;
+}
+
+header p {
+    font-size: 0.88rem;
+    color: var(--dim);
+}
+
+/* ── Main layout ── */
+main {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+/* ── Section cards ── */
+section {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 24px 28px;
+    margin-bottom: 26px;
+}
+
+section h2 {
+    color: var(--blue);
+    font-size: 1.1rem;
+    border-bottom: 2px solid var(--border);
+    padding-bottom: 10px;
+    margin-bottom: 14px;
+}
+
+section h3 {
+    color: var(--cyan);
+    font-size: 0.9rem;
+    border-left: 3px solid var(--cyan);
+    padding-left: 8px;
+    margin: 18px 0 8px;
+}
+
+section p {
+    font-size: 0.88rem;
+    color: var(--text);
+    margin: 6px 0 10px;
+    line-height: 1.5;
+}
+
+/* ── Inline code spans ── */
+code {
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-variant-ligatures: none;
+    font-feature-settings: "liga" 0, "calt" 0;
+    background: #162032;
+    color: var(--cyan);
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-size: 0.83rem;
+}
+
+/* ── Button row ── */
+.btn-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 8px 0 12px;
+}
+
+/* ── Buttons ── */
+button {
+    background: var(--blue);
+    color: #fff;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 6px;
+    font-size: 0.84rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s, transform 0.1s;
+}
+
+button:hover {
+    background: var(--cyan);
+    color: #050B18;
+    transform: translateY(-1px);
+}
+
+button.btn-accent {
+    background: var(--purple);
+}
+
+button.btn-accent:hover {
+    background: var(--cyan);
+    color: #050B18;
+}
+
+button.btn-danger {
+    background: var(--red);
+}
+
+button.btn-danger:hover {
+    background: #F87171;
+    color: #050B18;
+}
+
+/* ── Text inputs ── */
+input[type="text"],
+input[type="number"] {
+    background: #0A1628;
+    border: 1px solid var(--border);
+    color: var(--text-bright);
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 0.88rem;
+    outline: none;
+    margin: 4px 0;
+    width: 200px;
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus {
+    border-color: var(--blue);
+}
+
+.input-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+/* ── Output / log boxes ── */
+.output {
+    margin-top: 12px;
+    padding: 12px 14px;
+    background: #030710;
+    border: 1px dashed var(--border);
+    border-radius: 8px;
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-variant-ligatures: none;
+    font-feature-settings: "liga" 0, "calt" 0;
+    white-space: pre-wrap;
+    color: var(--cyan);
+    font-size: 0.83rem;
+    line-height: 1.65;
+    min-height: 20px;
+}
+
+/* ── Section 1: satellite cards in the node tree ── */
+#satelliteFleet {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin: 12px 0;
+}
+
+.sat-card {
+    background: var(--panel-alt);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 16px;
+    min-width: 140px;
+    transition: border-color 0.25s;
+}
+
+.sat-card.highlighted {
+    border-color: var(--cyan);
+    background: #0E1E35;
+}
+
+.sat-card h3 {
+    /* override section h3 for card headings */
+    border-left: none;
+    padding-left: 0;
+    color: var(--text-bright);
+    font-size: 0.88rem;
+    margin: 0 0 4px;
+}
+
+.sat-card p {
+    font-size: 0.78rem;
+    color: var(--dim);
+    margin: 0;
+}
+
+/* ── Section 2: crew roster ── */
+#crewRoster {
+    min-height: 60px;
+    border: 1px dashed var(--border);
+    border-radius: 10px;
+    padding: 10px;
+    margin: 10px 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+/* Crew cards are created in JS and appended here.
+   The .crew-card class is applied via node.className in app.js.
+   The "priority" modifier class is applied via classList.add(). */
+.crew-card {
+    background: var(--panel-alt);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 0.84rem;
+    position: relative;
+}
+
+.crew-card.priority {
+    border-color: var(--orange);
+    background: #1A1008;
+}
+
+.crew-card .crew-name {
+    font-weight: 700;
+    color: var(--text-bright);
+    display: block;
+}
+
+.crew-card .crew-role {
+    color: var(--dim);
+    font-size: 0.78rem;
+}
+
+.placeholder-text {
+    color: var(--dim);
+    font-size: 0.82rem;
+    font-style: italic;
+    padding: 6px;
+}
+
+/* ── Section 2: transmission box ── */
+.transmission-box {
+    margin-top: 10px;
+    padding: 12px;
+    background: #030710;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 0.88rem;
+    min-height: 36px;
+    color: var(--text-bright);
+}
+
+/* ── Section 2: mission manifest list ── */
+#missionManifest {
+    list-style: none;
+    margin: 10px 0 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 8px;
+}
+
+/* .manifest-item is assigned via node.className in app.js */
+.manifest-item {
+    background: var(--panel-alt);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 9px 12px;
+    font-size: 0.84rem;
+}
+
+.manifest-item .mission-name {
+    font-weight: 700;
+    color: var(--text-bright);
+    display: block;
+}
+
+.manifest-item .mission-status {
+    font-size: 0.76rem;
+    color: var(--dim);
+}
+
+/* ── Section 3: mission queue ── */
+#missionQueue {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 12px 0;
+}
+
+.queue-card {
+    background: var(--panel-alt);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.86rem;
+    transition: border-color 0.2s;
+}
+
+.queue-card:first-child {
+    border-left: 3px solid var(--green);
+}
+
+.queue-label {
+    font-weight: 600;
+    color: var(--text-bright);
+}
+
+.queue-tag {
+    font-size: 0.76rem;
+    background: #162032;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 2px 7px;
+    color: var(--dim);
+}
+
+/* Target area where cloned nodes are dropped */
+.node-target {
+    min-height: 40px;
+    border: 1px dashed var(--border);
+    border-radius: 8px;
+    padding: 8px;
+    margin: 4px 0 8px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+/* Cloned queue cards get an accent color to stand out */
+.queue-card.cloned {
+    border-color: var(--purple);
+    opacity: 0.8;
+}
+
+/* ── Section 4: mission clock ── */
+.clock-display {
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-variant-ligatures: none;
+    font-feature-settings: "liga" 0, "calt" 0;
+    font-size: 2.4rem;
+    color: var(--green);
+    text-shadow: 0 0 12px rgba(16, 185, 129, 0.5);
+    letter-spacing: 4px;
+    background: #030710;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 24px;
+    display: inline-block;
+    margin: 10px 0;
+}
+
+/* ── Section 5: dialog output ── */
+#dialogOutput {
+    /* no additional overrides — inherits .output */
+}
+
+/* ── Section 6: mission gallery thumbnails ── */
+#missionGallery {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin: 14px 0;
+}
+
+.mission-thumb {
+    background: var(--panel-alt);
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 20px;
+    text-align: center;
+    font-size: 0.86rem;
+    color: var(--text);
+    cursor: pointer;
+    min-width: 120px;
+    transition: border-color 0.2s, background 0.2s, transform 0.15s;
+    line-height: 1.7;
+}
+
+.mission-thumb:hover {
+    border-color: var(--cyan);
+    background: #0E1E35;
+    transform: translateY(-2px);
+}
+
+/* ── Overlay styles ── 
+   The overlay <div> itself is created entirely in JS via createElement().
+   This CSS class is applied by setting overlay.className = "page-overlay"
+   in app.js. That demonstrates how CSS and JS work together: CSS defines
+   the appearance, JS builds the element and assigns the class. */
+.page-overlay {
+    /* Fixed positioning covers the entire viewport */
+    position: fixed;
+    inset: 0;                          /* shorthand for top/right/bottom/left: 0 */
+    background: rgba(5, 11, 24, 0.88);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.overlay-card {
+    background: var(--panel);
+    border: 1px solid var(--cyan);
+    border-radius: 14px;
+    padding: 28px 32px;
+    max-width: 420px;
+    width: 90%;
+    box-shadow: 0 0 40px rgba(6, 182, 212, 0.2);
+}
+
+.overlay-card h2 {
+    color: var(--cyan);
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 8px;
+    margin-bottom: 12px;
+    font-size: 1.1rem;
+}
+
+.overlay-card p {
+    color: var(--text);
+    font-size: 0.88rem;
+    line-height: 1.6;
+    margin-bottom: 18px;
+}
+
+.overlay-card .this-note {
+    font-size: 0.78rem;
+    color: var(--dim);
+    font-style: italic;
+    border-top: 1px solid var(--border);
+    padding-top: 10px;
+    margin-bottom: 14px;
+}
+
+.overlay-close {
+    background: var(--red);
+    color: #fff;
+    border: none;
+    padding: 8px 18px;
+    border-radius: 6px;
+    font-size: 0.86rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.overlay-close:hover {
+    background: #F87171;
+}
+
+/* ── Section 7: BOM output ── */
+#bomOutput {
+    /* no additional overrides — inherits .output */
+}
+
+/* ── Page footer ── */
+footer {
+    text-align: center;
+    color: var(--dim);
+    font-size: 0.82rem;
+    margin-top: 30px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+}

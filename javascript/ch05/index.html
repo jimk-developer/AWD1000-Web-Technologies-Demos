@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!--
+    ============================================================
+    MISSION CONTROL  - GUIDE 5 LIVE DEMO
+    ============================================================
+    INSTRUCTOR NOTES
+
+    Section map (matches Guide 5 headings):
+      1. Node Explorer ........... Nodes, node tree, parent/child/
+                                   sibling, querySelectorAll (static)
+                                   vs. getElementsByClassName (live)
+      2. Create & Connect ........ createElement(), appendChild(),
+                                   className / classList, inline styles
+                                   via style property, textContent vs.
+                                   innerHTML, build from array with loop
+      3. Restructure ............. appendChild() to MOVE an existing
+                                   node, insertBefore(), cloneNode()
+                                   deep (true) vs. shallow (false)
+      4. Timed Commands .......... setInterval() / clearInterval(),
+                                   setTimeout() / clearTimeout()
+      5. Popup Windows ........... window.alert(), window.confirm(),
+                                   window.prompt(), window.open()
+      6. Mission Overlay ......... createElement overlay, removeChild(),
+                                   the "this" object inside a shared
+                                   event handler
+      7. BOM Inspector ........... window (global), location, navigator,
+                                   screen, history objects
+
+    FILE STRUCTURE:
+      index.html   - structure only (this file)
+      style.css    - all CSS (linked below)
+      app.js       - all JavaScript (deferred, linked at bottom)
+
+    All event listeners are attached in app.js via addEventListener.
+    There are no onclick attributes or inline styles anywhere in this
+    HTML file  - those patterns are demonstrated in app.js.
+
+    LIVE "BREAK IT ON PURPOSE" IDEAS:
+      S1: Remove the "defer" from the app.js script tag and show the
+          null reference error since the DOM isn't ready yet.
+      S2: Switch textContent to innerHTML on the "XSS Demo" button
+          output and show the <strong> tag actually rendering.
+      S2: Comment out one classList.add() call and show that the
+          class attribute simply doesn't include that token.
+      S3: Call cloneNode(false) on a card that has children and show
+          the empty container that results.
+      S4: Comment out the clearInterval() call inside "Pause" to show
+          that the timer can't be stopped without the saved timerId.
+    ============================================================
+-->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mission Control - JavaScript Demo (Guide 5)</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <header>
+        <div class="header-inner">
+            <span class="header-icon">🛰️</span>
+            <div>
+                <h1>Mission Control</h1>
+                <p>JavaScript Demo &mdash; Guide 5: Creating a Web App Using the
+                    DOM</p>
+            </div>
+        </div>
+    </header>
+
+    <main>
+
+        <!-- ============================================================
+             SECTION 1  - NODES & THE NODE TREE
+             The #satelliteFleet div and its three article children are
+             the live DOM structure that app.js will traverse and inspect.
+             All node-relationship properties (parentNode, children,
+             firstElementChild, nextElementSibling, childNodes) are
+             demonstrated by reading this existing structure.
+        ============================================================ -->
+        <section id="s1">
+            <h2>1. Nodes &amp; the Node Tree</h2>
+
+            <p>The <strong>#satelliteFleet</strong> block below is a real part
+                of the DOM.
+                The buttons call node-relationship properties on it in real
+                time.</p>
+
+            <!-- This is the node tree we will explore in JS -->
+            <div id="satelliteFleet">
+                <article class="sat-card" id="sat-alpha">
+                    <h3>Alpha Station</h3>
+                    <p>Orbit: 92 min</p>
+                </article>
+                <article class="sat-card" id="sat-beta">
+                    <h3>Beta Probe</h3>
+                    <p>Orbit: 118 min</p>
+                </article>
+                <article class="sat-card" id="sat-gamma">
+                    <h3>Gamma Relay</h3>
+                    <p>Orbit: 75 min</p>
+                </article>
+            </div>
+
+            <div class="btn-row">
+                <!-- All onclick wiring is done in app.js via addEventListener -->
+                <button id="btnParent">parentNode</button>
+                <button id="btnChildren">children / childNodes</button>
+                <button id="btnFirstChild">firstElementChild</button>
+                <button id="btnNextSibling">nextElementSibling</button>
+                <button id="btnQueryAll">querySelectorAll()</button>
+                <button id="btnLiveVsStatic" class="btn-accent">Live vs.
+                    Static</button>
+            </div>
+            <div class="output" id="nodeOutput">Click a button to inspect the
+                node tree.</div>
+        </section>
+
+
+        <!-- ============================================================
+             SECTION 2  - CREATING & CONNECTING NODES
+             app.js reads the input values from #crewName and #crewRole,
+             builds a new <article> node entirely in JavaScript, sets its
+             id, className, classList tokens, inline style, and textContent,
+             then appends it to #crewRoster.
+             The "Mission Manifest" sub-demo builds from a JS data array.
+        ============================================================ -->
+        <section id="s2">
+            <h2>2. Creating &amp; Connecting Nodes</h2>
+
+            <!-- Sub-section: createElement / appendChild / attributes -->
+            <h3>createElement() + appendChild()</h3>
+            <div class="input-row">
+                <input type="text" id="crewName" placeholder="Crew member name">
+                <input type="text" id="crewRole"
+                    placeholder="Role (e.g. Pilot)">
+            </div>
+            <div class="btn-row">
+                <button id="btnAddCrew">Add to Roster</button>
+                <button id="btnClearRoster" class="btn-danger">Clear
+                    Roster</button>
+            </div>
+
+            <!-- New crew nodes are appended here by app.js -->
+            <div id="crewRoster" class="node-target">
+                <p class="placeholder-text">Crew roster is empty - add a crew
+                    member above.</p>
+            </div>
+
+            <!-- Sub-section: textContent vs innerHTML -->
+            <h3>textContent vs. innerHTML</h3>
+            <p>Type a message below (try including an HTML tag like
+                <code>&lt;strong&gt;hello&lt;/strong&gt;</code>), then compare
+                how each property handles it.
+            </p>
+            <input type="text" id="transmissionInput"
+                placeholder="Enter transmission text (try HTML tags)">
+            <div class="btn-row">
+                <button id="btnTextContent">Set via textContent</button>
+                <button id="btnInnerHTML" class="btn-accent">Set via
+                    innerHTML</button>
+            </div>
+            <div id="transmissionDisplay" class="transmission-box">
+                Awaiting transmission&hellip;
+            </div>
+
+            <!-- Sub-section: Build from data array with a loop -->
+            <h3>Build Nodes from a Data Array (Document Fragment Pattern)</h3>
+            <p>The mission manifest array lives in <code>app.js</code>. Click to
+                build one &lt;li&gt; node per item and append them all at once.
+            </p>
+            <button id="btnBuildManifest">Build Mission Manifest</button>
+            <ul id="missionManifest"></ul>
+        </section>
+
+
+        <!-- ============================================================
+             SECTION 3  - RESTRUCTURING THE NODE TREE
+             The #missionQueue div contains four .queue-card children.
+             app.js demonstrates:
+               - appendChild() to MOVE an existing node (not a new one)
+               - insertBefore() to move a node to a specific position
+               - cloneNode(false)  - shallow copy, no children
+               - cloneNode(true)   - deep copy, all descendants included
+        ============================================================ -->
+        <section id="s3">
+            <h2>3. Restructuring the Node Tree</h2>
+
+            <p>The <strong>Mission Queue</strong> cards below are existing DOM
+                nodes.
+                None of these buttons create new elements - they move and copy
+                what's
+                already here.</p>
+
+            <!-- These four cards are the nodes we will move/clone -->
+            <div id="missionQueue">
+                <div class="queue-card" id="qc1">
+                    <span class="queue-label">Mission Alpha</span>
+                    <span class="queue-tag">Survey</span>
+                </div>
+                <div class="queue-card" id="qc2">
+                    <span class="queue-label">Mission Beta</span>
+                    <span class="queue-tag">Repair</span>
+                </div>
+                <div class="queue-card" id="qc3">
+                    <span class="queue-label">Mission Gamma</span>
+                    <span class="queue-tag">Deploy</span>
+                </div>
+                <div class="queue-card" id="qc4">
+                    <span class="queue-label">Mission Delta</span>
+                    <span class="queue-tag">Return</span>
+                </div>
+            </div>
+
+            <div class="btn-row">
+                <button id="btnMoveToEnd">appendChild() - Move First to
+                    End</button>
+                <button id="btnMoveToFront">insertBefore() - Move Last to
+                    Front</button>
+                <button id="btnCloneShallow" class="btn-accent">cloneNode(false)
+                    - Shallow</button>
+                <button id="btnCloneDeep" class="btn-accent">cloneNode(true) -
+                    Deep</button>
+                <button id="btnResetQueue" class="btn-danger">Reset
+                    Queue</button>
+            </div>
+
+            <!-- Cloned nodes are dropped here so they don't jumble the queue -->
+            <p style="margin-top:14px; font-size:0.85rem; color:var(--dim);">
+                Clone output &darr;
+            </p>
+            <div id="cloneTarget" class="node-target"></div>
+            <div class="output" id="restructureOutput">Click a button to
+                restructure.</div>
+        </section>
+
+
+        <!-- ============================================================
+             SECTION 4  - TIMED COMMANDS
+             app.js wires up:
+               - setInterval()  → elapsed mission clock (repeating)
+               - clearInterval() → pause / resume that clock
+               - setTimeout()   → one-shot "signal received" message
+               - clearTimeout() → cancel the pending signal
+        ============================================================ -->
+        <section id="s4">
+            <h2>4. Timed Commands</h2>
+
+            <!-- setInterval / clearInterval -->
+            <h3>setInterval() + clearInterval() - Mission Clock</h3>
+            <p>The clock uses <code>setInterval()</code> to update every second.
+                <code>clearInterval()</code> pauses it. The timer ID returned by
+                <code>setInterval()</code> must be saved to a variable - it's
+                the
+                only way to stop the timer later.
+            </p>
+
+            <div id="missionClock" class="clock-display">00:00:00</div>
+            <div class="btn-row">
+                <button id="btnStartClock">Start Clock (setInterval)</button>
+                <button id="btnPauseClock" class="btn-accent">Pause
+                    (clearInterval)</button>
+                <button id="btnResetClock" class="btn-danger">Reset</button>
+            </div>
+
+            <!-- setTimeout / clearTimeout -->
+            <h3>setTimeout() + clearTimeout() - Incoming Signal</h3>
+            <p><code>setTimeout()</code> fires <em>once</em> after a delay.
+                <code>clearTimeout()</code> cancels it if clicked before
+                the delay expires. This contrasts with
+                <code>setInterval()</code>,
+                which repeats indefinitely.
+            </p>
+
+            <div class="btn-row">
+                <button id="btnScheduleSignal">Schedule Signal (3s
+                    delay)</button>
+                <button id="btnAbortSignal" class="btn-danger">Abort Signal
+                    (clearTimeout)</button>
+            </div>
+            <div class="output" id="signalOutput">No signal scheduled.</div>
+        </section>
+
+
+        <!-- ============================================================
+             SECTION 5  - POPUP WINDOWS
+             All three system dialog methods (alert, confirm, prompt)
+             and window.open() are wired in app.js.
+             Buttons trigger real browser dialogs  - students see them.
+        ============================================================ -->
+        <section id="s5">
+            <h2>5. Popup Windows</h2>
+
+            <h3>System Dialog Boxes</h3>
+            <div class="btn-row">
+                <button id="btnAlert">window.alert()</button>
+                <button id="btnConfirm"
+                    class="btn-accent">window.confirm()</button>
+                <button id="btnPrompt"
+                    class="btn-accent">window.prompt()</button>
+            </div>
+            <div class="output" id="dialogOutput">Trigger a dialog to see its
+                return value here.</div>
+
+            <h3>window.open() - Popup Browser Window</h3>
+            <p>Opens a new window sized to 500&times;400 px and writes
+                content to it via its <code>document</code> reference.
+                Note: modern browsers may redirect this to a new tab.</p>
+            <button id="btnOpenPopup">window.open()</button>
+            <button id="btnCenteredPopup" class="btn-accent">Centered Popup
+                (screen object)</button>
+        </section>
+
+
+        <!-- ============================================================
+             SECTION 6  - MISSION OVERLAY
+             Each .mission-thumb card has a data-title and data-detail
+             attribute. app.js attaches a single shared click handler to
+             ALL thumbnails using querySelectorAll().forEach(). Inside
+             that handler, "this" refers to whichever card was clicked,
+             giving us the right data-title/data-detail values without
+             needing a separate function per card.
+
+             The overlay itself is created entirely in JS (createElement,
+             appendChild to document.body) and removed with removeChild().
+        ============================================================ -->
+        <section id="s6">
+            <h2>6. Overlay &amp; the <code>this</code> Object</h2>
+
+            <p>Click any mission card below. One shared event handler reads
+                <code>this.dataset.title</code> and
+                <code>this.dataset.detail</code>
+                from whichever card was clicked - no separate function needed
+                per card.
+            </p>
+
+            <!-- data-* attributes carry the payload for the overlay content -->
+            <div id="missionGallery">
+                <div class="mission-thumb" data-title="Alpha Station"
+                    data-detail="Geosynchronous orbit at 35,786 km. Primary communications relay for all deep-space missions. Staffed by 3 crew members. Orbital period: 24 hours.">
+                    🛰️<br>Alpha Station
+                </div>
+                <div class="mission-thumb" data-title="Beta Probe"
+                    data-detail="Unmanned reconnaissance probe currently surveying the asteroid belt. Telemetry updated every 92 minutes. Solar-powered.">
+                    🔭<br>Beta Probe
+                </div>
+                <div class="mission-thumb" data-title="Gamma Relay"
+                    data-detail="Low-Earth orbit communications relay. Handles backup uplink during solar weather events. Altitude: 550 km.">
+                    📡<br>Gamma Relay
+                </div>
+                <div class="mission-thumb" data-title="Delta Lander"
+                    data-detail="Surface lander deployed on Mars, Jezero Crater. Actively transmitting soil sample data. Power nominal. Contact window: 20 min/day.">
+                    🚀<br>Delta Lander
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ============================================================
+             SECTION 7  - BROWSER OBJECT MODEL (BOM)
+             app.js reads and displays the live values from:
+               window (as the global object)
+               location.href, location.hostname, location.protocol
+               navigator.userAgent, navigator.language
+               screen.width, screen.height, screen.colorDepth
+               history.length
+        ============================================================ -->
+        <section id="s7">
+            <h2>7. Browser Object Model (BOM)</h2>
+
+            <p>The <code>window</code> object sits at the top of the BOM
+                hierarchy.
+                All other BOM objects (<code>document</code>,
+                <code>location</code>,
+                <code>navigator</code>, <code>screen</code>,
+                <code>history</code>)
+                are properties of <code>window</code>.
+            </p>
+
+            <button id="btnInspectBOM">Inspect BOM Objects</button>
+            <button id="btnHistoryBack"
+                class="btn-accent">history.back()</button>
+            <div class="output" id="bomOutput">Click "Inspect BOM Objects" to
+                read live values.</div>
+        </section>
+
+    </main>
+
+    <footer id="missionFooter">Initializing mission systems&hellip;</footer>
+
+    <!--
+        Script is loaded with "defer" so it runs ONLY AFTER the entire
+        HTML above has been parsed and every element exists in the DOM.
+        Without defer, getElementById() calls in app.js would return null
+        because the elements wouldn't exist yet  - a runtime error.
+    -->
+    <script src="app.js" defer></script>
+
+</body>
+
+</html>

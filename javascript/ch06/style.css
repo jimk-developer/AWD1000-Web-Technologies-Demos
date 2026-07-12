@@ -1,0 +1,331 @@
+/*
+ * ============================================================
+ * style.css — Summit Trailhead Guide 6 Demo
+ * ============================================================
+ * Theme: outdoor expedition / trailhead registration desk.
+ * Palette:
+ *   --bg        #1B2B1F   deep forest background
+ *   --panel     #24352A   section card background
+ *   --border    #3A4F3D   subtle border
+ *   --moss      #6B9B5E   primary green (headings, buttons)
+ *   --sand      #D9B380   accent tan (secondary buttons)
+ *   --sunset    #E07A3F   warm orange (highlight / total)
+ *   --danger    #C0453A   error / reset
+ *   --text       #E4E9E0   primary text
+ *   --dim        #8A9A87   muted text
+ *
+ * Guide 6 instructor note: native :invalid styling is defined
+ * near the bottom — no JavaScript is needed to color a field
+ * red once it fails its HTML validation attributes.
+ * ============================================================
+ */
+
+:root {
+    --bg:      #1B2B1F;
+    --panel:   #24352A;
+    --border:  #3A4F3D;
+    --moss:    #6B9B5E;
+    --moss-lt: #8FC17E;
+    --sand:    #D9B380;
+    --sunset:  #E07A3F;
+    --danger:  #C0453A;
+    --text:    #E4E9E0;
+    --text-br: #F5F7F3;
+    --dim:     #8A9A87;
+}
+
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.55;
+    padding: 0 20px 60px;
+}
+
+/* ── Header ── */
+header {
+    background: linear-gradient(135deg, #223420 0%, #1B2B1F 100%);
+    border-bottom: 2px solid var(--moss);
+    margin: 0 -20px 30px;
+    padding: 20px 28px;
+}
+
+.header-inner {
+    max-width: 780px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.header-icon { font-size: 2.4rem; flex-shrink: 0; }
+
+header h1 {
+    color: var(--moss-lt);
+    font-size: 1.5rem;
+    text-shadow: 0 0 12px rgba(107, 155, 94, 0.4);
+    margin-bottom: 2px;
+}
+
+header p { font-size: 0.88rem; color: var(--dim); }
+
+/* ── Layout ── */
+main { max-width: 780px; margin: 0 auto; }
+
+section {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 24px 28px;
+    margin-bottom: 22px;
+}
+
+section h2 {
+    color: var(--moss-lt);
+    font-size: 1.08rem;
+    border-bottom: 2px solid var(--border);
+    padding-bottom: 10px;
+    margin-bottom: 14px;
+}
+
+section h3 {
+    color: var(--sand);
+    font-size: 0.9rem;
+    border-left: 3px solid var(--sand);
+    padding-left: 8px;
+    margin: 18px 0 8px;
+}
+
+section p {
+    font-size: 0.87rem;
+    color: var(--text);
+    margin: 6px 0 10px;
+}
+
+code {
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-variant-ligatures: none;
+    font-feature-settings: "liga" 0, "calt" 0;
+    background: #16241A;
+    color: var(--sand);
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-size: 0.83rem;
+}
+
+/* ── Field rows ── */
+.field-row {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-bottom: 12px;
+    max-width: 380px;
+}
+
+.field-row label {
+    font-size: 0.83rem;
+    color: var(--dim);
+    font-weight: 600;
+}
+
+/* ── Text / number / email inputs and selects ── */
+input[type="text"],
+input[type="email"],
+input[type="number"],
+select {
+    background: #16241A;
+    border: 1px solid var(--border);
+    color: var(--text-br);
+    padding: 9px 12px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    outline: none;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="number"]:focus,
+select:focus {
+    border-color: var(--moss);
+}
+
+select[multiple] {
+    padding: 4px;
+}
+
+select[multiple] option {
+    padding: 6px 8px;
+}
+
+/* ── Native browser validation styling (:invalid) ──
+   This is the "native / browser-based validation" concept from
+   Guide 5 Section 7 — pure CSS, zero JavaScript needed. A field
+   only shows red once the browser considers it invalid AND the
+   user has interacted with it (the :not(:placeholder-shown) and
+   :not(:focus) guards prevent the red flash before typing begins). */
+input:invalid:not(:placeholder-shown):not(:focus),
+select:invalid:not(:focus) {
+    border-color: var(--danger);
+    background: #2A1815;
+}
+
+input:valid:not(:placeholder-shown) {
+    border-color: var(--moss);
+}
+
+/* ── Radio buttons ── */
+.radio-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.radio-option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #16241A;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 14px;
+}
+
+.radio-option input[type="radio"] {
+    accent-color: var(--moss);
+    width: 16px;
+    height: 16px;
+}
+
+.radio-option label {
+    font-size: 0.87rem;
+    color: var(--text);
+    cursor: pointer;
+}
+
+/* ── Buttons ── */
+.btn-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 8px 0 12px;
+}
+
+button {
+    background: var(--moss);
+    color: #10190F;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 6px;
+    font-size: 0.84rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.15s, transform 0.1s;
+}
+
+button:hover { background: var(--moss-lt); transform: translateY(-1px); }
+
+button.btn-accent { background: var(--sand); color: #2A1F0F; }
+button.btn-accent:hover { background: #E8C79A; }
+
+button.btn-danger { background: var(--danger); color: #fff; }
+button.btn-danger:hover { background: #D6584C; }
+
+button.btn-submit {
+    background: var(--sunset);
+    color: #241205;
+    font-size: 0.95rem;
+    padding: 12px 28px;
+}
+button.btn-submit:hover { background: #EB9160; }
+
+/* ── Output boxes ── */
+.output {
+    margin-top: 10px;
+    padding: 12px 14px;
+    background: #10190F;
+    border: 1px dashed var(--border);
+    border-radius: 8px;
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-variant-ligatures: none;
+    font-feature-settings: "liga" 0, "calt" 0;
+    white-space: pre-wrap;
+    color: var(--moss-lt);
+    font-size: 0.83rem;
+    line-height: 1.65;
+    min-height: 20px;
+}
+
+.output.error-out { color: var(--danger); }
+.output.success-out { color: var(--moss-lt); }
+
+/* ── Section 5: change vs input comparison ── */
+.event-compare {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 10px;
+}
+
+.event-col {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.event-col label {
+    font-size: 0.8rem;
+    color: var(--dim);
+}
+
+.event-count {
+    font-size: 0.78rem;
+    color: var(--sand);
+    font-family: 'Consolas', 'Courier New', monospace;
+}
+
+/* ── Section 5: live total display ── */
+.total-display {
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-variant-ligatures: none;
+    font-feature-settings: "liga" 0, "calt" 0;
+    font-size: 1.8rem;
+    color: var(--sunset);
+    text-shadow: 0 0 10px rgba(224, 122, 63, 0.4);
+    background: #10190F;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 20px;
+    display: inline-block;
+    margin-top: 6px;
+}
+
+/* ── Submit row ── */
+.submit-row {
+    text-align: center;
+    margin: 10px 0;
+}
+
+/* ── Footer ── */
+footer {
+    text-align: center;
+    color: var(--dim);
+    font-size: 0.82rem;
+    margin-top: 30px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+    max-width: 780px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* ── Responsive ── */
+@media (max-width: 600px) {
+    .event-compare { grid-template-columns: 1fr; }
+}

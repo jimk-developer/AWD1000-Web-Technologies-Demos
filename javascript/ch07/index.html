@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!--
+    ============================================================
+    THE ARCHIVE - GUIDE 7 LIVE DEMO
+    ============================================================
+    INSTRUCTOR NOTES
+
+    Topic: a detective's case-file archive. Every Guide 7 concept
+    maps onto something a records clerk would actually do: read an
+    uploaded case file, search/clean witness statements, redact
+    sensitive text with regex, sort and stack evidence, calculate
+    with the Math object, timestamp cases with Date, and generate
+    a formatted case report with template literals.
+
+    Section map (matches Guide 7 headings):
+      1. Reading Files ............ S1: <input type="file">, the
+                                     files collection, FileReader,
+                                     readAsText(), the load event
+      2. String Methods ........... S2: length, indexOf/includes,
+                                     trim/case conversion, slice/
+                                     substring, split, concat/repeat,
+                                     localeCompare
+      3. Regex Basics .............. S3: anchors, flags, character
+                                     classes, quantifiers, escape
+                                     sequences, alternation/grouping
+      4. Regex Programming ........ S4: RegExp() constructor, test/
+                                     search/match/replace, split()
+                                     with a regex, $1-style group refs
+      5. Array Methods ............. S5: sort() + compare function,
+                                     slice() vs splice(), stack (push/
+                                     pop) vs queue (unshift/shift)
+      6. Math Object ............... S6: round/floor/ceil/abs/pow/
+                                     sqrt/max/min, spread operator,
+                                     Math.random() shuffle
+      7. Date Object ............... S7: new Date(), get*() methods,
+                                     date subtraction, set*() methods,
+                                     toLocaleDateString()
+      8. Template Literals ......... S8: placeholders, multiline
+                                     strings, a tagged template
+                                     literal function
+
+    FILE STRUCTURE:
+      index.html - structure only (this file)
+      style.css  - all CSS
+      app.js     - all JavaScript (deferred, linked at bottom)
+
+    A sample-case.txt file is NOT required - Section 1 includes a
+    "Load Sample Case File" button that builds an in-memory Blob/File
+    so the file-reading demo works without asking students to hunt
+    down a real file first. A real <input type="file"> is also fully
+    wired for anyone who wants to drop in their own .txt file.
+
+    LIVE "BREAK IT ON PURPOSE" IDEAS:
+      S1: Select a non-.txt file (an image) to show the MIME-type
+          check in app.js rejecting it before FileReader ever runs.
+      S3: Toggle the case-insensitive "i" flag off and rerun a search
+          for "SUSPECT" (uppercase) against the lowercase sample text.
+      S4: Remove the "g" flag from the redaction pattern and show
+          only the FIRST occurrence gets replaced.
+      S5: Call quantities.sort() with no compare function on the
+          evidence weight array to show the lexicographical-order bug.
+    ============================================================
+-->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Archive - JavaScript Demo (Guide 7)</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <div class="header-inner">
+            <span class="header-icon">🗃️</span>
+            <div>
+                <h1>The Archive</h1>
+                <p>JavaScript Demo &mdash; Guide 7: Manipulating Data in Strings, Arrays, and Other Objects</p>
+            </div>
+        </div>
+    </header>
+
+    <main>
+
+        <!-- ============================================================
+             SECTION 1 - READING FILES
+             Real <input type="file"> wired to the File API + FileReader.
+             A "Load Sample Case File" button builds an in-memory File
+             object via the Blob constructor so the demo works without
+             requiring students to supply their own .txt file first.
+        ============================================================ -->
+        <section id="s1">
+            <h2>1. Reading Files - Case File Intake</h2>
+
+            <p>Choose a <code>.txt</code> file below, or click "Load Sample Case File" to
+                generate one in memory. Either path uses the same <code>FileReader</code> code.</p>
+
+            <div class="btn-row">
+                <input type="file" id="caseFileInput" accept=".txt">
+                <button id="btnLoadSample" class="btn-accent">Load Sample Case File</button>
+            </div>
+
+            <div class="output" id="fileInfoOutput">No file selected yet.</div>
+
+            <h3>File Contents (via FileReader.readAsText())</h3>
+            <div class="output multi-line" id="fileContentOutput">File contents will appear here once loaded.</div>
+        </section>
+
+
+        <!-- ============================================================
+             SECTION 2 - STRING METHODS
+             A witness statement textarea is the working text for every
+             string method demo in this section.
+        ============================================================ -->
+        <section id="s2">
+            <h2>2. Working with Text Strings - Witness Statement</h2>
+
+            <label for="statementText" class="block-label">Witness Statement (editable)</label>
+            <textarea id="statementText" rows="3">  The suspect was seen leaving the Riverside Bakery around 9:45 PM, wearing a long grey coat.  </textarea>
+
+            <div class="btn-row">
+                <button id="btnStringLength">length</button>
+                <button id="btnStringSearch">indexOf / includes</button>
+                <button id="btnStringClean" class="btn-accent">trim + toLowerCase</button>
+                <button id="btnStringSlice">slice / substring</button>
+                <button id="btnStringSplit">split(",")</button>
+                <button id="btnStringConcatRepeat">concat / repeat</button>
+                <button id="btnLocaleCompare" class="btn-accent">localeCompare()</button>
+            </div>
+            <div class="output multi-line" id="stringOutput">Click a button to run a string method on the statement above.</div>
+        </section>
+
+
+        <!-- ============================================================
+             SECTION 3 - REGEX BASICS
+             Interactive pattern tester: type a value, click a pattern
+             button, see the match result. Covers anchors, flags,
+             character classes, quantifiers, escapes, and alternation.
+        ============================================================ -->
+        <section id="s3">
+            <h2>3. Introducing Regular Expressions</h2>
+
+            <div class="field-row">
+                <label for="patternTestInput">Test String</label>
+                <input type="text" id="patternTestInput" value="Case-2026-0714">
+            </div>
+
+            <div class="btn-row">
+                <button id="btnTestAnchors">Anchors: /^Case/</button>
+                <button id="btnTestFlags" class="btn-accent">Flags: /suspect/gi</button>
+                <button id="btnTestCharClass">Char Class: /[A-Z]/</button>
+                <button id="btnTestQuantifier">Quantifier: /\d{4}/</button>
+                <button id="btnTestEscape" class="btn-accent">Escape: /Case\-\d+/</button>
+                <button id="btnTestAlternation">Alternation: /open|closed|cold/</button>
+            </div>
+            <div class="output multi-line" id="regexBasicsOutput">Type a test string, then click a pattern button.</div>
+        </section>
+
+
+        <!-- ============================================================
+             SECTION 4 - REGEX PROGRAMMING
+             Redaction demo (RegExp constructor + replace + loop),
+             regex-based split, and referencing groups via RegExp.$1.
+        ============================================================ -->
+        <section id="s4">
+            <h2>4. Programming with Regular Expressions</h2>
+
+            <h3>Redacting Sensitive Terms (RegExp constructor + replace)</h3>
+            <p>Enter comma-separated terms to redact from the witness statement (Section 2),
+                then click Redact. Each term becomes its own dynamically built
+                <code>RegExp</code>, using the <code>\b</code> word-boundary and the
+                <code>g</code>/<code>i</code> flags.</p>
+            <div class="field-row">
+                <label for="redactTermsInput">Terms to Redact (comma-separated)</label>
+                <input type="text" id="redactTermsInput" value="suspect,bakery">
+            </div>
+            <button id="btnRedact">Redact Statement</button>
+            <div class="output multi-line" id="redactOutput">Click Redact to see the result.</div>
+
+            <h3>Splitting with a Regex Separator</h3>
+            <div class="field-row">
+                <label for="splitSampleInput">Evidence List (irregular spacing)</label>
+                <input type="text" id="splitSampleInput" value="Coat,  Footprint,Ledger,   Key">
+            </div>
+            <button id="btnRegexSplit" class="btn-accent">split(/,\s*/)</button>
+            <div class="output" id="regexSplitOutput">Click to split on a comma plus any amount of whitespace.</div>
+
+            <h3>Referencing Group Matches (RegExp.$1, $2, $3)</h3>
+            <div class="field-row">
+                <label for="caseNumberInput">Case Number String</label>
+                <input type="text" id="caseNumberInput" value="Filed under Case-2026-0714 today">
+            </div>
+            <button id="btnExtractGroups">Extract Year / Case Group</button>
+            <div class="output" id="groupsOutput">Click to extract capture groups from a case number pattern.</div>
+        </section>
+
+
+        <!-- ============================================================
+             SECTION 5 - ARRAY METHODS
+             evidenceLog array (declared in app.js) drives sort/slice/
+             splice. A separate stack/queue simulator demonstrates
+             push/pop vs unshift/shift on live buttons.
+        ============================================================ -->
+        <section id="s5">
+            <h2>5. Exploring Array Methods - Evidence Log</h2>
+
+            <h3>Sorting</h3>
+            <p>The evidence log stores <code>[itemName, weightGrams]</code> pairs.</p>
+            <div class="btn-row">
+                <button id="btnShowEvidence">Show Evidence Log</button>
+                <button id="btnSortAlpha">sort() &mdash; Alphabetical (default)</button>
+                <button id="btnSortWeight" class="btn-accent">sort() &mdash; by Weight (compare fn)</button>
+                <button id="btnReverseEvidence">reverse()</button>
+            </div>
+            <div class="output multi-line" id="evidenceOutput">Click "Show Evidence Log" to begin.</div>
+
+            <h3>slice() vs. splice()</h3>
+            <div class="btn-row">
+                <button id="btnSliceEvidence">slice(0, 2) &mdash; non-destructive</button>
+                <button id="btnSpliceEvidence" class="btn-danger">splice(1, 1, "Fingerprint Kit") &mdash; destructive</button>
+                <button id="btnResetEvidence">Reset Evidence Log</button>
+            </div>
+            <div class="output multi-line" id="sliceSpliceOutput">Click a button to compare slice() and splice().</div>
+
+            <h3>Stack (LIFO) vs. Queue (FIFO) - Case Intake</h3>
+            <div class="btn-row">
+                <button id="btnStackPush">push() - File New Case</button>
+                <button id="btnStackPop" class="btn-danger">pop() - Handle Most Recent (LIFO)</button>
+                <button id="btnQueueUnshift" class="btn-accent">unshift() - File New Case</button>
+                <button id="btnQueueShift" class="btn-danger">shift() - Handle Oldest (FIFO)</button>
+            </div>
+            <div class="stack-queue-display">
+                <div class="sq-column">
+                    <h4>Stack (LIFO)</h4>
+                    <div id="stackDisplay" class="sq-items"></div>
+                </div>
+                <div class="sq-column">
+                    <h4>Queue (FIFO)</h4>
+                    <div id="queueDisplay" class="sq-items"></div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ============================================================
+             SECTION 6 - MATH OBJECT
+             Evidence weight calculations, spread operator with
+             Math.max/min, random Case ID generator, shuffle.
+        ============================================================ -->
+        <section id="s6">
+            <h2>6. The Math Object - Lab Calculations</h2>
+
+            <div class="field-row">
+                <label for="mathTestInput">Test Value</label>
+                <input type="text" id="mathTestInput" value="6.5">
+            </div>
+            <button id="btnMathBasics">Run round / floor / ceil / abs / pow / sqrt</button>
+            <div class="output multi-line" id="mathBasicsOutput">Enter a number and click to see core Math methods.</div>
+
+            <h3>Math.max() / Math.min() on an Array (Spread Operator)</h3>
+            <p>Evidence weights: <code id="weightsList"></code></p>
+            <button id="btnMathSpread" class="btn-accent">Find Heaviest/Lightest (spread)</button>
+            <div class="output" id="mathSpreadOutput">Click to find the max/min weight using the spread operator.</div>
+
+            <h3>Random Case ID Generator</h3>
+            <button id="btnRandomId">Generate Random Case ID</button>
+            <div class="output" id="randomIdOutput">Click to generate a random case ID number.</div>
+
+            <h3>Shuffle Evidence Order</h3>
+            <button id="btnShuffle" class="btn-accent">Math.random() Shuffle</button>
+            <div class="output" id="shuffleOutput">Click to randomly reorder the evidence log.</div>
+        </section>
+
+
+        <!-- ============================================================
+             SECTION 7 - DATE OBJECT
+             Case-opened timestamp, elapsed time via subtraction,
+             set*() methods for a follow-up reminder, locale formatting.
+        ============================================================ -->
+        <section id="s7">
+            <h2>7. The Date Object - Case Timeline</h2>
+
+            <button id="btnCaseOpened">Stamp Case Opened (new Date())</button>
+            <div class="output" id="dateStampOutput">Click to timestamp when this case was opened.</div>
+
+            <h3>Extracting Date Parts</h3>
+            <button id="btnDateParts" class="btn-accent">Extract Year / Month / Day / Weekday</button>
+            <div class="output" id="datePartsOutput">Click to break the case-opened date into its parts.</div>
+
+            <h3>Elapsed Time (Date Subtraction)</h3>
+            <div class="field-row">
+                <label for="filedDateInput">Case Filed Date (YYYY-MM-DD)</label>
+                <input type="text" id="filedDateInput" value="2026-06-01">
+            </div>
+            <button id="btnElapsed">Calculate Days Elapsed</button>
+            <div class="output" id="elapsedOutput">Enter a filed date and click to calculate days since then.</div>
+
+            <h3>Scheduling a Follow-Up (set*() methods)</h3>
+            <button id="btnScheduleFollowUp" class="btn-accent">Schedule Follow-Up (+30 days)</button>
+            <div class="output" id="followUpOutput">Click to schedule a follow-up 30 days from the case-opened date.</div>
+        </section>
+
+
+        <!-- ============================================================
+             SECTION 8 - TEMPLATE LITERALS
+             Multiline case report built with placeholders, plus a
+             tagged template literal function that redacts substitutions.
+        ============================================================ -->
+        <section id="s8">
+            <h2>8. Template Literals - Case Report Generator</h2>
+
+            <div class="field-row">
+                <label for="reportCaseNumber">Case Number</label>
+                <input type="text" id="reportCaseNumber" value="2026-0714">
+            </div>
+            <div class="field-row">
+                <label for="reportDetective">Lead Detective</label>
+                <input type="text" id="reportDetective" value="J. Marlowe">
+            </div>
+            <div class="field-row">
+                <label for="reportStatus">Status</label>
+                <select id="reportStatus">
+                    <option value="Open">Open</option>
+                    <option value="Under Review">Under Review</option>
+                    <option value="Closed">Closed</option>
+                </select>
+            </div>
+
+            <button id="btnGenerateReport">Generate Case Report</button>
+            <div class="output multi-line" id="reportOutput">Fill in the fields and click Generate.</div>
+
+            <h3>Tagged Template Literal - Auto-Redacted Report</h3>
+            <p>Same data, run through a <strong>tag function</strong> that wraps every
+                placeholder value in <code>[ ]</code> before assembling the final string.</p>
+            <button id="btnTaggedReport" class="btn-accent">Generate with redact`` Tag</button>
+            <div class="output multi-line" id="taggedReportOutput">Click to see the tagged version.</div>
+        </section>
+
+    </main>
+
+    <footer id="archiveFooter">Loading archive status&hellip;</footer>
+
+    <!-- Deferred so the DOM is fully parsed before app.js runs -->
+    <script src="app.js" defer></script>
+
+</body>
+</html>

@@ -1,0 +1,280 @@
+/*
+ * ============================================================
+ * style.css — The Archive Guide 7 Demo
+ * ============================================================
+ * Theme: noir detective case-file archive.
+ * Palette:
+ *   --bg        #171310   near-black warm background
+ *   --panel     #211B16   section card background
+ *   --border    #3A2F26   subtle border
+ *   --amber     #D9A24B   primary accent (headings, buttons)
+ *   --rust       #B5542C   secondary accent
+ *   --paper      #E8DCC4   output text (aged paper look)
+ *   --redact     #8C2E2E   danger / redact buttons
+ *   --text        #D8CFC0   primary text
+ *   --dim         #8A7F6E   muted text
+ * ============================================================
+ */
+
+:root {
+    --bg:      #171310;
+    --panel:   #211B16;
+    --border:  #3A2F26;
+    --amber:   #D9A24B;
+    --amber-lt:#E8C179;
+    --rust:    #B5542C;
+    --paper:   #E8DCC4;
+    --redact:  #8C2E2E;
+    --text:    #D8CFC0;
+    --text-br: #F2ECDC;
+    --dim:     #8A7F6E;
+}
+
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.55;
+    padding: 0 20px 60px;
+}
+
+/* ── Header ── */
+header {
+    background: linear-gradient(135deg, #1F1912 0%, #171310 100%);
+    border-bottom: 2px solid var(--amber);
+    margin: 0 -20px 30px;
+    padding: 20px 28px;
+}
+
+.header-inner {
+    max-width: 800px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.header-icon { font-size: 2.4rem; flex-shrink: 0; }
+
+header h1 {
+    color: var(--amber);
+    font-size: 1.5rem;
+    text-shadow: 0 0 12px rgba(217, 162, 75, 0.35);
+    margin-bottom: 2px;
+    letter-spacing: 0.5px;
+}
+
+header p { font-size: 0.88rem; color: var(--dim); }
+
+/* ── Layout ── */
+main { max-width: 800px; margin: 0 auto; }
+
+section {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px 28px;
+    margin-bottom: 22px;
+}
+
+section h2 {
+    color: var(--amber);
+    font-size: 1.08rem;
+    border-bottom: 2px solid var(--border);
+    padding-bottom: 10px;
+    margin-bottom: 14px;
+}
+
+section h3 {
+    color: var(--amber-lt);
+    font-size: 0.9rem;
+    border-left: 3px solid var(--rust);
+    padding-left: 8px;
+    margin: 18px 0 8px;
+}
+
+section p {
+    font-size: 0.87rem;
+    color: var(--text);
+    margin: 6px 0 10px;
+}
+
+.block-label {
+    display: block;
+    font-size: 0.83rem;
+    color: var(--dim);
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+code {
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-variant-ligatures: none;
+    font-feature-settings: "liga" 0, "calt" 0;
+    background: #12100C;
+    color: var(--amber-lt);
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-size: 0.83rem;
+}
+
+/* ── Field rows ── */
+.field-row {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-bottom: 12px;
+    max-width: 420px;
+}
+
+.field-row label {
+    font-size: 0.83rem;
+    color: var(--dim);
+    font-weight: 600;
+}
+
+/* ── Inputs / selects / textarea ── */
+input[type="text"],
+select,
+textarea {
+    background: #12100C;
+    border: 1px solid var(--border);
+    color: var(--text-br);
+    padding: 9px 12px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    outline: none;
+    width: 100%;
+}
+
+textarea {
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-variant-ligatures: none;
+    font-feature-settings: "liga" 0, "calt" 0;
+    resize: vertical;
+    margin-bottom: 10px;
+}
+
+input[type="text"]:focus,
+select:focus,
+textarea:focus {
+    border-color: var(--amber);
+}
+
+input[type="file"] {
+    color: var(--text);
+    font-size: 0.85rem;
+}
+
+/* ── Buttons ── */
+.btn-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin: 8px 0 12px;
+}
+
+button {
+    background: var(--amber);
+    color: #241A0A;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 6px;
+    font-size: 0.83rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.15s, transform 0.1s;
+}
+
+button:hover { background: var(--amber-lt); transform: translateY(-1px); }
+
+button.btn-accent { background: var(--rust); color: #fff; }
+button.btn-accent:hover { background: #CB6B41; }
+
+button.btn-danger { background: var(--redact); color: #fff; }
+button.btn-danger:hover { background: #A63B3B; }
+
+/* ── Output boxes (aged paper feel) ── */
+.output {
+    margin-top: 10px;
+    padding: 12px 14px;
+    background: #12100C;
+    border: 1px dashed var(--border);
+    border-radius: 8px;
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-variant-ligatures: none;
+    font-feature-settings: "liga" 0, "calt" 0;
+    white-space: pre-wrap;
+    color: var(--paper);
+    font-size: 0.83rem;
+    line-height: 1.65;
+    min-height: 20px;
+}
+
+.output.multi-line { min-height: 70px; }
+
+/* ── Redaction highlight (used by app.js when inserting marks) ── */
+.redacted-mark {
+    background: var(--redact);
+    color: var(--redact);
+    border-radius: 3px;
+    padding: 0 2px;
+}
+
+/* ── Section 5: stack/queue visual ── */
+.stack-queue-display {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-top: 10px;
+}
+
+.sq-column h4 {
+    color: var(--amber-lt);
+    font-size: 0.85rem;
+    margin-bottom: 6px;
+}
+
+.sq-items {
+    display: flex;
+    flex-direction: column-reverse; /* newest pushed items visually on top */
+    gap: 5px;
+    min-height: 40px;
+    border: 1px dashed var(--border);
+    border-radius: 8px;
+    padding: 8px;
+}
+
+.sq-item {
+    background: #12100C;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 6px 10px;
+    font-size: 0.8rem;
+    color: var(--text);
+}
+
+/* ── Footer ── */
+footer {
+    text-align: center;
+    color: var(--dim);
+    font-size: 0.82rem;
+    margin-top: 30px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* ── Responsive ── */
+@media (max-width: 600px) {
+    .stack-queue-display { grid-template-columns: 1fr; }
+}
